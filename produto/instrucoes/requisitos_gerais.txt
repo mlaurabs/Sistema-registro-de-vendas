@@ -1,0 +1,22 @@
+Todos os códigos identificadores deverão ser criados automaticamente. Eles não
+poderão ser alterados manualmente.
+
+Todos os códigos identificadores são únicos para cada parte do sistema, ou seja,
+não podem existir múltiplos clientes com o identificador 1, mas pode existir um
+cliente e um produto com o identificador 1.
+
+Sempre que o usuário tentar criar ou editar objetos no sistema, seus dados
+passarão por uma verificação a ser especificada nos requisitos de cada módulo
+responsável.
+
+Os dados das operações de consulta e remoção do usuário não passarão por
+verificação.
+
+---
+
+Ao iniciar o sistema, será lido um arquivo em UTF-8 que contém todos os dados
+cadastrados previamente no sistema. Esses dados serão transformados em UTF-32
+e então serão redistribuídos para suas devidas posições.
+
+Antes de fechar o sistema, todos os dados cadastrados deverão ser armazenados
+em um arquivo UTF-8.

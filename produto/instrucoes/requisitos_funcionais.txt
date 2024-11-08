@@ -1,0 +1,48 @@
+Para cadastrar um produto, é obrigatório fornecer nome, marca, categoria, preço e a
+quantidade mínima em estoque. O preço promocional pode ou não ser fornecido. Se
+não for fornecido, ele deverá ter o mesmo valor que o preço.
+
+O preço promocional do produto não pode ser maior que seu preço normal.
+
+Ao criar um produto, ele deverá ser criado no estoque automaticamente com 0
+unidades armazenadas e com a quantidade mínima informada pelo usuário.
+Posteriormente, sua quantidade mínima só poderá ser alterada diretamente no
+estoque.
+
+Não poderão existir múltiplos produtos que compartilhem, ao mesmo tempo, nome,
+marca e categoria.
+
+O preço e o preço promocional de um produto deverão ser registrados em real, mas
+o sistema não deverá registrar a moeda utilizada.
+
+O usuário poderá alterar nome, marca, categoria, preço e quantidade mínima em
+estoque, sendo esse último atributo sob as condições mencionadas previamente (só
+poderá ser realizada diretamente no estoque). Esta alteração será feita com base
+em seu código identificador.
+
+A busca pelos dados de um produto deve ser feita com base em seu código
+identificador.
+
+Um produto pode ser exibido individualmente por seu identificador.
+
+O usuário poderá checar todos os produtos existentes no sistema.
+
+Um grupo de produtos pode ser exibido com base em alguns atributos:
+- Agrupados por nome
+- Agrupados por categoria
+- Agrupados por marca
+- Agrupados por faixa de preço (nesse caso, deverão ser fornecidos o preço
+mínimo e o preço máximo)
+- Agrupados por nomes
+
+Um produto só pode ser excluído do sistema se não estiver envolvido em alguma
+venda e se não houver unidades em estoque. Essa exclusão deverá ser feita com
+base no seu código identificador.
+
+Ao remover um produto, ele também deverá ser removido do estoque.
+
+---
+
+Nome, marca e categoria não deverão ultrapassar de 50 caracteres individualmente.
+
+O preço e o preço promocional deverão ter apenas 2 casas decimais.

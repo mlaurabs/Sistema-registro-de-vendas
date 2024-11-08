@@ -1,0 +1,53 @@
+createProduto (nome, marca, categoria, preço, preço promocional, quantidade
+mínima)
+Produto criado com sucesso
+Produto já existente no sistema
+Nome com mais caracteres que o permitido
+Marca com mais caracteres que o permitido
+Categoria com mais caracteres que o permitido
+Preço com mais casas decimais que o permitido
+Preço promocional com mais casas decimais que o permitido
+Preço promocional maior que o preço
+
+updateProduto (id do produto, nome, marca, categoria, preço, preço promocional)
+Produto atualizado com sucesso
+Nome com mais caracteres que o permitido
+Marca com mais caracteres que o permitido
+Categoria com mais caracteres que o permitido
+Preço com mais casas decimais que o permitido
+Preço promocional com mais casas decimais que o permitido
+Preço promocional maior que o preço
+
+getProduto (id do produto, endereço de retorno)
+Produto obtido com sucesso
+Produto não encontrado
+
+showProduto (id do produto)
+Produto obtido com sucesso
+Produto não encontrado
+
+showProdutos ( )
+Produtos obtidos com sucesso
+Nenhum produto encontrado
+
+showProdutosByMarca (marca)
+Produtos obtidos com sucesso
+Nenhum produto encontrado
+
+showProdutosByCategoria (categoria)
+Produtos obtidos com sucesso
+Nenhum produto encontrado
+
+showProdutosByFaixaPreço (preço mínimo, preço máximo)
+Produtos obtidos com sucesso
+Nenhum produto encontrado
+
+showProdutosFilterNome (nome)
+Produtos obtidos com sucesso
+Nenhum produto encontrado
+
+deleteProduto (id do produto)
+Produto removido com sucesso
+Produto não encontrado
+Produto cadastrado em uma venda
+Produto ainda possui unidades em estoque

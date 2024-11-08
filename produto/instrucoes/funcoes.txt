@@ -1,0 +1,20 @@
+OK createProduto (nome, marca, categoria, preço, preço promocional, quantidade
+mínima)
+
+OK updateProduto (id do produto, nome, marca, categoria, preço, preço promocional)
+
+OK getProduto (id do produto, endereço de retorno)
+
+OK showProduto (id do produto)
+
+showProdutos ( )
+
+showProdutosByMarca (marca)
+
+showProdutosByCategoria (categoria)
+
+showProdutosByFaixaPreço (preço mínimo, preço máximo)
+
+showProdutosFilterNome (nome)
+
+deleteProduto (id do produto)
