@@ -7,14 +7,14 @@ OK getProduto (id do produto, endereço de retorno)
 
 OK showProduto (id do produto)
 
-showProdutos ( )
+OK showProdutos ( )
 
-showProdutosByMarca (marca)
+OK showProdutosByMarca (marca)
 
-showProdutosByCategoria (categoria)
+OK showProdutosByCategoria (categoria)
 
-showProdutosByFaixaPreço (preço mínimo, preço máximo)
+OK showProdutosByFaixaPreço (preço mínimo, preço máximo)
 
-showProdutosFilterNome (nome)
+OK showProdutosFilterNome (nome)
 
-deleteProduto (id do produto)
+OK deleteProduto (id do produto)
