@@ -1,6 +1,9 @@
+from status_code.py import STATUS_CODE
+
 class Produto:
-    cont_id = 1
-    lista_produtos = []
+
+    cont_id = 1 # Guarda o próximo ID a ser cadastrado
+    lista_produtos = [] # Lista com todos os produtos
     
     def __init__(self, nome, marca, categoria, preco, preco_promocional, qtd_minima):
         self.id = Produto.cont_id 
@@ -48,32 +51,32 @@ class Produto:
     def validaTipos(nome, marca, categoria, preco, preco_promocional, qtd_minima):
 
         if not isinstance(nome, str):
-            return 0 # Um nome deve ser do tipo string
+            return STATUS_CODE["NOME_TIPO_ERRADO"] # Um nome deve ser do tipo string
 
         if not isinstance(marca, str):
-            return 0 # Uma marca deve ser do tipo string
+            return STATUS_CODE["MARCA_TIPO_ERRADO"] # Uma marca deve ser do tipo string
 
         if not isinstance(categoria, str):
-            return 0 # Uma categoria deve ser do tipo string
+            return STATUS_CODE["CATEGORIA_TIPO_ERRADO"] # Uma categoria deve ser do tipo string
 
         if not isinstance(preco, (int, float)):
-            return 0 # Um preço deve ser dos tipos int ou float
+            return STATUS_CODE["PRECO_TIPO_ERRADO"] # Um preço deve ser dos tipos int ou float
 
         if preco_promocional != None:
             if not isinstance(preco_promocional, (int, float)):
-                return 0 # Um preço promocional deve ser dos tipos int ou float
+                return STATUS_CODE["PRECO_PROMOCIONAL_TIPO_ERRADO"] # Um preço promocional deve ser dos tipos int ou float
 
         if not isinstance(qtd_minima, int):
-            return 0 # Uma quantidade mínima deve ser do tipo int
+            return STATUS_CODE["QTD_MINIMA_TIPO_ERRADO"] # Uma quantidade mínima deve ser do tipo int
         
-        return 0
+        return STATUS_CODE["SUCESSO"]
 
     # Valida os valores passados para a função create
     @staticmethod
     def validaCreate(nome, marca, categoria, preco, preco_promocional, qtd_minima):
 
         if Produto.verificaNone(nome, marca, categoria, preco, qtd_minima):
-            return 0 # Nome, marca, categoria, preço e a quantidade mínima não podem ser NULL
+            return STATUS_CODE["PARAMETROS_OBRIGATORIOS_NONE"] # Nome, marca, categoria, preço e a quantidade mínima não podem ser NULL na criação
 
         flag = Produto.validaTipos(nome, marca, categoria, preco, preco_promocional, qtd_minima)
         if flag:
@@ -83,29 +86,30 @@ class Produto:
             preco_promocional = preco
 
         if len(nome) > 50:
-            return 0 # Nome não pode ter mais que 50 caracteres
+            return STATUS_CODE["NOME_FORMATO"] # Nome não pode ter mais que 50 caracteres
 
         if len(marca) > 50:
-            return 0 # Marca não pode ter mais que 50 caracteres
+            return STATUS_CODE["MARCA_FORMATO"] # Marca não pode ter mais que 50 caracteres
 
         if len(categoria) > 50:
-            return 0 # Categoria não pode ter mais que 50 caracteres
+            return STATUS_CODE["CATEGORIA_FORMATO"] # Categoria não pode ter mais que 50 caracteres
 
         if preco_promocional > preco:
-            return 0 # Preço promocional não pode ser maior que o preço do produto
+            return STATUS_CODE["PRECO_PROMOCIONAL_MAIOR_PRECO"] # Preço promocional não pode ser maior que o preço do produto
 
         if Produto.contaCasasDecimais(preco, 2):
-            return 0 # Preço não pode ter mais que duas casas decimais
+            return STATUS_CODE["PRECO_FORMATO"] # Preço não pode ter mais que duas casas decimais
 
         if Produto.contaCasasDecimais(preco_promocional, 2):
-            return 0 # Preço promocional não pode ter mais que duas casas decimais
+            return STATUS_CODE["PRECO_PROMOCIONAL_FORMATO"] # Preço promocional não pode ter mais que duas casas decimais
 
         for produto in Produto.lista_produtos:
             if nome == produto.nome and marca == produto.marca and categoria == produto.categoria:
-                return 0 # Não podem existir produtos iguais no sistema
+                return STATUS_CODE["PRODUTO_EXISTENTE"] # Não podem existir produtos iguais no sistema
 
         return 0
         
+    # Cria um produto
     @classmethod
     def createProduto(cls, nome, marca, categoria, preco, preco_promocional, qtd_minima):
 
@@ -114,17 +118,19 @@ class Produto:
             return flag # Retorna o erro encontrado na validação
 
         novo = cls(nome, marca, categoria, preco, preco_promocional, qtd_minima)
-        return 0 # Sucesso
+        return STATUS_CODE["SUCESO"] # Sucesso
 
+    # Imprime um produto
     @classmethod
     def showProduto(cls, id):
         for produto in cls.lista_produtos:
             if id == produto.id:
                 for atributo,valor in produto.__dict__.items():
                     print(f"{atributo}: {valor}")
-                return 0 # Sucesso
-        return 1 # Produto não encontrado
+                return STATUS_CODE["SUCESSO"] # Sucesso
+        return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
 
+    # Atualiza um produto
     @classmethod
     def updateProduto(cls, id, nome, marca, categoria, preco, preco_promocional):
 
@@ -140,31 +146,34 @@ class Produto:
                             setattr(produto, parametro_atributo, parametro_valor)
                             if parametro_atributo == "preco":
                                 setattr(produto, "preco_promocional", parametro_valor)
-                return 0 # Sucesso
-        return 1 # Produto não encontrado
+                return STATUS_CODE["SUCESSO"] # Sucesso
+        return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
 
+    # Retorna um produto
     @classmethod
     def getProduto(cls, id, retorno):
         for produto in cls.lista_produtos:
             if id == produto.id:
                 for atributo, valor in produto.__dict__.items():
                     retorno.append([atributo,valor])
-                return 0 # Sucesso
-        return 1 # produto não encontrado
+                return STATUS_CODE["SUCESSO"] # Sucesso
+        return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # produto não encontrado
 
+    # Mostra todos os produtos cadastrados
     @classmethod
     def showProdutos(cls):
 
         if not cls.lista_produtos:
-            return 1 # Não há produtos cadastrados
+            return STATUS_CODE["NENHUM_PRODUTO_CADASTRADO"] # Não há produtos cadastrados
 
         for produto in cls.lista_produtos:
             for atributo, valor in produto.__dict__.items():
                 print(f"{atributo}: {valor}")
             print("\n", end="")
 
-        return 0 # Sucesso
+        return STATUS_CODE["SUCESSO"] # Sucesso
 
+    # Mostra todos os produtos de certa marca
     @classmethod
     def showProdutosByMarca(cls, marca):
         flag = False
@@ -175,10 +184,11 @@ class Produto:
                     print(f"{atributo}: {valor}")
                 print("\n", end="")
         if flag:
-            return 0 # Sucesso
+            return STATUS_CODE["SUCESSO"] # Sucesso
         else:
-            return 1 # Nenhum produto encontrado
+            return STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"] # Nenhum produto encontrado
 
+    # Mostra todos os produtos de certa categoria
     @classmethod
     def showProdutosByCategoria(cls, categoria):
         flag = False
@@ -189,10 +199,11 @@ class Produto:
                     print(f"{atributo}: {valor}")
                 print("\n", end="")
         if flag:
-            return 0 # Sucesso
+            return STATUS_CODE["SUCESSO"] # Sucesso
         else:
-            return 1 # Nenhum produto encontrado
+            return STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"] # Nenhum produto encontrado
 
+    # Mostra todos os produtos em certa faixa de preço
     @classmethod
     def showProdutosByFaixaPreco(cls, preco_min, preco_max):
         flag = False
@@ -203,10 +214,11 @@ class Produto:
                     print(f"{atributo}: {valor}")
                 print("\n", end="")
         if flag:
-            return 0 # Sucesso
+            return STATUS_CODE["SUCESSO"] # Sucesso
         else:
-            return 1 # Nenhum produto encontrado
+            return STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"] # Nenhum produto encontrado
 
+    # Mostra todos os produtos com certo nome
     @classmethod
     def showProdutosByNome(cls, nome):
         flag = False
@@ -217,14 +229,15 @@ class Produto:
                     print(f"{atributo}: {valor}")
                 print("\n", end="")
         if flag:
-            return 0 # Sucesso
+            return STATUS_CODE["SUCESSO"] # Sucesso
         else:
-            return 1 # Nenhum produto encontrado
+            return STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"] # Nenhum produto encontrado
 
+    # Deleta um produto
     @classmethod
     def deleteProduto(cls, id):
         for produto in cls.lista_produtos:
             if id == produto.id:
                 cls.lista_produtos.remove(produto)
-                return 0 # Sucesso
-        return 1 # Produto não encontrado
+                return STATUS_CODE["SUCESSO"] # Sucesso
+        return STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"] # Produto não encontrado
