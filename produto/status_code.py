@@ -6,17 +6,21 @@ STATUS_CODE = {
     "PRECO_TIPO_ERRADO": 4, # Um preço deve ser dos tipos int ou float
     "PRECO_PROMOCIONAL_TIPO_ERRADO": 5, # Um preço promocional deve ser dos tipos int ou float
     "QTD_MINIMA_TIPO_ERRADO": 6, # Uma quantidade mínima deve ser do tipo int
-    "PARAMETROS_OBRIGATORIOS_NONE": 7, # Nome, marca, categoria, preço e a quantidade mínima não podem ser NULL na criação
-    "NOME_FORMATO": 8, # Nome não pode ter mais que 50 caracteres
-    "MARCA_FORMATO": 9, # Marca não pode ter mais que 50 caracteres
-    "CATEGORIA_FORMATO": 10, # Categoria não pode ter mais que 50 caracteres
-    "PRECO_PROMOCIONAL_MAIOR_PRECO": 11, # Preço promocional não pode ser maior que o preço do produto
-    "PRECO_FORMATO": 12, # Preço não pode ter mais que duas casas decimais
-    "PRECO_PROMOCIONAL_FORMATO": 13, # Preço promocional não pode ter mais que duas casas decimais
-    "PRODUTO_EXISTENTE": 14, # Não podem existir produtos iguais no sistema
-    "PRODUTO_NAO_ENCONTRADO": 15, # Produto não encontrado
-    "NENHUM_PRODUTO_CADASTRADO": 16, # Não há produtos cadastrados
-    "NENHUM_PRODUTO_ENCONTRADO": 17, # Nenhum produto encontrado
+    "NOME_NONE": 7, # Não é possível criar um Produto sem nome
+    "MARCA_NONE": 8, # Não é possível criar um Produto sem marca
+    "CATEGORIA_NONE": 9, # Não é possível criar um Produto sem categoria
+    "PRECO_NONE": 10, # Não é possível criar um Produto sem preço
+    "QTD_MINIMA_NONE": 11, # Não é possível criar um Produto sem quantidade mínima
+    "NOME_FORMATO": 12, # Nome não pode ter mais que 50 caracteres
+    "MARCA_FORMATO": 13, # Marca não pode ter mais que 50 caracteres
+    "CATEGORIA_FORMATO": 14, # Categoria não pode ter mais que 50 caracteres
+    "PRECO_PROMOCIONAL_MAIOR_PRECO": 15, # Preço promocional não pode ser maior que o preço do produto
+    "PRECO_FORMATO": 16, # Preço não pode ter mais que duas casas decimais
+    "PRECO_PROMOCIONAL_FORMATO": 17, # Preço promocional não pode ter mais que duas casas decimais
+    "PRODUTO_EXISTENTE": 18, # Não podem existir produtos iguais no sistema
+    "PRODUTO_NAO_ENCONTRADO": 19, # Produto não encontrado
+    "NENHUM_PRODUTO_CADASTRADO": 20, # Não há produtos cadastrados
+    "NENHUM_PRODUTO_ENCONTRADO": 21, # Nenhum produto encontrado
 }
 
 def getStatusName(retorno):
