@@ -1,0 +1,88 @@
+
+Módulo de Estoque - Funções Necessárias
+
+1. Inicialização
+createEstoque()
+- Descrição: Inicializa o estoque no início do sistema. Deve verificar os produtos existentes no módulo de produtos e adicioná-los ao estoque com quantidade inicial de 0.
+- Entradas: Nenhuma.
+- Saída: Um dicionário ou lista representando o estoque.
+
+2. Inserção e Atualização
+addProdutoEstoque(id_produto, quantidade)
+- Descrição: Adiciona um produto ao estoque ou atualiza sua quantidade, garantindo que ele exista no módulo de produtos.
+- Entradas:
+  - id_produto: ID do produto a ser adicionado.
+  - quantidade: Quantidade a ser adicionada.
+- Saída: Código de status (sucesso ou erro).
+
+updateQuantidade(id_produto, quantidade)
+- Descrição: Atualiza a quantidade disponível de um produto no estoque. Deve verificar se a quantidade é válida (não negativa).
+- Entradas:
+  - id_produto: ID do produto.
+  - quantidade: Nova quantidade a ser definida.
+- Saída: Código de status (sucesso ou erro).
+
+3. Consulta
+getQuantidadeProduto(id_produto)
+- Descrição: Retorna a quantidade disponível no estoque de um produto específico.
+- Entradas:
+  - id_produto: ID do produto.
+- Saída: Quantidade disponível ou código de erro se o produto não estiver no estoque.
+
+showEstoque()
+- Descrição: Exibe todos os produtos no estoque e suas quantidades.
+- Entradas: Nenhuma.
+- Saída: Lista ou tabela com informações do estoque.
+
+getProdutoEstoque(id_produto)
+- Descrição: Retorna todas as informações de um produto específico no estoque (ex.: quantidade mínima e atual).
+- Entradas:
+  - id_produto: ID do produto.
+- Saída: Dados do produto no estoque ou erro se não encontrado.
+
+4. Remoção
+removeProdutoEstoque(id_produto)
+- Descrição: Remove um produto do estoque, mas somente se sua quantidade atual for 0.
+- Entradas:
+  - id_produto: ID do produto.
+- Saída: Código de status (sucesso ou erro).
+
+5. Integração com Vendas
+atualizaEstoqueVenda(id_produto, quantidade_vendida)
+- Descrição: Reduz a quantidade de um produto no estoque após uma venda. Deve verificar se há estoque suficiente antes de realizar a operação.
+- Entradas:
+  - id_produto: ID do produto vendido.
+  - quantidade_vendida: Quantidade que foi vendida.
+- Saída: Código de status (sucesso ou erro).
+
+alertaReabastecimento(id_produto)
+- Descrição: Emite um alerta caso a quantidade de um produto no estoque esteja abaixo da quantidade mínima.
+- Entradas:
+  - id_produto: ID do produto.
+- Saída: Mensagem de alerta ou sucesso.
+
+6. Persistência de Dados
+carregarEstoque(filename)
+- Descrição: Carrega os dados do estoque de um arquivo ao iniciar o sistema.
+- Entradas:
+  - filename: Caminho do arquivo.
+- Saída: Dicionário ou lista representando o estoque.
+
+salvarEstoque(filename)
+- Descrição: Salva os dados do estoque em um arquivo antes de fechar o sistema.
+- Entradas:
+  - filename: Caminho do arquivo.
+- Saída: Código de status (sucesso ou erro).
+
+Função Extra (Testes)
+casoTesteEstoque()
+- Descrição: Realiza testes automáticos para validar as funcionalidades do módulo de estoque.
+- Entradas: Nenhuma.
+- Saída: Relatório de testes com resultados (sucesso ou erro para cada caso).
+
+Estrutura do Estoque
+Sugestão de representação:
+estoque = [
+    {"id_produto": 1, "quantidade": 10, "quantidade_minima": 5},
+    {"id_produto": 2, "quantidade": 0, "quantidade_minima": 2},
+]

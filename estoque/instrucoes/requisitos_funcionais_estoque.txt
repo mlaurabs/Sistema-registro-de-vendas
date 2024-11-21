@@ -1,0 +1,27 @@
+
+Requisitos Funcionais - Módulo de Estoque
+
+1. Inicializar o estoque automaticamente ao iniciar o sistema, com base nos produtos cadastrados.
+
+2. Adicionar produtos ao estoque:
+   - Deve ser possível adicionar um produto ao estoque somente se ele já estiver cadastrado no módulo de produtos.
+   - A quantidade inicial pode ser informada no momento da inserção.
+
+3. Atualizar a quantidade de produtos:
+   - Permitir atualizar a quantidade disponível de um produto no estoque.
+   - A quantidade não pode ser negativa.
+
+4. Remoção de produtos do estoque:
+   - Produtos podem ser removidos do estoque apenas se sua quantidade for 0.
+
+5. Consulta de estoque:
+   - Deve ser possível consultar a quantidade disponível de um produto com base no ID.
+   - Consultar todas as informações de um produto no estoque.
+
+6. Integração com o módulo de vendas:
+   - Reduzir a quantidade disponível no estoque após a realização de uma venda.
+   - Gerar alertas caso a quantidade no estoque esteja abaixo da quantidade mínima.
+
+7. Persistência de dados:
+   - Carregar os dados do estoque a partir de um arquivo ao iniciar o sistema.
+   - Salvar os dados do estoque em um arquivo antes de fechar o sistema.

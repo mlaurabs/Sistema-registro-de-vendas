@@ -1,0 +1,16 @@
+
+Requisitos Gerais - Módulo de Estoque
+
+1. Todos os IDs de produtos são gerados automaticamente e devem ser únicos.
+
+2. A quantidade mínima no estoque de cada produto deve ser informada no momento de sua criação e pode ser alterada posteriormente.
+
+3. Nenhuma operação no estoque pode ser realizada para produtos que não existam no módulo de produtos.
+
+4. Ao excluir um produto do módulo de produtos, ele também deve ser automaticamente removido do estoque.
+
+5. O sistema deve gerar alertas sempre que um produto atingir sua quantidade mínima no estoque.
+
+6. O sistema deve tratar todas as operações com mensagens claras de erro ou sucesso, com base nos códigos de status predefinidos.
+
+7. Os dados do estoque devem ser mantidos consistentes entre as operações de consulta, inserção, atualização e remoção.
