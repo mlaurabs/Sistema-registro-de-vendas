@@ -1,3 +1,5 @@
+__all__ = ["STATUS_CODE", "getStatusName"]
+
 STATUS_CODE = {
     "SUCESSO": 0, # Sucesso
     "NOME_TIPO_ERRADO": 1, # Um nome deve ser do tipo string
