@@ -1,0 +1,1 @@
+# EX: from src.entidades import adicionar_produto, listar_produtos
