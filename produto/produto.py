@@ -1,6 +1,6 @@
 from status_code import STATUS_CODE
 
-__all__ = ["createProduto", "showProduto", "updateProduto", "getProduto", "showProdutos", "showProdutosByMarca", "showProdutosByCategoria", "showProdutosByFaixaPreco", "showProdutosByNome", "deleteProduto"]
+__all__ = ["createProduto", "showProdutoById", "showProdutoByNome", "updateProduto", "getProdutoById", "getProdutoByNome", "showProdutos", "showProdutosByMarca", "showProdutosByCategoria", "showProdutosByFaixaPreco", "showProdutosByNome", "deleteProduto"]
 
 cont_id = 1 # Guarda o próximo ID a ser cadastrado
 lista_produtos = [] # Lista com todos os produtos
@@ -65,14 +65,14 @@ def validaCreate(funcao):
         if len(categoria) > 50:
             return STATUS_CODE["CATEGORIA_FORMATO"] # Categoria não pode ter mais que 50 caracteres
 
-        if preco_promocional > preco:
-            return STATUS_CODE["PRECO_PROMOCIONAL_MAIOR_PRECO"] # Preço promocional não pode ser maior que o preço do produto
-
         if contaCasasDecimais(preco, 2):
             return STATUS_CODE["PRECO_FORMATO"] # Preço não pode ter mais que duas casas decimais
 
         if contaCasasDecimais(preco_promocional, 2):
             return STATUS_CODE["PRECO_PROMOCIONAL_FORMATO"] # Preço promocional não pode ter mais que duas casas decimais
+
+        if preco_promocional > preco:
+            return STATUS_CODE["PRECO_PROMOCIONAL_MAIOR_PRECO"] # Preço promocional não pode ser maior que o preço do produto
 
         for produto in lista_produtos:
             if nome == produto["nome"] and marca == produto["marca"] and categoria == produto["categoria"]:
@@ -106,13 +106,25 @@ def createProduto(nome, marca, categoria, preco, preco_promocional, qtd_minima):
 
     return STATUS_CODE["SUCESSO"] # Sucesso
 
-# Imprime um produto
-def showProduto(id):
+# Imprime um produto pelo id
+def showProdutoById(id):
 
     global lista_produtos
 
     for produto in lista_produtos:
         if id == produto["id"]:
+            for atributo,valor in produto.__dict__.items():
+                print(f"{atributo}: {valor}")
+            return STATUS_CODE["SUCESSO"] # Sucesso
+    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
+
+# Imprime um produto pelo nome
+def showProdutoByNome(nome):
+
+    global lista_produtos
+
+    for produto in lista_produtos:
+        if nome == produto["nome"]:
             for atributo,valor in produto.__dict__.items():
                 print(f"{atributo}: {valor}")
             return STATUS_CODE["SUCESSO"] # Sucesso
@@ -138,15 +150,25 @@ def updateProduto(id, nome, marca, categoria, preco, preco_promocional):
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
 
-# Retorna um produto
-def getProduto(id, retorno):
+# Retorna um produto pelo id
+def getProdutoById(id, retorno):
 
     global lista_produtos
 
     for produto in lista_produtos:
         if id == produto["id"]:
-            for atributo, valor in produto.__dict__.items():
-                retorno.append([atributo,valor])
+            retorno.append(produto)
+            return STATUS_CODE["SUCESSO"] # Sucesso
+    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # produto não encontrado
+
+# Retorna um produto pelo nome
+def getProdutoByNome(nome, retorno):
+
+    global lista_produtos
+
+    for produto in lista_produtos:
+        if nome == produto["nome"]:
+            retorno.append(produto)
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # produto não encontrado
 
@@ -206,7 +228,7 @@ def showProdutosByFaixaPreco(preco_min, preco_max):
     flag = False
 
     for produto in lista_produtos:
-        if produto["preco"] >= preco_min and produto["preco"] <= preco_max:
+        if produto["preco_promocional"] >= preco_min and produto["preco_promocional"] <= preco_max:
             flag = True
             for atributo, valor in produto.__dict__.items():
                 print(f"{atributo}: {valor}")
@@ -242,4 +264,5 @@ def deleteProduto(id):
         if id == produto["id"]:
             lista_produtos.remove(produto)
             return STATUS_CODE["SUCESSO"] # Sucesso
+        
     return STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"] # Produto não encontrado
