@@ -1,1 +1,1 @@
-# EX: from src.entidades import adicionar_produto, listar_produtos
+# ex: from src.entidades.produto import testar_adicionar_produto
