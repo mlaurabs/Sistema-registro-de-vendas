@@ -103,23 +103,66 @@ def showProdutoByNome(nome):
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
 
+# Valida os valores passados para a função update
+def validaUpdate(funcao):
+
+    def valida(id, nome, marca, categoria, preco, preco_promocional):
+
+        global lista_produtos
+            
+        if nome != "" and len(nome) > 50:
+            return STATUS_CODE["NOME_FORMATO"] # Nome não pode ter mais que 50 caracteres
+
+        if marca != "" and len(marca) > 50:
+            return STATUS_CODE["MARCA_FORMATO"] # Marca não pode ter mais que 50 caracteres
+
+        if categoria != "" and len(categoria) > 50:
+            return STATUS_CODE["CATEGORIA_FORMATO"] # Categoria não pode ter mais que 50 caracteres
+
+        if preco != -1 and contaCasasDecimais(preco, 2):
+            return STATUS_CODE["PRECO_FORMATO"] # Preço não pode ter mais que duas casas decimais
+
+        if preco_promocional != -1 and contaCasasDecimais(preco_promocional, 2):
+            return STATUS_CODE["PRECO_PROMOCIONAL_FORMATO"] # Preço promocional não pode ter mais que duas casas decimais
+        
+        return funcao(id, nome, marca, categoria, preco, preco_promocional)
+    
+    return valida
+
 # Atualiza um produto
+@validaUpdate
 def updateProduto(id, nome, marca, categoria, preco, preco_promocional):
 
     global lista_produtos
 
-    parametros = {"nome": nome, "marca": marca, "categoria": categoria, "preco": preco, "preco_promocional": preco_promocional}
-
     for produto in lista_produtos:
         if id == produto["id"]:
-            for parametro_atributo, parametro_valor in parametros.items():
-                if parametro_valor != "":
-                    if produto[parametro_atributo] != parametro_valor:
-                        produto[parametro_atributo] = parametro_valor
-                        if parametro_atributo == "preco":
-                            produto["preco_promocional"] = parametro_valor
-                # Retornar que não pode ser vazio
+
+            if nome != "":
+                produto["nome"] = nome
+
+            if marca != "":
+                produto["marca"] = marca
+
+            if categoria != "":
+                produto["categoria"] = marca
+
+            if preco != -1:
+                if preco < produto["preco_promocional"] and preco_promocional == -1:
+                    return STATUS_CODE["PRECO_PROMOCIONAL_MAIOR_PRECO"]
+                elif preco_promocional != -1 and preco < preco_promocional:
+                    return STATUS_CODE["PRECO_PROMOCIONAL_MAIOR_PRECO"]
+                else:
+                    produto["preco"] = preco
+
+            if preco_promocional != -1:
+                if preco_promocional > produto["preco"]:
+                    return STATUS_CODE["PRECO_PROMOCIONAL_MAIOR_PRECO"]
+                else:
+                    produto["preco_promocional"] = preco_promocional      
+
             return STATUS_CODE["SUCESSO"] # Sucesso
+        
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
 
 # Retorna um produto pelo id
