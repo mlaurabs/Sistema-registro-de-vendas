@@ -5,14 +5,6 @@ __all__ = ["createProduto", "showProdutoById", "showProdutoByNome", "updateProdu
 cont_id = 1 # Guarda o próximo ID a ser cadastrado
 lista_produtos = [] # Lista com todos os produtos
 
-# Troca None por "None"
-def atualizaNone(nome, marca, categoria):
-    parametros = {"nome": nome, "marca": marca, "categoria": categoria}
-    for atributo, valor in parametros.items():
-        if valor == None:
-            parametros[atributo] = "None"
-    return True # Sucesso
-
 # Conta se um valor tem a quantidade de casas decimais desejadas
 def contaCasasDecimais(valor, casas_desejadas):
     str_valor = str(valor)
@@ -32,29 +24,10 @@ def validaCreate(funcao):
         parametros = {"nome": nome, "marca": marca, "categoria": categoria, "preco": preco, "qtd_minima": qtd_minima}
 
         for atributo, valor in parametros.items():
-            if valor == None:
+            if valor == "" or valor == -1:
                 atributo = atributo.upper()
-                erro = atributo + "_NONE"
+                erro = atributo + "_VAZIO"
                 return STATUS_CODE[erro] # O valor não pode ser nulo
-
-        if not isinstance(nome, str):
-            return STATUS_CODE["NOME_TIPO_ERRADO"] # Um nome deve ser do tipo string
-
-        if not isinstance(marca, str):
-            return STATUS_CODE["MARCA_TIPO_ERRADO"] # Uma marca deve ser do tipo string
-
-        if not isinstance(categoria, str):
-            return STATUS_CODE["CATEGORIA_TIPO_ERRADO"] # Uma categoria deve ser do tipo string
-
-        if not isinstance(preco, (int, float)):
-            return STATUS_CODE["PRECO_TIPO_ERRADO"] # Um preço deve ser dos tipos int ou float
-
-        if preco_promocional != None:
-            if not isinstance(preco_promocional, (int, float)):
-                return STATUS_CODE["PRECO_PROMOCIONAL_TIPO_ERRADO"] # Um preço promocional deve ser dos tipos int ou float
-
-        if not isinstance(qtd_minima, int):
-            return STATUS_CODE["QTD_MINIMA_TIPO_ERRADO"] # Uma quantidade mínima deve ser do tipo int
 
         if len(nome) > 50:
             return STATUS_CODE["NOME_FORMATO"] # Nome não pode ter mais que 50 caracteres
@@ -88,7 +61,7 @@ def createProduto(nome, marca, categoria, preco, preco_promocional, qtd_minima):
 
     global lista_produtos, cont_id
 
-    if preco_promocional == None:
+    if preco_promocional == -1:
         preco_promocional = preco
 
     produto ={
@@ -113,7 +86,7 @@ def showProdutoById(id):
 
     for produto in lista_produtos:
         if id == produto["id"]:
-            for atributo,valor in produto.__dict__.items():
+            for atributo,valor in produto.items():
                 print(f"{atributo}: {valor}")
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
@@ -125,15 +98,13 @@ def showProdutoByNome(nome):
 
     for produto in lista_produtos:
         if nome == produto["nome"]:
-            for atributo,valor in produto.__dict__.items():
+            for atributo,valor in produto.items():
                 print(f"{atributo}: {valor}")
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
 
 # Atualiza um produto
 def updateProduto(id, nome, marca, categoria, preco, preco_promocional):
-
-    atualizaNone(nome, marca, categoria)
 
     global lista_produtos
 
@@ -142,11 +113,12 @@ def updateProduto(id, nome, marca, categoria, preco, preco_promocional):
     for produto in lista_produtos:
         if id == produto["id"]:
             for parametro_atributo, parametro_valor in parametros.items():
-                if parametro_valor is not None and parametro_valor != "None":
+                if parametro_valor != "":
                     if produto[parametro_atributo] != parametro_valor:
                         produto[parametro_atributo] = parametro_valor
                         if parametro_atributo == "preco":
                             produto["preco_promocional"] = parametro_valor
+                # Retornar que não pode ser vazio
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
 
@@ -157,7 +129,7 @@ def getProdutoById(id, retorno):
 
     for produto in lista_produtos:
         if id == produto["id"]:
-            retorno.append(produto)
+            retorno.update(produto)
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # produto não encontrado
 
@@ -168,7 +140,7 @@ def getProdutoByNome(nome, retorno):
 
     for produto in lista_produtos:
         if nome == produto["nome"]:
-            retorno.append(produto)
+            retorno.update(produto)
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # produto não encontrado
 
@@ -181,7 +153,7 @@ def showProdutos():
         return STATUS_CODE["NENHUM_PRODUTO_CADASTRADO"] # Não há produtos cadastrados
 
     for produto in lista_produtos:
-        for atributo, valor in produto.__dict__.items():
+        for atributo, valor in produto.items():
             print(f"{atributo}: {valor}")
         print("\n", end="")
 
@@ -196,7 +168,7 @@ def showProdutosByMarca(marca):
     for produto in lista_produtos:
         if marca == produto["marca"]:
             flag = True
-            for atributo, valor in produto.__dict__.items():
+            for atributo, valor in produto.items():
                 print(f"{atributo}: {valor}")
             print("\n", end="")
     if flag:
@@ -213,7 +185,7 @@ def showProdutosByCategoria(categoria):
     for produto in lista_produtos:
         if categoria == produto["categoria"]:
             flag = True
-            for atributo, valor in produto.__dict__.items():
+            for atributo, valor in produto.items():
                 print(f"{atributo}: {valor}")
             print("\n", end="")
     if flag:
@@ -230,7 +202,7 @@ def showProdutosByFaixaPreco(preco_min, preco_max):
     for produto in lista_produtos:
         if produto["preco_promocional"] >= preco_min and produto["preco_promocional"] <= preco_max:
             flag = True
-            for atributo, valor in produto.__dict__.items():
+            for atributo, valor in produto.items():
                 print(f"{atributo}: {valor}")
             print("\n", end="")
     if flag:
@@ -247,7 +219,7 @@ def showProdutosByNome(nome):
     for produto in lista_produtos:
         if nome in produto["nome"]:
             flag = True
-            for atributo, valor in produto.__dict__.items():
+            for atributo, valor in produto.items():
                 print(f"{atributo}: {valor}")
             print("\n", end="")
     if flag:
@@ -262,6 +234,9 @@ def deleteProduto(id):
 
     for produto in lista_produtos:
         if id == produto["id"]:
+            # Conferir se não está cadastrado em nenhuma venda
+            # Conferir se não há produtos em estoque
+            # Retornar erro nesses casos
             lista_produtos.remove(produto)
             return STATUS_CODE["SUCESSO"] # Sucesso
         

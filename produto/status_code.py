@@ -2,17 +2,11 @@ __all__ = ["STATUS_CODE", "getStatusName"]
 
 STATUS_CODE = {
     "SUCESSO": 0, # Sucesso
-    "NOME_TIPO_ERRADO": 1, # Um nome deve ser do tipo string
-    "MARCA_TIPO_ERRADO": 2, # Uma marca deve ser do tipo string
-    "CATEGORIA_TIPO_ERRADO": 3, # Uma categoria deve ser do tipo string
-    "PRECO_TIPO_ERRADO": 4, # Um preço deve ser dos tipos int ou float
-    "PRECO_PROMOCIONAL_TIPO_ERRADO": 5, # Um preço promocional deve ser dos tipos int ou float
-    "QTD_MINIMA_TIPO_ERRADO": 6, # Uma quantidade mínima deve ser do tipo int
-    "NOME_NONE": 7, # Não é possível criar um Produto sem nome
-    "MARCA_NONE": 8, # Não é possível criar um Produto sem marca
-    "CATEGORIA_NONE": 9, # Não é possível criar um Produto sem categoria
-    "PRECO_NONE": 10, # Não é possível criar um Produto sem preço
-    "QTD_MINIMA_NONE": 11, # Não é possível criar um Produto sem quantidade mínima
+    "NOME_VAZIO": 7, # Não é possível criar um Produto sem nome
+    "MARCA_VAZIO": 8, # Não é possível criar um Produto sem marca
+    "CATEGORIA_VAZIO": 9, # Não é possível criar um Produto sem categoria
+    "PRECO_VAZIO": 10, # Não é possível criar um Produto sem preço
+    "QTD_MINIMA_VAZIO": 11, # Não é possível criar um Produto sem quantidade mínima
     "NOME_FORMATO": 12, # Nome não pode ter mais que 50 caracteres
     "MARCA_FORMATO": 13, # Marca não pode ter mais que 50 caracteres
     "CATEGORIA_FORMATO": 14, # Categoria não pode ter mais que 50 caracteres
