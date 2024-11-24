@@ -246,8 +246,6 @@ class TestGetProdutoByNome(unittest.TestCase):
         retorno_obtido = getProdutoByNome("Coca-Cola Zero 500ml", temp)
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-# getProdutos
-
 # showProdutos
 class TestShowProdutos(unittest.TestCase):
 
@@ -331,15 +329,21 @@ class TestShowProdutosByNome(unittest.TestCase):
 # deleteProduto
 class TestDeleteProduto(unittest.TestCase):
 
-    def test_01_delete_produto_ok_removido(self):
+    def test_01_delete_produto_ok_retorno(self):
         print("Caso de teste - Produto excluído com sucesso")
         retorno_esperado = STATUS_CODE["SUCESSO"]
         retorno_obtido = deleteProduto(1)
         self.assertEqual(retorno_esperado, retorno_obtido)
 
     def test_02_delete_produto_ok_removido(self):
-        print("Caso de teste - Nenhum produto encontrado")
-        retorno_esperado = STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"]
+        print("Caso de teste - Veriicação de remoção do produto")
+        retorno_esperado = STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]
+        retorno_obtido = showProdutoById(1)
+        self.assertEqual(retorno_esperado, retorno_obtido)
+
+    def test_03_delete_produto_nok_nenhum_produto_encontrado(self):
+        print("Caso de teste - Produto não encontrado")
+        retorno_esperado = STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]
         retorno_obtido = deleteProduto(2)
         self.assertEqual(retorno_esperado, retorno_obtido)
 

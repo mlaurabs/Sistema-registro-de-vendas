@@ -283,4 +283,4 @@ def deleteProduto(id):
             lista_produtos.remove(produto)
             return STATUS_CODE["SUCESSO"] # Sucesso
         
-    return STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"] # Produto não encontrado
+    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
