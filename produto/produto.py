@@ -86,8 +86,10 @@ def showProdutoById(id):
 
     for produto in lista_produtos:
         if id == produto["id"]:
+            print("\n", end="")
             for atributo,valor in produto.items():
                 print(f"{atributo}: {valor}")
+            print("\n")
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
 
@@ -98,8 +100,10 @@ def showProdutoByNome(nome):
 
     for produto in lista_produtos:
         if nome == produto["nome"]:
+            print("\n", end="")
             for atributo,valor in produto.items():
                 print(f"{atributo}: {valor}")
+            print("\n")
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
 
@@ -196,6 +200,7 @@ def showProdutos():
         return STATUS_CODE["NENHUM_PRODUTO_CADASTRADO"] # Não há produtos cadastrados
 
     for produto in lista_produtos:
+        print("\n", end="")
         for atributo, valor in produto.items():
             print(f"{atributo}: {valor}")
         print("\n", end="")
@@ -211,6 +216,7 @@ def showProdutosByMarca(marca):
     for produto in lista_produtos:
         if marca == produto["marca"]:
             flag = True
+            print("\n", end="")
             for atributo, valor in produto.items():
                 print(f"{atributo}: {valor}")
             print("\n", end="")
@@ -228,6 +234,7 @@ def showProdutosByCategoria(categoria):
     for produto in lista_produtos:
         if categoria == produto["categoria"]:
             flag = True
+            print("\n", end="")
             for atributo, valor in produto.items():
                 print(f"{atributo}: {valor}")
             print("\n", end="")
@@ -245,6 +252,7 @@ def showProdutosByFaixaPreco(preco_min, preco_max):
     for produto in lista_produtos:
         if produto["preco_promocional"] >= preco_min and produto["preco_promocional"] <= preco_max:
             flag = True
+            print("\n", end="")
             for atributo, valor in produto.items():
                 print(f"{atributo}: {valor}")
             print("\n", end="")
@@ -260,8 +268,9 @@ def showProdutosByNome(nome):
     flag = False
     
     for produto in lista_produtos:
-        if nome in produto["nome"]:
+        if nome.upper() in produto["nome"].upper():
             flag = True
+            print("\n", end="")
             for atributo, valor in produto.items():
                 print(f"{atributo}: {valor}")
             print("\n", end="")
