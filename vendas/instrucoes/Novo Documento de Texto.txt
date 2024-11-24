@@ -1,0 +1,64 @@
+createVenda(cpf do cliente, data, hora):
+Venda cadastrada com sucesso
+Venda já existente
+Cliente não encontrado
+Data não está no formato especificado
+Hora não está no formato especificado
+
+
+concludeVenda (id da venda):
+Venda concluída com sucesso
+Venda não encontrada
+A venda já foi concluída
+A venda foi cancelada
+
+addProduto(id da venda, id do produto, quantidade do produto)
+Produto adicionado à venda com sucesso
+Venda não encontrada
+Produto não encontrado no estoque
+Não há unidades suficientes do produto em estoque
+
+removeProduto(id da venda, id do produto, quantidade do produto)
+Produto removido com sucesso
+Venda não encontrada
+Produto não encontrado no estoque
+Produto não incluído na venda
+
+showVenda (id da venda)
+Venda exibida com sucesso
+Venda não encontrada
+
+showVendas ( )
+Vendas exibidas com sucesso
+Nenhuma venda encontrada
+
+showVendasCliente (cpf)
+Vendas exibidas com sucesso
+Nenhuma venda encontrada
+
+showVendasData (data)
+Venda exibida com sucesso
+Nenhuma venda encontrada
+
+updateVenda (id da venda, cpf do cliente, data, hora)
+Venda alterada com sucesso
+Venda não encontrada
+Cliente não encontrado
+CPF não está no formato especificado
+Data não está no formato especificado
+Hora não está no formato especificado
+
+checkProdutoVenda (id do produto)
+Produto encontrado
+Produto não encontrado
+
+checkClienteVenda (cpf do cliente)
+Cliente encontrado
+Cliente não encontrado
+
+
+
+deleteVenda(id da venda)
+Venda removida com sucesso
+Venda não encontrada
+Erro: a venda já foi efetuada
