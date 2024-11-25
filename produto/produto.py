@@ -1,6 +1,7 @@
 from status_code import STATUS_CODE
+import json
 
-__all__ = ["createProduto", "showProdutoById", "showProdutoByNome", "updateProduto", "getProdutoById", "getProdutoByNome", "showProdutos", "showProdutosByMarca", "showProdutosByCategoria", "showProdutosByFaixaPreco", "showProdutosByNome", "deleteProduto"]
+__all__ = ["createProduto", "showProdutoById", "showProdutoByNome", "updateProduto", "getProdutoById", "getProdutoByNome", "showProdutos", "showProdutosByMarca", "showProdutosByCategoria", "showProdutosByFaixaPreco", "showProdutosByNome", "deleteProduto", "geraRelatorioProduto", "leRelatorioProduto"]
 
 cont_id = 1 # Guarda o próximo ID a ser cadastrado
 lista_produtos = [] # Lista com todos os produtos
@@ -293,3 +294,75 @@ def deleteProduto(id):
             return STATUS_CODE["SUCESSO"] # Sucesso
         
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
+
+# Gera um relatório com todos os produtos
+def geraRelatorioProduto():
+
+    global lista_produtos
+
+    arquivo = open("relatorio_produto_utf32.dat", "wb")
+
+    bom = 0xFFFE0000
+    bom_bytes = bom.to_bytes(4, byteorder="little")
+
+    arquivo.write(bom_bytes)
+
+    for indice, produto in enumerate(lista_produtos):
+        string = ""
+
+        for valor in produto.values():
+            string += str(valor) + ','
+
+        if indice != len(lista_produtos)-1:
+            string = string[:-1] + '-'
+        else:
+            string = string[:-1]
+
+        arquivo.write(string.encode('utf-32-le'))
+
+    arquivo.close()
+
+    return STATUS_CODE["SUCESSO"]
+
+# Lê um relatório com todos os produtos e os cadastra no sistema
+def leRelatorioProduto():
+
+    global lista_produtos, cont_id
+
+    produto_template = {"id": None, "nome": None, "marca": None, "categoria": None, "preco": None, "preco_promocional": None, "qtd_minima": None}
+
+    arquivo = open("relatorio_produto_utf32.dat", "rb")
+
+    arquivo.read(4)
+    conteudo = arquivo.read()
+    conteudo = conteudo.decode('utf-32-le')
+
+    conteudo = conteudo.split('-')
+
+    for linha in conteudo:
+        if linha:
+            
+            linha = linha.strip()
+            linha = linha.split(',')
+            i = 0
+
+            produto = produto_template.copy()
+
+            for atributo in produto.keys():
+
+                if atributo == "id":
+                    produto[atributo] = int(linha[i])
+
+                elif atributo in ["preco", "preco_promocional", "qtd_minima"]:
+                    produto[atributo] = float(linha[i])
+
+                else:
+                    produto[atributo] = linha[i]
+
+                i += 1
+
+            lista_produtos.append(produto)
+            cont_id = int(produto["id"]) + 1
+
+    arquivo.close()
+    return STATUS_CODE["SUCESSO"]

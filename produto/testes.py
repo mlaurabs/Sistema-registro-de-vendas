@@ -347,6 +347,22 @@ class TestDeleteProduto(unittest.TestCase):
         retorno_obtido = deleteProduto(2)
         self.assertEqual(retorno_esperado, retorno_obtido)
 
+# geraRelatorioProduto e leRelatorioProduto
+class TestRelatorioProduto(unittest.TestCase):
+    
+    def test_01_gera_relatorio_produto(self):
+        print("Caso de teste - Relatório de produtos gerado com sucesso")
+        retorno_esperado = STATUS_CODE["SUCESSO"]
+        retorno_obtido = geraRelatorioProduto()
+        self.assertEqual(retorno_esperado, retorno_obtido)
+
+    def test_02_le_relatorio_produto(self):
+        print("Caso de teste - Leitura de relatório de produto e cadastro no sistema")
+        retorno_esperado = STATUS_CODE["SUCESSO"]
+        retorno_obtido = leRelatorioProduto()
+        self.assertEqual(retorno_esperado, retorno_obtido)
+
+
 # Define a ordem de testes das classes
 def suite():
     suite = unittest.TestSuite()
@@ -365,6 +381,7 @@ def suite():
     suite.addTest(unittest.makeSuite(TestShowProdutosByNome))
     suite.addTest(unittest.makeSuite(TestUpdateProduto))
     suite.addTest(unittest.makeSuite(TestDeleteProduto))
+    suite.addTest(unittest.makeSuite(TestRelatorioProduto))
 
     return suite
 

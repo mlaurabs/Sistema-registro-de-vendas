@@ -1,6 +1,8 @@
 from produto import *
 from status_code import STATUS_CODE, getStatusName
 
+leRelatorioProduto()
+
 def confere_int(var):
     try:
         return int(var)
@@ -27,7 +29,6 @@ while(1):
 
     # Encerrar o programa
     if (modulo == "-1"):
-        print("\nPrograma encerrado.")
         break
 
     # Cliente
@@ -209,8 +210,12 @@ while(1):
     # Vendas
     elif (modulo == "4"):
         while(1):
-            break;
+            break
 
     # Ação inválida
     else:
         print("\nAção inválida")
+
+geraRelatorioProduto()
+
+print("Programa encerrado")
