@@ -347,6 +347,20 @@ class TestDeleteProduto(unittest.TestCase):
         retorno_obtido = deleteProduto(2)
         self.assertEqual(retorno_esperado, retorno_obtido)
 
+    '''
+    def test_04_delete_produto_nok_produto_nao_zerado_no_estoque(self):
+        print("Caso de teste - Produto não zerado no estoque")
+        retorno_esperado = STATUS_CODE["PRODUTO_NAO_ZERADO_NO_ESTOQUE"]
+        retorno_obtido = deleteProduto(1)
+        self.assertEqual(retorno_esperado, retorno_obtido)
+
+    def test_05_delete_produto_nok_produto_cadastrado_em_venda(self):
+        print("Caso de teste - Produto cadastrado em venda")
+        retorno_esperado = STATUS_CODE["PRODUTO_CADASTRADO_EM_VENDA"]
+        retorno_obtido = deleteProduto(1)
+        self.assertEqual(retorno_esperado, retorno_obtido)
+    '''
+
 # geraRelatorioProduto e leRelatorioProduto
 class TestRelatorioProduto(unittest.TestCase):
     

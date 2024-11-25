@@ -1,5 +1,15 @@
 from src.status_code import STATUS_CODE
 from pathlib import Path
+import sys
+
+caminho_relativo = Path("src/entidades/produto/produto.py")
+caminho_absoluto = caminho_relativo.resolve()
+
+sys.path.append(caminho_absoluto.parent)
+
+# Agora você pode importar o módulo estoque
+from entidades.estoque.estoque import createProdutoNoEstoque, getProdutoEstoque
+from entidades.venda.venda import checkProdutoVenda
 
 __all__ = ["createProduto", "showProdutoById", "showProdutoByNome", "updateProduto", "getProdutoById", "getProdutoByNome", "showProdutos", "showProdutosByMarca", "showProdutosByCategoria", "showProdutosByFaixaPreco", "showProdutosByNome", "deleteProduto", "geraRelatorioProduto", "leRelatorioProduto"]
 
@@ -77,6 +87,8 @@ def createProduto(nome, marca, categoria, preco, preco_promocional, qtd_minima):
 
     lista_produtos.append(produto)
     cont_id += 1
+
+    # createProdutoNoEstoque(produto["id"])
 
     return STATUS_CODE["SUCESSO"] # Sucesso
 
@@ -287,9 +299,23 @@ def deleteProduto(id):
 
     for produto in lista_produtos:
         if id == produto["id"]:
-            # Conferir se não está cadastrado em nenhuma venda
-            # Conferir se não há produtos em estoque
-            # Retornar erro nesses casos
+            
+            '''
+            estoque = dict()
+            flag = getProdutoEstoque(produto["id"], estoque)
+
+            if flag != STATUS_CODE["SUCESSO"]:
+                return flag
+            
+            if estoque["quantidade"] != 0:
+                return STATUS_CODE["PRODUTO_NAO_ZERADO_NO_ESTOQUE"]
+            
+            flag = checkProdutoVenda(produto["id"])
+
+            if flag == STATUS_CODE["PRODUTO_ENCONTRADO"]:
+                return STATUS_CODE["PRODUTO_CADASTRADO_EM_VENDA"]
+            '''
+
             lista_produtos.remove(produto)
             return STATUS_CODE["SUCESSO"] # Sucesso
         

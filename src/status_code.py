@@ -17,6 +17,8 @@ STATUS_CODE = {
     "PRODUTO_NAO_ENCONTRADO": 19, # Produto não encontrado
     "NENHUM_PRODUTO_CADASTRADO": 20, # Não há produtos cadastrados
     "NENHUM_PRODUTO_ENCONTRADO": 21, # Nenhum produto encontrado
+    "PRODUTO_NAO_ZERADO_NO_ESTOQUE": 22, # O produto não pode ser removido se ainda houverem unidades em estoque
+    "PRODUTO_CADASTRADO_EM_VENDA": 23 # O produto não pode ser removido se estiver cadastrado em alguma venda
 }
 
 def getStatusName(retorno):
