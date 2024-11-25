@@ -1,4 +1,3 @@
-from .produto import # completar com os métodos de acesso disponíveis
+from .produto import *
 
-# Definir as funções de acesso públicas do módulo `produto`
-__all__ = ["completar com os métodos de acesso disponíveis"]
+__all__ = ["produto"]
