@@ -89,3 +89,18 @@ def getProdutoEstoque(id_produto, retorno):
             return STATUS_CODE["SUCESSO"]  # Produto encontrado
 
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]  # Produto não encontrado
+
+def getQuantidadeEstoque(id_produto):
+    """
+    Retorna a quantidade atual de um produto no estoque.
+    - Se o produto for encontrado, retorna a quantidade.
+    - Caso contrário, retorna um código de erro indicando que o produto não foi encontrado.
+    """
+    global estoque
+
+    # Busca o produto no estoque
+    for item in estoque:
+        if item["id_produto"] == id_produto:
+            return item["quantidade"]  # Retorna a quantidade encontrada
+
+    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]  # Produto não encontrado
