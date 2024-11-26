@@ -37,21 +37,25 @@ def createProdutoNoEstoque(id_produto):
     })
     return STATUS_CODE["SUCESSO"]  # Retorna sucesso
 
-def addProdutoEstoque(id_produto, quantidade):
+def atualizaQtdEstoque(id_produto, quantidade):
     """
-    Atualiza a quantidade de um produto no estoque.
-    - Retorna erro se o produto não estiver no estoque.
-    - Retorna erro se a quantidade for negativa.
+    Atualiza o estoque de um produto.
+    - Adiciona se a quantidade for positiva.
+    - Remove se a quantidade for negativa, desde que não deixe o estoque negativo.
+    - Retorna erro se o produto não estiver no estoque ou se não houver itens suficientes.
     """
     global estoque
 
     # Verifica se o produto existe no estoque
     for item in estoque:
         if item["id_produto"] == id_produto:
-            if quantidade < 0:
-                return STATUS_CODE["QUANTIDADE_NEGATIVA"]  # Erro: Quantidade negativa
-            item["quantidade"] += quantidade
-            return STATUS_CODE["SUCESSO"]  # Sucesso
+            if quantidade < 0:  # Remoção de estoque
+                if item["quantidade"] == 0:
+                    return STATUS_CODE["ESTOQUE_INSUFICIENTE"]  # Não há itens no estoque para reduzir
+                if item["quantidade"] + quantidade < 0:  # Checa se a redução deixa o estoque negativo
+                    return STATUS_CODE["ESTOQUE_INSUFICIENTE"]
+            item["quantidade"] += quantidade  # Atualiza a quantidade
+            return STATUS_CODE["SUCESSO"]  # Operação bem-sucedida
 
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]  # Produto não encontrado
 
