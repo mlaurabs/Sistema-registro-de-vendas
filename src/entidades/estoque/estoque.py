@@ -53,7 +53,7 @@ def addProdutoEstoque(id_produto, quantidade):
             item["quantidade"] += quantidade
             return STATUS_CODE["SUCESSO"]  # Sucesso
 
-    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]  # Produto não encontrado
+    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]  # Produto não encontrado
 
 def showEstoque():
     """
@@ -84,4 +84,4 @@ def getProdutoEstoque(id_produto, retorno):
             retorno.update(item)  # Atualiza o dicionário de retorno com os detalhes do produto
             return STATUS_CODE["SUCESSO"]  # Produto encontrado
 
-    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]  # Produto não encontrado
+    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]  # Produto não encontrado

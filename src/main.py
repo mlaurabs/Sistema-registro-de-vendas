@@ -36,7 +36,14 @@ while(1):
     # Cliente
     elif (modulo == "1"):
         while(1):
-            break
+            print("\n--- --- --- --- --- --- --- --- --- ---")
+            print("-1 - Sair do módulo")
+            print("1 - Cadastrar cliente")
+            print("2 - Mostrar cliente")
+            print("3 - Atualizar cliente")
+            print("4 - Mostrar vários produtos")
+            print("5 - Remover cliente")
+            print("--- --- --- --- --- --- --- --- --- ---")
 
     # Produto
     elif (modulo == "2"):
@@ -207,12 +214,25 @@ while(1):
     # Estoque
     elif (modulo == "3"):
         while(1):
-            break
+            print("\n--- --- --- --- --- --- --- --- --- ---")
+            print("-1 - Sair do módulo")
+            print("1 - Alterar produto no estoque")
+            print("2 - Mostrar produto no estoque")
+            print("4 - Mostrar vários produtos no estoque")
+            print("--- --- --- --- --- --- --- --- --- ---")
 
     # Vendas
     elif (modulo == "4"):
         while(1):
-            break
+            print("\n--- --- --- --- --- --- --- --- --- ---")
+            print("-1 - Sair do módulo")
+            print("1 - Cadastrar venda")
+            print("2 - Mostrar venda")
+            print("3 - Atualizar venda")
+            print("4 - Mostrar várias vendas")
+            print("5 - Remover venda")
+            print("--- --- --- --- --- --- --- --- --- ---")
+
 
     # Ação inválida
     else:

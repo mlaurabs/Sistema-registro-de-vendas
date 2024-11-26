@@ -10,9 +10,9 @@ caminho_absoluto = caminho_relativo.resolve()
 
 sys.path.append(caminho_absoluto.parent)
 
-# from entidades.produto.produto import ...
+from entidades.produto.produto import getProdutoById
 # from entidades.produto.cliente import ...
-# from entidades.produto.estoque import ...
+from entidades.produto.estoque import atualizarQtdEstoque, getProdutoEstoque, getQuantidadeEstoque
 
 __all__ = [
     "createVenda", "concludeVenda", "addProduto", "removeProduto", "showVenda", "showVendas",
@@ -102,7 +102,7 @@ def concludeVenda(id_venda):
         return STATUS_CODE["VENDA_CANCELADA"]
 
     for produto_id, quantidade in venda["produtos"].items():
-        estoque.atualizarQttEstoque(produto_id, -quantidade)
+        estoque.atualizarQtdEstoque(produto_id, -quantidade)
 
     venda["status"] = "concluída"
     registrarVendasNoArquivo(vendas)
@@ -114,7 +114,7 @@ def addProduto(id_venda, id_produto, quantidade):
         return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
     if produto.getProdutoById(id_produto) == STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]:
         return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]
-    if estoque.showProdutoEstoque(id_produto) == STATUS_CODE["PRODUTO_NAO_ENCONTRADO_ESTOQUE"]:
+    if estoque.getProdutoEstoque(id_produto) == STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]:
         return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_ESTOQUE"]
     if estoque.getQuantidadeEstoque(id_produto) < quantidade:
         return STATUS_CODE["ESTOQUE_INSUFICIENTE"]
@@ -185,8 +185,8 @@ def updateVenda(id_venda, data, hora):
 def checkProdutoVenda(id_produto):
     for venda in vendas.values():
         if id_produto in venda["produtos"]:
-            return STATUS_CODE["PRODUTO_ENCONTRADO"]
-    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]
+            return STATUS_CODE["PRODUTO_ENCONTRADO_EM_VENDAS"]
+    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_EM_VENDAS"]
 
 def checkClienteVenda(cpf_cliente):
     for venda in vendas.values():
