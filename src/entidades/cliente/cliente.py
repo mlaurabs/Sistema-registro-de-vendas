@@ -8,7 +8,7 @@ caminho_absoluto = caminho_relativo.resolve()
 
 sys.path.append(caminho_absoluto.parent)
 
-__all__ = ["createCliente", "showCliente", "updateCliente", "getCliente", "showClientes", "showClientesByNome", "deleteCliente", "geraRelatorioCliente", "leRelatorioCliente"]
+__all__ = ["createCliente", "showCliente", "updateClienteByCpf", "updateClienteByNome", "getCliente", "showClientes", "showClientesByNome", "deleteCliente", "geraRelatorioCliente", "leRelatorioCliente"]
 
 lista_clientes = [] # Lista com todos os clientes
 
@@ -112,38 +112,57 @@ def validaUpdate(funcao):
 
         global lista_clientes
 
-        flag = validaCpf(cpf)
-        if flag != STATUS_CODE["SUCESSO"]:
-            return flag
+        if cpf != "":
+            flag = validaCpf(cpf)
+            if flag != STATUS_CODE["SUCESSO"]:
+                return flag
 
-        if len(nome) > 50 or not nome.isalpha():
-            return STATUS_CODE["NOME_FORMATO"] # Nome não pode ter mais que 50 caracteres e só aceita caracteres
+        if nome != "":
+            if len(nome) > 50 or not nome.isalpha():
+                return STATUS_CODE["NOME_FORMATO"] # Nome não pode ter mais que 50 caracteres e só aceita caracteres
 
-        flag = validaDataNascimento(data_nascimento)
-        if flag != STATUS_CODE["SUCESSO"]:
-            return flag
-        
-        for cliente in lista_clientes:
-            if cpf == cliente["cpf"]:
-                return STATUS_CODE["CLIENTE_EXISTENTE"] # Não podem existir produtos iguais no sistema
+        if data_nascimento != "":
+            flag = validaDataNascimento(data_nascimento)
+            if flag != STATUS_CODE["SUCESSO"]:
+                return flag
 
         return funcao(cpf, nome, data_nascimento)
 
     return valida
 
 @validaUpdate
-def updateCliente(cpf, nome, data_nascimento):
+def updateClienteByCpf(cpf, nome, data_nascimento):
 
     global lista_clientes
 
     for cliente in lista_clientes:
         if cpf == cliente["cpf"]:
 
-            if cpf != "":
-                cliente["cpf"] = cpf
-
             if nome != "":
                 cliente["nome"] = nome
+
+            if data_nascimento != "":
+                cliente["data_nascimento"] = data_nascimento
+
+            return STATUS_CODE["SUCESSO"] # Sucesso
+        
+    return STATUS_CODE["CLIENTE_NAO_ENCONTRADO"] # Cliente não encontrado
+
+@validaUpdate
+def updateClienteByNome(cpf, nome, data_nascimento):
+
+    global lista_clientes
+
+    for cliente in lista_clientes:
+        
+        if nome == cliente["nome"]:
+            if cpf != "":
+
+                for cliente_aux in lista_clientes:
+                    if cliente_aux == cpf:
+                        return STATUS_CODE["CLIENTE_EXISTENTE"]
+                    
+                cliente["cpf"] = cpf
 
             if data_nascimento != "":
                 cliente["data_nascimento"] = data_nascimento
