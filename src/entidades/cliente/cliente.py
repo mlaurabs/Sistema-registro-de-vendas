@@ -226,35 +226,16 @@ def deleteCliente(cpf):
     for cliente in lista_clientes:
         if cpf == cliente["cpf"]:
             
-            '''
-            flag = checkProdutoVenda(cliente["cpf"])
+            flag = checkClienteVenda(cliente["cpf"])
 
-            if flag == STATUS_CODE["CLIENTE_ENCONTRADO"]:
+            if flag == STATUS_CODE["VENDA_CLIENTE_ENCONTRADO"]:
                 return STATUS_CODE["CLIENTE_CADASTRADO_EM_VENDA"]
-            '''
 
             lista_clientes.remove(cliente)
             return STATUS_CODE["SUCESSO"] # Sucesso
         
     return STATUS_CODE["CLIENTE_NAO_ENCONTRADO"] # Cliente não encontrado
 
-'''
-Descrição
-- Os produtos cadastrados no sistema serão lidos e impressos num arquivo .dat
-- O arquivo .dat deve estar em UTF-32
-- Serão impresso apenas os valores dos produtos
-- Valores referentes à diferentes atributos deverão ser separados por ,
-- Diferentes produtos verão ser separados por -
-
-Retornos esperados
-- Mensagem de sucesso caso o relatório seja gerado com sucesso
-
-Assertivas de entrada
-- O arquivo .dat para armazenar os dados deve existir no local especificado
-
-Assertivas de saída 
-- Os dados dos produtos serão impressos no arquivo .dat em UTF-32
-'''
 def geraRelatorioCliente():
 
     global lista_clientes
@@ -286,23 +267,6 @@ def geraRelatorioCliente():
 
     return STATUS_CODE["SUCESSO"]
 
-'''
-Descrição
-- Os produtos presentes em um arquivo .dat serão lidos e cadastrados no sistema
-- O arquivo .dat está em UTF-32
-- Estão impresso apenas os valores dos produtos
-- Valores referentes à diferentes atributos estão ser separados por ,
-- Diferentes produtos estão ser separados por -
-
-Retornos esperados
-- Mensagem de sucesso caso o relatório seja lido e os produtos sejam cadastrados com sucesso
-
-Assertivas de entrada
-- O arquivo .dat da onde serão lidos os dados deve existir no local especificado
-
-Assertivas de saída 
-- Os dados dos produtos serão lidos arquivo .dat em UTF-32 e serão cadastrados no sistema
-'''
 def leRelatorioCliente():
 
     global lista_clientes

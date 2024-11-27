@@ -223,31 +223,31 @@ class TestShowClientesByNome(unittest.TestCase):
 # deleteCliente
 class TestDeleteCliente(unittest.TestCase):
 
-    def test_01_delete_cliente_ok_retorno(self):
+    def test_01_delete_cliente_nok_cliente_cadastrado_em_venda(self):
+        print("Caso de teste (CLIENTE) - Cliente cadastrado em venda")
+        createVenda("155.998.027-36", "20/05/2023", "12:53")
+        retorno_esperado = STATUS_CODE["CLIENTE_CADASTRADO_EM_VENDA"]
+        retorno_obtido = deleteCliente("155.998.027-36")
+        deleteVenda(1)
+        self.assertEqual(retorno_esperado, retorno_obtido)
+
+    def test_02_delete_cliente_ok_retorno(self):
         print("Caso de teste (CLIENTE - deleteCliente) - Exclusão")
         retorno_esperado = STATUS_CODE["SUCESSO"]
         retorno_obtido = deleteCliente("155.998.027-36")
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-    def test_02_delete_cliente_ok_removido(self):
+    def test_03_delete_cliente_ok_removido(self):
         print("Caso de teste (CLIENTE - deleteCliente) - Veriicação de remoção")
         retorno_esperado = STATUS_CODE["CLIENTE_NAO_ENCONTRADO"]
         retorno_obtido = showCliente("155.998.027-36")
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-    def test_03_delete_cliente_nok_nenhum_cliente_encontrado(self):
+    def test_04_delete_cliente_nok_nenhum_cliente_encontrado(self):
         print("Caso de teste (CLIENTE - deleteCliente) - Cliente não encontrado")
         retorno_esperado = STATUS_CODE["CLIENTE_NAO_ENCONTRADO"]
         retorno_obtido = deleteCliente("1")
         self.assertEqual(retorno_esperado, retorno_obtido)
-
-    '''
-    def test_04_delete_cliente_nok_cliente_cadastrado_em_venda(self):
-        print("Caso de teste (CLIENTE) - Cliente cadastrado em venda")
-        retorno_esperado = STATUS_CODE["CLIENTE_CADASTRADO_EM_VENDA"]
-        retorno_obtido = deleteCliente("155.998.027.37")
-        self.assertEqual(retorno_esperado, retorno_obtido)
-    '''
 
 # geraRelatorioCliente e leRelatorioCliente
 class TestRelatorioCliente(unittest.TestCase):
@@ -284,5 +284,6 @@ def suite():
 
 # Executa os testes
 if __name__ == "__main__":
+    from ..venda.venda import createVenda, deleteVenda
     runner = unittest.TextTestRunner()
     runner.run(suite())

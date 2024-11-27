@@ -2,15 +2,6 @@ __all__ = ["STATUS_CODE", "getStatusName"]
 
 STATUS_CODE = {
     "SUCESSO": 0, # Sucesso
-    # Formato
-    "NOME_FORMATO": 1, # Nome não pode ter mais que 50 caracteres
-    "MARCA_FORMATO": 2, # Marca não pode ter mais que 50 caracteres
-    "CATEGORIA_FORMATO": 3, # Categoria não pode ter mais que 50 caracteres
-    "PRECO_FORMATO": 4, # Preço não pode ter mais que duas casas decimais
-    "PRECO_PROMOCIONAL_FORMATO": 5, # Preço promocional não pode ter mais que duas casas decimais
-    "CPF_FORMATO_INVALIDO": 6,  # CPF não está no formato especificado
-    "DATA_FORMATO_INVALIDO": 7,  # Data não está no formato especificado
-    "HORA_FORMATO_INVALIDO": 8,  # Hora não está no formato especificado
     # Produto
     "PRODUTO_NOME_VAZIO": 9, # Não é possível criar um Produto sem nome
     "PRODUTO_MARCA_VAZIO": 10, # Não é possível criar um Produto sem marca
@@ -30,6 +21,8 @@ STATUS_CODE = {
     "PRODUTO_PRECO_FORMATO_INCORRETO": 103,
     "PRODUTO_PRECO_PROMOCIONAL_FORMATO_INCORRETO": 104,
     # Venda
+    "VENDA_CLIENTE_ENCONTRADO": 500,
+    "VENDA_CLIENTE_NAO_ENCONTRADO": 501,
     "VENDA_CADASTRADA": 21,  # Venda cadastrada com sucesso
     "VENDA_EXISTENTE": 22,  # Venda já existente
     "VENDA_CONCLUIDA": 23,  # Venda concluída com sucesso
@@ -39,12 +32,16 @@ STATUS_CODE = {
     "VENDA_REMOVIDA": 27, # A venda foi removida
     "VENDA_EXIBIDA": 28,  # Venda exibida com sucesso
     "VENDA_ALTERADA": 29,  # Venda alterada com sucesso
-    "PRODUTO_NAO_ENCONTRADO_EM_VENDAS": 30,  # Produto não encontrado 
-    "PRODUTO_ENCONTRADO_EM_VENDAS": 31,  # Produto encontrado
-    "PRODUTO_NAO_INCLUIDO_EM_VENDAS": 32,  # Produto não incluído na venda
-    "CLIENTE_NAO_ENCONTRADO_EM_VENDAS": 33,  # Cliente não encontrado
-    "CLIENTE_ENCONTRADO_EM_VENDAS": 34,  # Cliente encontrado
-    "ESTOQUE_INSUFICIENTE": 35,  # Não há unidades suficientes do produto em estoque
+    "VENDA_PRODUTO_NAO_ENCONTRADO": 30,  # Produto não encontrado 
+    "VENDA_PRODUTO_ENCONTRADO": 31,  # Produto encontrado
+    "VENDA_ESTOQUE_INSUFICIENTE": 35,  # Não há unidades suficientes do produto em estoque
+    "VENDA_CPF_FORMATO_INCORRETO": 6,  # CPF não está no formato especificado
+    "VENDA_DATA_FORMATO_INCORRETO": 7,  # Data não está no formato especificado
+    "VENDA_HORA_FORMATO_INCORRETO": 8,  # Hora não está no formato especificado
+    "VENDA_PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE": 99,
+    "VENDA_PRODUTO_ADICIONADO": 88,
+    "VENDA_PRODUTO_REMOVIDO": 89,
+    "VENDA_PRODUTO_NAO_INCLUIDO": 87,
     # Estoque
     "PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE": 36,  # Produto não encontrado no estoque  
     "QUANTIDADE_NEGATIVA": 37,  # Quantidade negativa
@@ -62,8 +59,7 @@ STATUS_CODE = {
     "CLIENTE_CPF_VAZIO": 48,
     "CLIENTE_NOME_VAZIO": 49,
     "CLIENTE_DATA_NASCIMENTO_VAZIO": 50,
-
-
+    "CLIENTE_CADASTRADO_EM_VENDA": 51
 }
 
 def getStatusName(retorno):

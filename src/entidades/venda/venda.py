@@ -45,12 +45,12 @@ def createVenda(cpf_cliente, data, hora):
     cpf_validate = validarCPF(cpf_cliente)
 
     if not cpf_validate:
-        return STATUS_CODE["CPF_FORMATO_INVALIDO"]
+        return STATUS_CODE["VENDA_CPF_FORMATO_INCORRETO"]
 
     if not data_formatada:
-        return STATUS_CODE["DATA_FORMATO_INVALIDO"]
+        return STATUS_CODE["VENDA_DATA_FORMATO_INCORRETO"]
     if not hora_formatada:
-        return STATUS_CODE["HORA_FORMATO_INVALIDO"]
+        return STATUS_CODE["VENDA_HORA_FORMATO_INCORRETO"]
 
     for venda in vendas.values():
         if venda["cpf"] == cpf_cliente and venda["data"] == data and venda["hora"] == hora:
@@ -86,21 +86,25 @@ def concludeVenda(id_venda):
     return STATUS_CODE["VENDA_CONCLUIDA"]
 
 def addProduto(id_venda, id_produto, quantidade):
+
     venda = getVendaPorId(id_venda)
     if not venda:
         return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
-    if getProdutoById(id_produto) == STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]:
-        return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]
+    
+    temp = dict()
+    flag = getProdutoById(id_produto, temp)
+    if flag == STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]:
+        return flag
     
     prodEst = getProdutoEstoque(id_produto)
-    if prodEst == STATUS_CODE["PRODUTO_NAO_ENCONTRADO_ESTOQUE"]:
-        return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_ESTOQUE"]
+    if prodEst == STATUS_CODE["VENDA_PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]:
+        return STATUS_CODE["VENDA_PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]
     
     if prodEst["quantidade"] < quantidade:
-        return STATUS_CODE["ESTOQUE_INSUFICIENTE"]
+        return STATUS_CODE["VENDA_ESTOQUE_INSUFICIENTE"]
 
     venda["produtos"][id_produto] = venda["produtos"].get(id_produto, 0) + quantidade
-    return STATUS_CODE["PRODUTO_ADICIONADO"]
+    return STATUS_CODE["VENDA_PRODUTO_ADICIONADO"]
     
 def removeProduto(id_venda, id_produto, quantidade):
     venda = getVendaPorId(id_venda)
@@ -108,40 +112,69 @@ def removeProduto(id_venda, id_produto, quantidade):
         return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
 
     if id_produto not in venda["produtos"] or venda["produtos"][id_produto] < quantidade:
-        return STATUS_CODE["PRODUTO_NAO_INCLUIDO"]
+        return STATUS_CODE["VENDA_PRODUTO_NAO_INCLUIDO"]
 
     venda["produtos"][id_produto] -= quantidade
     if venda["produtos"][id_produto] == 0:
         del venda["produtos"][id_produto]
 
-    return STATUS_CODE["PRODUTO_REMOVIDO"]
+    return STATUS_CODE["VENDA_PRODUTO_REMOVIDO"]
 
 def showVenda(id_venda):
+
     venda = getVendaPorId(id_venda)
+
     if not venda:
         return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
+    
+    print("\n", end="")
+    for atributo,valor in venda.items():
+        print(f"{atributo}: {valor}")
+    print("\n")
 
-    return venda
+    return STATUS_CODE["SUCESSO"]
 
 def showVendas():
+
+    global vendas
+
     if not vendas:
         return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
 
-    return vendas
+    for venda in vendas.values():
+        print("\n", end="")
+        for atributo,valor in venda.items():
+            print(f"{atributo}: {valor}")
+        print("\n")
+
+    return STATUS_CODE["SUCESSO"]
 
 def showVendasCliente(cpf):
     vendas_cliente = [venda for venda in vendas.values() if venda["cpf"] == cpf]
+
     if not vendas_cliente:
         return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
 
-    return vendas_cliente
+    for venda in vendas_cliente.values():
+        print("\n", end="")
+        for atributo,valor in venda.items():
+            print(f"{atributo}: {valor}")
+        print("\n")
+
+    return STATUS_CODE["SUCESSO"]
 
 def showVendasData(data):
     vendas_data = [venda for venda in vendas.values() if venda["data"] == data]
     if not vendas_data:
         return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
 
-    return vendas_data
+    for venda in vendas_data.values():
+        print("\n", end="")
+        for atributo,valor in venda.items():
+            print(f"{atributo}: {valor}")
+        print("\n")
+
+    return STATUS_CODE["SUCESSO"]
 
 def updateVenda(id_venda, data, hora):
     venda = getVendaPorId(id_venda)
@@ -150,9 +183,9 @@ def updateVenda(id_venda, data, hora):
 
     data_formatada, hora_formatada = formatarDataHora(data, hora)
     if not data_formatada:
-        return STATUS_CODE["DATA_FORMATO_INVALIDO"]
+        return STATUS_CODE["VENDA_DATA_FORMATO_INCORRETO"]
     if not hora_formatada:
-        return STATUS_CODE["HORA_FORMATO_INVALIDO"]
+        return STATUS_CODE["VENDA_HORA_FORMATO_INCORRETO"]
 
     venda["data"] = data_formatada
     venda["hora"] = hora_formatada
@@ -162,14 +195,14 @@ def updateVenda(id_venda, data, hora):
 def checkProdutoVenda(id_produto):
     for venda in vendas.values():
         if id_produto in venda["produtos"]:
-            return STATUS_CODE["PRODUTO_ENCONTRADO_EM_VENDAS"]
-    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_EM_VENDAS"]
+            return STATUS_CODE["VENDA_PRODUTO_ENCONTRADO"]
+    return STATUS_CODE["VENDA_PRODUTO_NAO_ENCONTRADO"]
 
 def checkClienteVenda(cpf_cliente):
     for venda in vendas.values():
         if venda["cpf"] == cpf_cliente:
-            return STATUS_CODE["CLIENTE_ENCONTRADO"]
-    return STATUS_CODE["CLIENTE_NAO_ENCONTRADO"]
+            return STATUS_CODE["VENDA_CLIENTE_ENCONTRADO"]
+    return STATUS_CODE["VENDA_CLIENTE_NAO_ENCONTRADO"]
 
 def deleteVenda(id_venda):
     venda = getVendaPorId(id_venda)
@@ -261,5 +294,5 @@ def lerRelatorioVenda():
     return STATUS_CODE["SUCESSO"]
 
 if __name__ == "__main__":
-    from ..produto import getProdutoById
-    from ..estoque import atualizarQtdEstoque, getProdutoEstoque, getQuantidadeEstoque
+    from ..produto.produto import getProdutoById
+    from ..estoque.estoque import atualizarQtdEstoque, getProdutoEstoque, getQuantidadeEstoque

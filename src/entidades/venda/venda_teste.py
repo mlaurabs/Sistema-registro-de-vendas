@@ -1,194 +1,169 @@
 import unittest
-from datetime import datetime
+from unittest.mock import patch
+import os
 from .venda import *
 from src.status_code import *
 
-
 class TestCreateVenda(unittest.TestCase):
 
-    def test01_createVenda(self):
-        # Teste de criação de venda com dados válidos
-        response = createVenda("12345678901", "15/11/2024", "10:30")
+    def test_01_createVenda_ok_retorno(self):
+        print("Caso de teste (VENDA - createVenda) - Criação")
+        response = createVenda("123.456.789-01", "15/11/2024", "10:30")
         self.assertEqual(response, STATUS_CODE["VENDA_CADASTRADA"])
 
-    def test02_createVenda(self):
-        # Teste de criação de venda com CPF inválido
+    def test_02_createVenda_nok_cpf_formato_incorreto(self):
+        print("Caso de teste (VENDA - createVenda) - CPF inválido")
         response = createVenda("12345678", "15/11/2024", "10:30")
-        self.assertEqual(response, STATUS_CODE["CLIENTE_NAO_ENCONTRADO"])
+        self.assertEqual(response, STATUS_CODE["VENDA_CPF_FORMATO_INCORRETO"])
 
-    def test03_createVenda(self):
-        # Teste de venda com data no formato inválido
-        response = createVenda("12345678901", "2024-11-15", "10:30")
-        self.assertEqual(response, STATUS_CODE["DATA_FORMATO_INVALIDO"])
+    def test_03_createVenda_nok_data_formato_incorreto(self):
+        print("Caso de teste (VENDA - createVenda) - Data inválida")
+        response = createVenda("123.456.789-01", "2024-11-15", "10:30")
+        self.assertEqual(response, STATUS_CODE["VENDA_DATA_FORMATO_INCORRETO"])
 
-    def test04_createVenda(self):
-        # Teste de venda com data no formato inválido
-        response = createVenda("1*-s45678901", "15/11/2024", "10:30")
-        self.assertEqual(response, STATUS_CODE["CPF_FORMATO_INVALIDO"])
+    def test_04_createVenda_nok_hora_formato_incorreto(self):
+        print("Caso de teste (VENDA - createVenda) - Hora inválida")
+        response = createVenda("123.456.789-01", "15/11/2024", "1030")
+        self.assertEqual(response, STATUS_CODE["VENDA_HORA_FORMATO_INCORRETO"])
 
-    def test05_createVenda(self):
-        # Teste de venda com hora no formato inválido
-        response = createVenda("12345678901", "15/11/2024", "1030")
-        self.assertEqual(response, STATUS_CODE["HORA_FORMATO_INVALIDO"])
-
-    def test06_createVenda(self):
-        # Teste de venda existente
-        response = createVenda("12345678901", "15/11/2024", "10:30")
+    def test_05_createVenda_nok_venda_existente(self):
+        print("Caso de teste (VENDA - createVenda) - Venda existente")
+        response = createVenda("123.456.789-01", "15/11/2024", "10:30")
         self.assertEqual(response, STATUS_CODE["VENDA_EXISTENTE"])
 
 class TestConcludeVenda(unittest.TestCase):
-    def test01_concludeVenda(self):
-        # Criar venda
-        createVenda("12345678901", "15/11/2024", "10:30")
-
+    def test_01_concludeVenda_ok_retorno(self):
         # Teste de conclusão de venda com id válido
+        print("Caso de teste (VENDA - concludeVenda) - Efetuação")
         response = concludeVenda(1)
         self.assertEqual(response, STATUS_CODE["VENDA_CONCLUIDA"])
 
-    def test02_concludeVenda(self):
-        # Teste de venda já concluída
+    def test_02_concludeVenda_nok_venda_ja_concluida(self):
+        print("Caso de teste (VENDA - concludeVenda) - Venda já concluída")
         response = concludeVenda(1)
         self.assertEqual(response, STATUS_CODE["VENDA_JA_CONCLUIDA"])
 
-    def test03_concludeVenda(self):
-        # Teste de venda não encontrada
+    def test_03_concludeVenda_nok_venda_nao_encontrada(self):
+        print("Caso de teste (VENDA - concludeVenda) - Venda não encontrada")
         response = concludeVenda(99)
         self.assertEqual(response, STATUS_CODE["VENDA_NAO_ENCONTRADA"])
 
 class TestAddProduto(unittest.TestCase):
-    def test01_addProduto(self):
-        # Criar venda e adicionar produto
-        createVenda("12345678901", "15/11/2024", "10:30")
-        
-        # Teste de adição de produto com sucesso
-        response = addProduto(1, 101, 5)
-        self.assertEqual(response, STATUS_CODE["PRODUTO_ADICIONADO"])
 
-    def test02_addProduto(self):
-        # Teste de venda não encontrada
+    def test_01_addProduto_ok_retorno(self):
+        print("Caso de teste (VENDA - addProduto) - Adição de produto")
+        response = addProduto(1, 101, 5)
+        self.assertEqual(response, STATUS_CODE["VENDA_PRODUTO_ADICIONADO"])
+
+    def test_02_addProduto_nok_venda_nao_encontrada(self):
+        print("Caso de teste (VENDA - addProduto) - Venda não encontrada")
         response = addProduto(99, 101, 5)
         self.assertEqual(response, STATUS_CODE["VENDA_NAO_ENCONTRADA"])
 
-    def test03_addProduto(self):
-        # Teste de produto não encontrado no estoque
+    def test_03_addProduto_nok_produto_nao_encontrado_no_estoque(self):
+        print("Caso de teste (VENDA - addProduto) - Produto não encontrado no estoque")
         response = addProduto(1, 999, 5)
-        self.assertEqual(response, STATUS_CODE["PRODUTO_NAO_ENCONTRADO_ESTOQUE"])
+        self.assertEqual(response, STATUS_CODE["VENDA_PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"])
 
-    def test04_addProduto(self):    
-        # Teste de estoque insuficiente
+    def test_04_addProduto_estoque_insuficiente(self):    
+        print("Caso de teste (VENDA - addProduto) - Estoque insuficiente")
         response = addProduto(1, 101, 1000)
-        self.assertEqual(response, STATUS_CODE["ESTOQUE_INSUFICIENTE"])
+        self.assertEqual(response, STATUS_CODE["VENDA_ESTOQUE_INSUFICIENTE"])
 
 class TestRemoveProduto(unittest.TestCase):
-    def test01_removeProduto(self):
-        # Criar venda e adicionar produto
-        createVenda("12345678901", "15/11/2024", "10:30")
-        addProduto(1, 101, 5)
-
-        # Teste de remoção de produto com sucesso
+    def test_01_removeProduto_ok_retorno(self):
+        print("Caso de teste (VENDA - removeProduto) - Remoção de produto")
         response = removeProduto(1, 101, 3)
-        self.assertEqual(response, STATUS_CODE["PRODUTO_REMOVIDO"])
+        self.assertEqual(response, STATUS_CODE["VENDA_PRODUTO_REMOVIDO"])
 
-    def test02_removeProduto(self):
-        # Teste de venda não encontrada
+    def test_02_removeProduto_nok_venda_nao_encontrada(self):
+        print("Caso de teste (VENDA - removeProduto) - Venda não encontrada")
         response = removeProduto(99, 101, 3)
         self.assertEqual(response, STATUS_CODE["VENDA_NAO_ENCONTRADA"])
 
-    def test03_removeProduto(self):
-        # Teste de produto não incluído na venda
+    def test_03_removeProduto_nok_produto_nao_incluido(self):
+        print("Caso de teste (VENDA - removeProduto) - Produto não incluído na venda")
         response = removeProduto(1, 101, 100)
-        self.assertEqual(response, STATUS_CODE["PRODUTO_NAO_INCLUIDO"])
+        self.assertEqual(response, STATUS_CODE["VENDA_PRODUTO_NAO_INCLUIDO"])
 
 class TestUpdateVenda(unittest.TestCase):
-    def test01_updateVenda(self):
-        # Teste de alteração de venda com sucesso
-        createVenda("12345678901", "15/11/2024", "10:30")
 
+    def test_01_updateVenda_ok_retorno(self):
+        print("Caso de teste (VENDA - updateVenda) - Alteração")
         response = updateVenda(1, "05/05/2004", "13:53")
         self.assertEqual(response, STATUS_CODE["VENDA_ALTERADA"])
     
-    def test02_updateVenda(self):
-        # Teste de alteração de venda com data inválida
-        createVenda("12345678901", "15/11/2024", "10:30")
-
+    def test_02_updateVenda_nok_data_formato_incorreto(self):
+        print("Caso de teste (VENDA - updateVenda) - Data inválida")
         response = updateVenda(1, "05-05-2004", "13:53")
-        self.assertEqual(response, STATUS_CODE["DATA_FORMATO_INVALIDO"])
+        self.assertEqual(response, STATUS_CODE["VENDA_DATA_FORMATO_INCORRETO"])
 
-    def test02_updateVenda(self):
+    def test_03_updateVenda_nok_hora_formato_incorreto(self):
         # Teste de alteração de venda com hora inválida
-        createVenda("12345678901", "15/11/2024", "10:30")
-
+        print("Caso de teste (VENDA - updateVenda) - Hora inválida")
         response = updateVenda(1, "05-05-2004", "13//53")
-        self.assertEqual(response, STATUS_CODE["HORA_FORMATO_INVALIDO"])
+        self.assertEqual(response, STATUS_CODE["VENDA_HORA_FORMATO_INCORRETO"])
 
 class TestShowVenda(unittest.TestCase):
-    def test01_showVenda(self):
-        # Criar venda
-        createVenda("12345678901", "15/11/2024", "10:30")
 
-        # Teste de exibição de venda com id válido
+    @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
+    def test_01_showVenda_ok_retorno(self, mock_stdout):
+        print("Caso de teste (VENDA - showVenda) - Exibição")
         response = showVenda(1)
-        self.assertEqual(response["id"], 1)
+        self.assertEqual(response, STATUS_CODE["SUCESSO"])
     
-    def test02_showVenda(self):
+    def test_02_showVenda_nok_venda_nao_encontrada(self):
         # Teste de venda não encontrada
+        print("Caso de teste (VENDA - updateVenda) - Venda não encontrada")
         response = showVenda(99)
         self.assertEqual(response, STATUS_CODE["VENDA_NAO_ENCONTRADA"])
 
 class TestShowVendas(unittest.TestCase):
-    def test01_showVendas(self):
-        # Teste de exibição de todas as vendas
-        createVenda("12345678901", "15/11/2024", "10:30")
-        createVenda("12349998901", "10/10/2023", "09:30")
-        response = showVendas()
-        self.assertEqual(len(response), 2)
 
-    def test02_showVendas(self):
+    @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
+    def test_01_showVendas_ok_retorno(self, mock_stdout):
+        print("Caso de teste (VENDA - showVendas) - Exibição")
+        response = showVendas()
+        self.assertEqual(response, STATUS_CODE["SUCESSO"])
+
+    def test_02_showVendas_nok_venda_nao_encontrada(self):
         # Teste de nenhuma venda encontrada
         response = showVendas()
         self.assertEqual(response, STATUS_CODE["VENDA_NAO_ENCONTRADA"])
 
 class TestShowVendasClientes(unittest.TestCase):
-    def test01_showVendasCliente(self):
-        # Criar venda
-        createVenda("12345678901", "15/11/2024", "10:30")
-        createVenda("12345678901", "16/12/2024", "12:35")
 
-        # Teste de exibição de vendas de um cliente
+    @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
+    def test_01_showVendasCliente_ok_retorno(self, mock_stdout):
+        print("Caso de teste (VENDA - showVendasClientes) - Exibição")
         response = showVendasCliente("12345678901")
-        self.assertEqual(len(response), 2)
+        self.assertEqual(response, STATUS_CODE["SUCESSO"])
 
-    def test02_showVendasCliente(self):
-        # Teste de vendas de cliente não encontrado
+    def test_02_showVendasCliente_nok_nenhuma_venda_encontrada(self):
+        print("Caso de teste (VENDA - updateVenda) - Nenhuma venda encontrada")
         response = showVendasCliente("98765432100")
         self.assertEqual(response, STATUS_CODE["VENDA_NAO_ENCONTRADA"])
 
-class TestcheckProdutoVenda(unittest.TestCase):
-    def test01_checkProdutoVenda(self):
-        createVenda("12345678901", "16/12/2024", "12:35")
-        addProduto(1, 101, 5)
+class TestCheckProdutoVenda(unittest.TestCase):
 
-        # Teste de busca por produtos associados a vendas
+    def test_01_checkProdutoVenda_ok_retorno(self):
+        print("Caso de teste (VENDA - checkProdutoVenda) - Produto encontrado em vendas")
         response = checkProdutoVenda(101)
-        self.assertEqual(response, STATUS_CODE["PRODUTO_ENCONTRADO_EM_VENDAS"])
+        self.assertEqual(response, STATUS_CODE["VENDA_PRODUTO_ENCONTRADO"])
     
-    def test01_checkProdutoVenda(self):
-        createVenda("12345678901", "16/12/2024", "12:35")
-        addProduto(1, 12, 5)
-
-        # Teste de busca por produtos associados a vendas
+    def test_01_checkProdutoVenda_nok_produto_nao_encontrado(self):
+        print("Caso de teste (VENDA - checkProdutoVenda) - Produto não encontrado em nenhuma venda")
         response = checkProdutoVenda(101)
-        self.assertEqual(response, STATUS_CODE["PRODUTO_NAO_ENCONTRADO_EM_VENDAS"])
+        self.assertEqual(response, STATUS_CODE["VENDA_PRODUTO_NAO_ENCONTRADO"])
 
-class TestcheckClienteVenda(unittest.TestCase):
-    def test01_checkClienteVenda(self):
-        createVenda("12345678901", "16/12/2024", "12:35")
+class TestCheckClienteVenda(unittest.TestCase):
+    def test_01_checkClienteVenda(self):
 
         # Teste de busca por clientes associados a vendas
         response = checkClienteVenda("12345678901")
         self.assertEqual(response, STATUS_CODE["CLIENTE_ENCONTRADO"])
 
-    def test01_checkClienteVenda(self):
+    def test_01_checkClienteVenda(self):
         createVenda("12345678102", "16/12/2024", "12:35")
 
         # Teste de busca por clientes associados a vendas
@@ -196,25 +171,19 @@ class TestcheckClienteVenda(unittest.TestCase):
         self.assertEqual(response, STATUS_CODE["CLIENTE_NAO_ENCONTRADO"])
 
 class TestDeleteVenda(unittest.TestCase):
-    def test01_deleteVenda(self):
-        # Criar 
-        createVenda("12345678901", "15/11/2024", "10:30")
 
-        # Teste de remoção de venda com sucesso
+    def test_01_deleteVenda_ok_retorno(self):
+        print("Caso de teste (VENDA - deleteVenda) - Remoção")
         response = deleteVenda(1)
         self.assertEqual(response, STATUS_CODE["VENDA_REMOVIDA"])
 
-    def test02_deleteVenda(self):
-        # Criar e concluir venda
-        createVenda("12345678901", "15/11/2024", "10:30")
-        concludeVenda(1)
-
-        # Teste de remoção de venda já concluída
+    def test_02_deleteVenda(self):
+        print("Caso de teste (VENDA - deleteVenda) - Venda já concluída")
         response = deleteVenda(1)
         self.assertEqual(response, STATUS_CODE["VENDA_JA_CONCLUIDA"])
 
-    def test03_deleteVenda(self):
-        # Teste de venda não encontrada
+    def test_03_deleteVenda(self):
+        print("Caso de teste (VENDA - deleteVenda) - Venda não encontrada")
         response = deleteVenda(99)
         self.assertEqual(response, STATUS_CODE["VENDA_NAO_ENCONTRADA"])
 
@@ -223,16 +192,16 @@ def suite():
     suite = unittest.TestSuite()
 
     # Adicionando as classes e os testes na ordem desejada
+    suite.addTest(TestShowVendas('test_02_showVendas_nok_venda_nao_encontrada'))
+    suite.addTest(TestShowVendasClientes('test_02_showVendasCliente_nok_nenhuma_venda_encontrada'))
     suite.addTest(unittest.makeSuite(TestCreateVenda))
     suite.addTest(unittest.makeSuite(TestConcludeVenda))
     suite.addTest(unittest.makeSuite(TestAddProduto))
-    suite.addTest(unittest.makeSuite(TestRemoveProduto))
     suite.addTest(unittest.makeSuite(TestUpdateVenda))
     suite.addTest(unittest.makeSuite(TestShowVenda))
-    suite.addTest(unittest.makeSuite(TestShowVendas))
-    suite.addTest(unittest.makeSuite(TestShowVendasClientes))
-    suite.addTest(unittest.makeSuite(TestcheckProdutoVenda))
-    suite.addTest(unittest.makeSuite(TestcheckClienteVenda))
+    suite.addTest(TestShowVendas('test_01_showVendas_ok_retorno'))
+    suite.addTest(TestShowVendasClientes('test_01_showVendasCliente_ok_retorno'))
+    suite.addTest(unittest.makeSuite(TestRemoveProduto))
     suite.addTest(unittest.makeSuite(TestDeleteVenda))
 
     return suite
