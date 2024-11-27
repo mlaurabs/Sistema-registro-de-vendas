@@ -12,18 +12,23 @@ STATUS_CODE = {
     "DATA_FORMATO_INVALIDO": 7,  # Data não está no formato especificado
     "HORA_FORMATO_INVALIDO": 8,  # Hora não está no formato especificado
     # Produto
-    "NOME_VAZIO": 9, # Não é possível criar um Produto sem nome
-    "MARCA_VAZIO": 10, # Não é possível criar um Produto sem marca
-    "CATEGORIA_VAZIO": 11, # Não é possível criar um Produto sem categoria
-    "PRECO_VAZIO": 12, # Não é possível criar um Produto sem preço
-    "QTD_MINIMA_VAZIO": 13, # Não é possível criar um Produto sem quantidade mínima
-    "PRECO_PROMOCIONAL_MAIOR_PRECO": 14, # Preço promocional não pode ser maior que o preço do produto
+    "PRODUTO_NOME_VAZIO": 9, # Não é possível criar um Produto sem nome
+    "PRODUTO_MARCA_VAZIO": 10, # Não é possível criar um Produto sem marca
+    "PRODUTO_CATEGORIA_VAZIO": 11, # Não é possível criar um Produto sem categoria
+    "PRODUTO_PRECO_VAZIO": 12, # Não é possível criar um Produto sem preço
+    "PRODUTO_QTD_MINIMA_VAZIO": 13, # Não é possível criar um Produto sem quantidade mínima
+    "PRODUTO_PRECO_PROMOCIONAL_MAIOR_QUE_PRECO": 14, # Preço promocional não pode ser maior que o preço do produto
     "PRODUTO_EXISTENTE": 15, # Não podem existir produtos iguais no sistema
     "PRODUTO_NAO_ENCONTRADO": 16, # Produto não encontrado
-    "NENHUM_PRODUTO_CADASTRADO": 17, # Não há produtos cadastrados
-    "NENHUM_PRODUTO_ENCONTRADO": 18, # Nenhum produto encontrado
+    "PRODUTO_NENHUM_CADASTRO": 17, # Não há produtos cadastrados
+    "PRODUTO_NENHUM_ENCONTRADO": 18, # Nenhum produto encontrado
     "PRODUTO_NAO_ZERADO_NO_ESTOQUE": 19, # O produto não pode ser removido se ainda houverem unidades em estoque
     "PRODUTO_CADASTRADO_EM_VENDA": 20, # O produto não pode ser removido se estiver cadastrado em alguma venda
+    "PRODUTO_NOME_FORMATO_INCORRETO": 100,
+    "PRODUTO_MARCA_FORMATO_INCORRETO": 101,
+    "PRODUTO_CATEGORIA_FORMATO_INCORRETO": 102,
+    "PRODUTO_PRECO_FORMATO_INCORRETO": 103,
+    "PRODUTO_PRECO_PROMOCIONAL_FORMATO_INCORRETO": 104,
     # Venda
     "VENDA_CADASTRADA": 21,  # Venda cadastrada com sucesso
     "VENDA_EXISTENTE": 22,  # Venda já existente
@@ -44,6 +49,21 @@ STATUS_CODE = {
     "PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE": 36,  # Produto não encontrado no estoque  
     "QUANTIDADE_NEGATIVA": 37,  # Quantidade negativa
     # Cliente
+    "CLIENTE_DATA_NASCIMENTO_INVALIDA": 38,
+    "CLIENTE_MENOR_DE_IDADE": 39,
+    "CLIENTE_CPF_FORMATO_INCORRETO": 40,
+    "CLIENTE_NOME_FORMATO_INCORRETO": 41, 
+    "CLIENTE_EXISTENTE": 42, 
+    "CLIENTE_NAO_ENCONTRADO": 43,
+    "CLIENTE_NOME_FORMATO_INCORRETO": 44,
+    "CLIENTE_NENHUM_CADASTRADO": 45,
+    "CLIENTE_NENHUM_ENCONTRADO": 46,
+    "CLIENTE_NAO_ENCONTRADO": 47,
+    "CLIENTE_CPF_VAZIO": 48,
+    "CLIENTE_NOME_VAZIO": 49,
+    "CLIENTE_DATA_NASCIMENTO_VAZIO": 50,
+
+
 }
 
 def getStatusName(retorno):

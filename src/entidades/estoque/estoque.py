@@ -1,4 +1,4 @@
-from src.status_code import STATUS_CODE
+'''from src.status_code import STATUS_CODE
 
 from pathlib import Path
 import sys
@@ -104,3 +104,4 @@ def getQuantidadeEstoque(id_produto):
             return item["quantidade"]  # Retorna a quantidade encontrada
 
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]  # Produto não encontrado
+'''

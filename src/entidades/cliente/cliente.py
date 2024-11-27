@@ -1,13 +1,15 @@
 from src.status_code import STATUS_CODE
 from pathlib import Path
 from datetime import datetime
+
+'''
 import sys
 
 caminho_relativo = Path("src/entidades/cliente/cliente.py")
 caminho_absoluto = caminho_relativo.resolve()
 
 sys.path.append(caminho_absoluto.parent)
-
+'''
 __all__ = ["createCliente", "showCliente", "updateClienteByCpf", "updateClienteByNome", "getCliente", "showClientes", "showClientesByNome", "deleteCliente", "geraRelatorioCliente", "leRelatorioCliente"]
 
 lista_clientes = [] # Lista com todos os clientes
@@ -17,14 +19,14 @@ def validaDataNascimento(data_nascimento):
     try: 
         data = datetime.strptime(data_nascimento, '%d/%m/%Y') # Tenta converter a string para uma data válida
     except ValueError:
-        return ["DATA_NASCIMENTO_INVALIDA"]  # Data inválida   
+        return STATUS_CODE["CLIENTE_DATA_NASCIMENTO_INVALIDA"]  # Data inválida   
     
     # Verifica se o usuário é menor de idade
     hoje = datetime.now()
     idade = hoje.year - data.year - ((hoje.month, hoje.day) < (data.month, data.day))
 
     if idade < 18:
-        return STATUS_CODE["MENOR_DE_IDADE"]
+        return STATUS_CODE["CLIENTE_MENOR_DE_IDADE"]
     
     return STATUS_CODE["SUCESSO"]
 
@@ -32,16 +34,16 @@ def validaCpf(cpf):
 
     # Verifica se o CPF tem exatamente 14 caracteres
     if len(cpf) != 14:
-        return STATUS_CODE["CPF_FORMATO"]
+        return STATUS_CODE["CLIENTE_CPF_FORMATO_INCORRETO"]
     
     # Verifica se os pontos e o hífen estão nos lugares corretos
     if cpf[3] != '.' or cpf[7] != '.' or cpf[11] != '-':
-        return STATUS_CODE["CPF_FORMATO"]
+        return STATUS_CODE["CLIENTE_CPF_FORMATO_INCORRETO"]
     
     # Verifica se os outros caracteres são numéricos
     numeros = cpf.replace('.', '').replace('-', '')
     if not numeros.isdigit():
-        return STATUS_CODE["CPF_FORMATO"]
+        return STATUS_CODE["CLIENTE_CPF_FORMATO_INCORRETO"]
     
     return STATUS_CODE["SUCESSO"]
 
@@ -56,15 +58,20 @@ def validaCreate(funcao):
         for atributo, valor in parametros.items():
             if valor == "":
                 atributo = atributo.upper()
-                erro = atributo + "_VAZIO"
+                erro = "CLIENTE_" + atributo + "_VAZIO"
                 return STATUS_CODE[erro] # O valor não pode ser nulo
 
         flag = validaCpf(cpf)
         if flag != STATUS_CODE["SUCESSO"]:
             return flag
+        
+        if len(nome) > 50:
+            return STATUS_CODE["CLIENTE_NOME_FORMATO_INCORRETO"] # Nome não pode ter mais que 50 caracteres e só aceita caracteres
 
-        if len(nome) > 50 or not nome.isalpha():
-            return STATUS_CODE["NOME_FORMATO"] # Nome não pode ter mais que 50 caracteres e só aceita caracteres
+        temp = nome
+
+        if not temp.replace(" ", "").isalpha():
+            return STATUS_CODE["CLIENTE_NOME_FORMATO_INCORRETO"]
 
         flag = validaDataNascimento(data_nascimento)
         if flag != STATUS_CODE["SUCESSO"]:
@@ -117,9 +124,15 @@ def validaUpdate(funcao):
             if flag != STATUS_CODE["SUCESSO"]:
                 return flag
 
+
         if nome != "":
-            if len(nome) > 50 or not nome.isalpha():
-                return STATUS_CODE["NOME_FORMATO"] # Nome não pode ter mais que 50 caracteres e só aceita caracteres
+            if len(nome) > 50:
+                return STATUS_CODE["CLIENTE_NOME_FORMATO_INCORRETO"] # Nome não pode ter mais que 50 caracteres e só aceita caracteres
+
+            temp = nome
+
+            if not temp.replace(" ", "").isalpha():
+                return STATUS_CODE["CLIENTE_NOME_FORMATO_INCORRETO"]
 
         if data_nascimento != "":
             flag = validaDataNascimento(data_nascimento)
@@ -154,10 +167,9 @@ def updateClienteByNome(cpf, nome, data_nascimento):
     global lista_clientes
 
     for cliente in lista_clientes:
-        
         if nome == cliente["nome"]:
-            if cpf != "":
 
+            if cpf != "":
                 for cliente_aux in lista_clientes:
                     if cliente_aux == cpf:
                         return STATUS_CODE["CLIENTE_EXISTENTE"]
@@ -183,10 +195,10 @@ def getCliente(cpf, retorno):
 
 def showClientes():
 
-    global lista_cliente
+    global lista_clientes
 
     if not lista_clientes:
-        return STATUS_CODE["NENHUM_CLIENTE_CADASTRADO"] # Não há clientes cadastrados
+        return STATUS_CODE["CLIENTE_NENHUM_CADASTRADO"] # Não há clientes cadastrados
 
     for cliente in lista_clientes:
         print("\n", end="")
@@ -211,7 +223,7 @@ def showClientesByNome(nome):
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
     else:
-        return STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"] # Nenhum cliente encontrado
+        return STATUS_CODE["CLIENTE_NENHUM_ENCONTRADO"] # Nenhum cliente encontrado
 
 def deleteCliente(cpf):
 

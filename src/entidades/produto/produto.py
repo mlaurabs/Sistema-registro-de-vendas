@@ -7,9 +7,11 @@ caminho_absoluto = caminho_relativo.resolve()
 
 sys.path.append(caminho_absoluto.parent)
 
+'''
 # Agora você pode importar o módulo estoque
 from entidades.estoque.estoque import createProdutoNoEstoque, getProdutoEstoque
 from entidades.venda.venda import checkProdutoVenda
+'''
 
 __all__ = ["createProduto", "showProdutoById", "showProdutoByNome", "updateProduto", "getProdutoById", "getProdutoByNome", "showProdutos", "showProdutosByMarca", "showProdutosByCategoria", "showProdutosByFaixaPreco", "showProdutosByNome", "deleteProduto", "geraRelatorioProduto", "leRelatorioProduto"]
 
@@ -92,26 +94,26 @@ def validaCreate(funcao):
         for atributo, valor in parametros.items():
             if valor == "" or valor == -1:
                 atributo = atributo.upper()
-                erro = atributo + "_VAZIO"
+                erro = "PRODUTO_" + atributo + "_VAZIO"
                 return STATUS_CODE[erro] # O valor não pode ser nulo
 
         if len(nome) > 50:
-            return STATUS_CODE["NOME_FORMATO"] # Nome não pode ter mais que 50 caracteres
+            return STATUS_CODE["PRODUTO_NOME_FORMATO_INCORRETO"] # Nome não pode ter mais que 50 caracteres
 
         if len(marca) > 50:
-            return STATUS_CODE["MARCA_FORMATO"] # Marca não pode ter mais que 50 caracteres
+            return STATUS_CODE["PRODUTO_MARCA_FORMATO_INCORRETO"] # Marca não pode ter mais que 50 caracteres
 
         if len(categoria) > 50:
-            return STATUS_CODE["CATEGORIA_FORMATO"] # Categoria não pode ter mais que 50 caracteres
+            return STATUS_CODE["PRODUTO_CATEGORIA_FORMATO_INCORRETO"] # Categoria não pode ter mais que 50 caracteres
 
         if contaCasasDecimais(preco, 2):
-            return STATUS_CODE["PRECO_FORMATO"] # Preço não pode ter mais que duas casas decimais
+            return STATUS_CODE["PRODUTO_PRECO_FORMATO_INCORRETO"] # Preço não pode ter mais que duas casas decimais
 
         if contaCasasDecimais(preco_promocional, 2):
-            return STATUS_CODE["PRECO_PROMOCIONAL_FORMATO"] # Preço promocional não pode ter mais que duas casas decimais
+            return STATUS_CODE["PRODUTO_PRECO_PROMOCIONAL_FORMATO_INCORRETO"] # Preço promocional não pode ter mais que duas casas decimais
 
         if preco_promocional > preco:
-            return STATUS_CODE["PRECO_PROMOCIONAL_MAIOR_PRECO"] # Preço promocional não pode ser maior que o preço do produto
+            return STATUS_CODE["PRODUTO_PRECO_PROMOCIONAL_MAIOR_QUE_PRECO"] # Preço promocional não pode ser maior que o preço do produto
 
         for produto in lista_produtos:
             if nome == produto["nome"] and marca == produto["marca"] and categoria == produto["categoria"]:
@@ -272,19 +274,19 @@ def validaUpdate(funcao):
         global lista_produtos
             
         if nome != "" and len(nome) > 50:
-            return STATUS_CODE["NOME_FORMATO"] # Nome não pode ter mais que 50 caracteres
+            return STATUS_CODE["PRODUTO_NOME_FORMATO_INCORRETO"] # Nome não pode ter mais que 50 caracteres
 
         if marca != "" and len(marca) > 50:
-            return STATUS_CODE["MARCA_FORMATO"] # Marca não pode ter mais que 50 caracteres
+            return STATUS_CODE["PRODUTO_MARCA_FORMATO_INCORRETO"] # Marca não pode ter mais que 50 caracteres
 
         if categoria != "" and len(categoria) > 50:
-            return STATUS_CODE["CATEGORIA_FORMATO"] # Categoria não pode ter mais que 50 caracteres
+            return STATUS_CODE["PRODUTO_CATEGORIA_FORMATO_INCORRETO"] # Categoria não pode ter mais que 50 caracteres
 
         if preco != -1 and contaCasasDecimais(preco, 2):
-            return STATUS_CODE["PRECO_FORMATO"] # Preço não pode ter mais que duas casas decimais
+            return STATUS_CODE["PRODUTO_PRECO_FORMATO_INCORRETO"] # Preço não pode ter mais que duas casas decimais
 
         if preco_promocional != -1 and contaCasasDecimais(preco_promocional, 2):
-            return STATUS_CODE["PRECO_PROMOCIONAL_FORMATO"] # Preço promocional não pode ter mais que duas casas decimais
+            return STATUS_CODE["PRODUTO_PRECO_PROMOCIONAL_FORMATO_INCORRETO"] # Preço promocional não pode ter mais que duas casas decimais
         
         return funcao(id, nome, marca, categoria, preco, preco_promocional)
     
@@ -333,15 +335,15 @@ def updateProduto(id, nome, marca, categoria, preco, preco_promocional):
 
             if preco != -1:
                 if preco < produto["preco_promocional"] and preco_promocional == -1:
-                    return STATUS_CODE["PRECO_PROMOCIONAL_MAIOR_PRECO"]
+                    return STATUS_CODE["PRODUTO_PRECO_PROMOCIONAL_MAIOR_QUE_PRECO"]
                 elif preco_promocional != -1 and preco < preco_promocional:
-                    return STATUS_CODE["PRECO_PROMOCIONAL_MAIOR_PRECO"]
+                    return STATUS_CODE["PRODUTO_PRECO_PROMOCIONAL_MAIOR_QUE_PRECO"]
                 else:
                     produto["preco"] = preco
 
             if preco_promocional != -1:
                 if preco_promocional > produto["preco"]:
-                    return STATUS_CODE["PRECO_PROMOCIONAL_MAIOR_PRECO"]
+                    return STATUS_CODE["PRODUTO_PRECO_PROMOCIONAL_MAIOR_QUE_PRECO"]
                 else:
                     produto["preco_promocional"] = preco_promocional      
 
@@ -425,7 +427,7 @@ def showProdutos():
     global lista_produtos
 
     if not lista_produtos:
-        return STATUS_CODE["NENHUM_PRODUTO_CADASTRADO"] # Não há produtos cadastrados
+        return STATUS_CODE["PRODUTO_NENHUM_CADASTRO"] # Não há produtos cadastrados
 
     for produto in lista_produtos:
         print("\n", end="")
@@ -467,7 +469,7 @@ def showProdutosByMarca(marca):
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
     else:
-        return STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"] # Nenhum produto encontrado
+        return STATUS_CODE["PRODUTO_NENHUM_ENCONTRADO"] # Nenhum produto encontrado
 
 '''
 Descrição
@@ -501,7 +503,7 @@ def showProdutosByCategoria(categoria):
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
     else:
-        return STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"] # Nenhum produto encontrado
+        return STATUS_CODE["PRODUTO_NENHUM_ENCONTRADO"] # Nenhum produto encontrado
 
 '''
 Descrição
@@ -536,7 +538,7 @@ def showProdutosByFaixaPreco(preco_min, preco_max):
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
     else:
-        return STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"] # Nenhum produto encontrado
+        return STATUS_CODE["PRODUTO_NENHUM_ENCONTRADO"] # Nenhum produto encontrado
 
 '''
 Descrição
@@ -570,7 +572,7 @@ def showProdutosByNome(nome):
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
     else:
-        return STATUS_CODE["NENHUM_PRODUTO_ENCONTRADO"] # Nenhum produto encontrado
+        return STATUS_CODE["PRODUTO_NENHUM_ENCONTRADO"] # Nenhum produto encontrado
 
 '''
 Descrição

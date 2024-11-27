@@ -1,4 +1,4 @@
-import os
+'''import os
 from datetime import datetime
 from src.status_code import STATUS_CODE, getStatusName
 
@@ -204,3 +204,4 @@ def deleteVenda(id_venda):
     del vendas[id_venda]
     registrarVendasNoArquivo(vendas)
     return STATUS_CODE["VENDA_REMOVIDA"]
+'''
