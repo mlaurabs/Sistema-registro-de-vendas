@@ -1,16 +1,6 @@
-'''from src.status_code import STATUS_CODE
+from src.status_code import STATUS_CODE
 
-from pathlib import Path
-import sys
-
-caminho_relativo = Path("src/entidades/estoque/estoque.py")
-caminho_absoluto = caminho_relativo.resolve()
-
-sys.path.append(caminho_absoluto.parent)
-
-from entidades.produto.produto import getProdutoById
-
-__all__ = ["createProdutoNoEstoque", "addProdutoNoEstoque", "showEstoque", "getProdutoEstoque"]
+__all__ = ["createProdutoNoEstoque", "atualizaQtdEstoque", "showEstoque", "getProdutoEstoque", "getQuantidadeEstoque"]
 
 # Lista global para armazenar os produtos no estoque
 estoque = []
@@ -74,7 +64,6 @@ def showEstoque():
             f"Quantidade Mínima: {item['quantidade_minima']}"
         )
 
-
 def getProdutoEstoque(id_produto, retorno):
     """
     Busca um produto no estoque pelo ID.
@@ -104,4 +93,6 @@ def getQuantidadeEstoque(id_produto):
             return item["quantidade"]  # Retorna a quantidade encontrada
 
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]  # Produto não encontrado
-'''
+
+if __name__ == "__main__":
+    from ..produto.produto import getProdutoById

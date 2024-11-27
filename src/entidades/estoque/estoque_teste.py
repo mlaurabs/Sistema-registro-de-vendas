@@ -1,4 +1,4 @@
-'''from estoque import *
+from .estoque import *
 from src.status_code import STATUS_CODE
 
 if __name__ == "__main__":
@@ -49,4 +49,3 @@ if __name__ == "__main__":
 
     print("\nEstoque final:")
     showEstoque()
-'''

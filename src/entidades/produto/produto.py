@@ -1,17 +1,5 @@
 from src.status_code import STATUS_CODE
 from pathlib import Path
-import sys
-
-caminho_relativo = Path("src/entidades/produto/produto.py")
-caminho_absoluto = caminho_relativo.resolve()
-
-sys.path.append(caminho_absoluto.parent)
-
-'''
-# Agora você pode importar o módulo estoque
-from entidades.estoque.estoque import createProdutoNoEstoque, getProdutoEstoque
-from entidades.venda.venda import checkProdutoVenda
-'''
 
 __all__ = ["createProduto", "showProdutoById", "showProdutoByNome", "updateProduto", "getProdutoById", "getProdutoByNome", "showProdutos", "showProdutosByMarca", "showProdutosByCategoria", "showProdutosByFaixaPreco", "showProdutosByNome", "deleteProduto", "geraRelatorioProduto", "leRelatorioProduto"]
 
@@ -732,3 +720,7 @@ def leRelatorioProduto():
 
     arquivo.close()
     return STATUS_CODE["SUCESSO"]
+
+if __name__ == "__main__":
+    from ..estoque.estoque import createProdutoNoEstoque, getProdutoEstoque
+    from ..venda.venda import checkProdutoVenda

@@ -1,8 +1,7 @@
-# ex: from src.entidades.produto import testar_adicionar_produto
-
-from src import produto
+from src import produto, cliente
 from src.status_code import STATUS_CODE, getStatusName
 
+cliente.leRelatorioCliente()
 produto.leRelatorioProduto()
 
 def confere_int(var):
@@ -238,6 +237,7 @@ while(1):
     else:
         print("\nAção inválida")
 
+cliente.geraRelatorioCliente()
 produto.geraRelatorioProduto()
 
 print("Programa encerrado")

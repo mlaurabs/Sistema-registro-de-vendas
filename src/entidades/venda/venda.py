@@ -1,18 +1,7 @@
-'''import os
+import re
 from datetime import datetime
-from src.status_code import STATUS_CODE, getStatusName
-
+from src.status_code import STATUS_CODE
 from pathlib import Path
-import sys
-
-caminho_relativo = Path("src/entidades/venda/venda.py")
-caminho_absoluto = caminho_relativo.resolve()
-
-sys.path.append(caminho_absoluto.parent)
-
-from entidades.produto.produto import getProdutoById
-# from entidades.produto.cliente import ...
-from entidades.produto.estoque import atualizarQtdEstoque, getProdutoEstoque, getQuantidadeEstoque
 
 __all__ = [
     "createVenda", "concludeVenda", "addProduto", "removeProduto", "showVenda", "showVendas",
@@ -27,39 +16,25 @@ def formatarDataHora(data, hora):
     except ValueError:
         return None, None
 
-def registrarVendasNoArquivo(vendas):
+def validarCPF(cpf):
     """
-    Reescreve o arquivo com todas as vendas em formato persistido.
+    Valida se o CPF segue o formato 123.456.789-09 ou é uma string vazia.
+    
+    :param cpf: CPF a ser validado
+    :type cpf: str
+    :return: True se o CPF for válido ou vazio, False caso contrário
+    :rtype: bool
     """
-    with open("vendas.txt", "w", encoding="utf-8") as file:
-        for venda in vendas.values():
-            produtos = venda["produtos"]
-            produtos_str = str(produtos).replace("'", "\"")
-            linha = f"{venda['id']}|{venda['cpf']}|{venda['data']}|{venda['hora']}|{venda['status']}|{produtos_str}\n"
-            file.write(linha)
+    if not cpf:  # Verifica se é uma string vazia
+        return True
 
-def carregarVendasDoArquivo():
-    """
-    Carrega as vendas previamente registradas no arquivo vendas.txt.
-    Retorna um dicionário com as vendas carregadas.
-    """
-    vendas = {}
-    if os.path.exists("vendas.txt"):
-        with open("vendas.txt", "r", encoding="utf-8") as file:
-            for linha in file:
-                id_venda, cpf, data, hora, status, produtos = linha.strip().split("|")
-                vendas[int(id_venda)] = {
-                    "id": int(id_venda),
-                    "cpf": cpf,
-                    "data": data,
-                    "hora": hora,
-                    "status": status,
-                    "produtos": eval(produtos) if produtos else {}
-                }
-    return vendas
+    # Expressão regular para validar o formato do CPF
+    cpf_pattern = r"^\d{3}\.\d{3}\.\d{3}-\d{2}$"
+    return bool(re.match(cpf_pattern, cpf))
+
 
 # Estrutura para armazenar as vendas em memória
-vendas = carregarVendasDoArquivo()
+vendas = {}
 
 # Funções principais
 def getVendaPorId(id_venda):
@@ -67,6 +42,10 @@ def getVendaPorId(id_venda):
 
 def createVenda(cpf_cliente, data, hora):
     data_formatada, hora_formatada = formatarDataHora(data, hora)
+    cpf_validate = validarCPF(cpf_cliente)
+
+    if not cpf_validate:
+        return STATUS_CODE["CPF_FORMATO_INVALIDO"]
 
     if not data_formatada:
         return STATUS_CODE["DATA_FORMATO_INVALIDO"]
@@ -88,7 +67,6 @@ def createVenda(cpf_cliente, data, hora):
     }
 
     vendas[id_venda] = nova_venda
-    registrarVendasNoArquivo(vendas)
 
     return STATUS_CODE["VENDA_CADASTRADA"]
 
@@ -102,27 +80,28 @@ def concludeVenda(id_venda):
         return STATUS_CODE["VENDA_CANCELADA"]
 
     for produto_id, quantidade in venda["produtos"].items():
-        estoque.atualizarQtdEstoque(produto_id, -quantidade)
+        atualizarQtdEstoque(produto_id, -quantidade)
 
     venda["status"] = "concluída"
-    registrarVendasNoArquivo(vendas)
     return STATUS_CODE["VENDA_CONCLUIDA"]
 
 def addProduto(id_venda, id_produto, quantidade):
     venda = getVendaPorId(id_venda)
     if not venda:
         return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
-    if produto.getProdutoById(id_produto) == STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]:
+    if getProdutoById(id_produto) == STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]:
         return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]
-    if estoque.getProdutoEstoque(id_produto) == STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]:
+    
+    prodEst = getProdutoEstoque(id_produto)
+    if prodEst == STATUS_CODE["PRODUTO_NAO_ENCONTRADO_ESTOQUE"]:
         return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_ESTOQUE"]
-    if estoque.getQuantidadeEstoque(id_produto) < quantidade:
+    
+    if prodEst["quantidade"] < quantidade:
         return STATUS_CODE["ESTOQUE_INSUFICIENTE"]
 
     venda["produtos"][id_produto] = venda["produtos"].get(id_produto, 0) + quantidade
-    registrarVendasNoArquivo(vendas)
     return STATUS_CODE["PRODUTO_ADICIONADO"]
-
+    
 def removeProduto(id_venda, id_produto, quantidade):
     venda = getVendaPorId(id_venda)
     if not venda:
@@ -135,7 +114,6 @@ def removeProduto(id_venda, id_produto, quantidade):
     if venda["produtos"][id_produto] == 0:
         del venda["produtos"][id_produto]
 
-    registrarVendasNoArquivo(vendas)
     return STATUS_CODE["PRODUTO_REMOVIDO"]
 
 def showVenda(id_venda):
@@ -178,7 +156,6 @@ def updateVenda(id_venda, data, hora):
 
     venda["data"] = data_formatada
     venda["hora"] = hora_formatada
-    registrarVendasNoArquivo(vendas)
 
     return STATUS_CODE["VENDA_ALTERADA"]
 
@@ -202,6 +179,87 @@ def deleteVenda(id_venda):
         return STATUS_CODE["VENDA_JA_CONCLUIDA"]
 
     del vendas[id_venda]
-    registrarVendasNoArquivo(vendas)
     return STATUS_CODE["VENDA_REMOVIDA"]
-'''
+
+# Funções de Relatório
+def geraRelatorioVenda():
+    global vendas
+
+    caminho_relativo = Path("dados/vendas/relatorio_venda_utf32.dat")
+    caminho_absoluto = caminho_relativo.resolve()
+
+    arquivo = open(caminho_absoluto, "wb")
+
+    bom = 0xFFFE0000  # Byte Order Mark para UTF-32 LE
+    bom_bytes = bom.to_bytes(4, byteorder="little")
+
+    arquivo.write(bom_bytes)
+
+    for indice, venda in enumerate(vendas.values()):
+        string = ""
+
+        for chave, valor in venda.items():
+            if chave == "produtos":
+                # Serializa o dicionário de produtos no formato id:quantidade;id:quantidade
+                produtos_str = ";".join([f"{id}:{quantidade}" for id, quantidade in valor.items()])
+                string += produtos_str + ','
+            else:
+                string += str(valor) + ','
+
+        if indice != len(vendas) - 1:
+            string = string[:-1] + '-'
+        else:
+            string = string[:-1]
+
+        arquivo.write(string.encode('utf-32-le'))
+
+    arquivo.close()
+
+    return STATUS_CODE["SUCESSO"]
+
+def lerRelatorioVenda():
+    global vendas
+
+    venda_template = {
+        "id": None, "cpf": None, "data": None, "hora": None,
+        "status": None, "produtos": {}
+    }
+
+    caminho_relativo = Path("dados/vendas/relatorio_venda_utf32.dat")
+    caminho_absoluto = caminho_relativo.resolve()
+
+    arquivo = open(caminho_absoluto, "rb")
+
+    arquivo.read(4)  # Ignorar cabeçalho UTF-32
+    conteudo = arquivo.read()
+    conteudo = conteudo.decode('utf-32-le')
+
+    conteudo = conteudo.split('-')
+
+    for linha in conteudo:
+        if linha:
+            linha = linha.strip()
+            linha = linha.split(',')
+            i = 0
+
+            venda = venda_template.copy()
+
+            for atributo in venda.keys():
+                if atributo == "id":
+                    venda[atributo] = int(linha[i])
+                elif atributo == "produtos":
+                    # Produtos são armazenados como um dicionário de pares id: quantidade
+                    produtos = linha[i].split(';') if linha[i] else []
+                    venda[atributo] = {int(prod.split(':')[0]): int(prod.split(':')[1]) for prod in produtos}
+                else:
+                    venda[atributo] = linha[i]
+                i += 1
+
+            vendas[venda["id"]] = venda
+
+    arquivo.close()
+    return STATUS_CODE["SUCESSO"]
+
+if __name__ == "__main__":
+    from ..produto import getProdutoById
+    from ..estoque import atualizarQtdEstoque, getProdutoEstoque, getQuantidadeEstoque

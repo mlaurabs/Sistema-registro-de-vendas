@@ -2,14 +2,8 @@ from src.status_code import STATUS_CODE
 from pathlib import Path
 from datetime import datetime
 
-'''
-import sys
+from ..venda.venda import checkClienteVenda
 
-caminho_relativo = Path("src/entidades/cliente/cliente.py")
-caminho_absoluto = caminho_relativo.resolve()
-
-sys.path.append(caminho_absoluto.parent)
-'''
 __all__ = ["createCliente", "showCliente", "updateClienteByCpf", "updateClienteByNome", "getCliente", "showClientes", "showClientesByNome", "deleteCliente", "geraRelatorioCliente", "leRelatorioCliente"]
 
 lista_clientes = [] # Lista com todos os clientes
@@ -343,3 +337,6 @@ def leRelatorioCliente():
 
     arquivo.close()
     return STATUS_CODE["SUCESSO"]
+
+if __name__ == "__main__":
+    from ..venda.venda import checkClienteVenda
