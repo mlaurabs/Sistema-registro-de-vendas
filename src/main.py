@@ -1,8 +1,9 @@
-from src import produto, cliente
+from src import produto, cliente, venda
 from src.status_code import STATUS_CODE, getStatusName
 
 cliente.leRelatorioCliente()
 produto.leRelatorioProduto()
+venda.lerRelatorioVenda()
 
 def confere_int(var):
     try:
@@ -232,12 +233,106 @@ while(1):
             print("5 - Remover venda")
             print("--- --- --- --- --- --- --- --- --- ---")
 
+            acao = input("\n---> Indique a ação desejada: ")
 
-    # Ação inválida
-    else:
-        print("\nAção inválida")
+            # Encerrar o programa
+            if (acao == "-1"):
+                break
+
+            # Criar venda
+            elif (acao == "1"):
+
+                cpf = input("\n--> CPF do cliente (opcional): ")
+                data = input("--> Data da venda (dd/mm/aaaa): ")
+                hora = input("--> Hora da venda (HH:mm): ")
+
+                resultado = venda.createVenda(cpf, data, hora)
+
+                if (resultado == STATUS_CODE["VENDA_CADASTRADA"]):
+                    print("\Venda cadastrada com sucesso\n")
+                else:
+                    print("\nErro: " + getStatusName(resultado) + "\n")
+
+            # Mostrar venda
+            elif (acao == "2"):
+                id_venda = input("Qual o id da venda: ")
+                id_venda = confere_int(id_venda)
+                resultado = venda.showVenda(id_venda)
+
+                if resultado == STATUS_CODE["VENDA_NAO_ENCONTRADA"]:
+                    print("\nErro: " + getStatusName(resultado) + "\n")         
+
+            # Atualizar venda
+            elif (acao == "3"):
+                
+                id_venda = input("Qual o id da venda que deseja atualizar? ")
+                id_venda = confere_int(id_venda)
+
+                data = input("Informe a nova data: ")
+                hora = input("Informe a nova hora: ")
+
+                resultado = venda.updateVenda(id_venda, data, hora)
+
+                if (resultado == STATUS_CODE["VENDA_ALTERADA"]):
+                    print("\Venda atualizada com sucesso\n")
+                else:
+                    print("\nErro: " + getStatusName(resultado) + "\n")
+
+            #Mostrar várias vendas
+            elif (acao == "4"):
+                print("\n--- --- --- --- --- --- --- --- --- ---")
+                print("1 - Mostrar vendas por cliente associado")
+                print("2 - Mostrar vendas por data")
+                print("3 - Mostrar todas as vendas")
+                print("--- --- --- --- --- --- --- --- --- ---")
+
+                acao = input("\n--> Como você deseja buscar as vendas? ")
+
+                # Mostrar vendas por cliente associado
+                if (acao == "1"):
+                    cpf = input("--> CPF: ")
+                    resultado = venda.showVendasCliente(cpf)
+
+                    if (resultado == STATUS_CODE["VENDA_NAO_ENCONTRADA"]):
+                        print("\nErro: " + getStatusName(resultado) + "\n")
+        
+                # Mostrar vendas por data
+                elif (acao == "2"):
+                    data = input("--> Data: ")
+                    resultado = venda.showVendasData(data)
+
+                    if (resultado == STATUS_CODE["VENDA_NAO_ENCONTRADA"]):
+                        print("\nErro: " + getStatusName(resultado) + "\n")
+                
+                # Mostrar todas as vendas
+                elif (acao == "3"):
+                    resultado = venda.showVendas()
+
+                    if (resultado == STATUS_CODE["VENDA_NAO_ENCONTRADA"]):
+                        print("\nErro: " + getStatusName(resultado) + "\n")
+
+            # Remover venda
+            elif (acao == "5"):
+
+                id_venda = input("Qual o id da venda que você deseja remover? ")
+                id_venda = confere_int(id_venda)
+
+                resultado = venda.deleteVenda(id_venda)
+                
+                if resultado == STATUS_CODE["VENDA_REMOVIDA"]:
+                    print("\nVenda removida com sucesso")
+                else:
+                    print("\nErro: " + getStatusName(resultado) + "\n")
+
+            # Ação inválida
+            else:
+                print("\nAção inválida.\n")
+
+        else:
+            print("\nAção inválida")
 
 cliente.geraRelatorioCliente()
 produto.geraRelatorioProduto()
+venda.geraRelatorioVenda()
 
 print("Programa encerrado")
