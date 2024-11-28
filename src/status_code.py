@@ -21,27 +21,20 @@ STATUS_CODE = {
     "PRODUTO_PRECO_FORMATO_INCORRETO": 103,
     "PRODUTO_PRECO_PROMOCIONAL_FORMATO_INCORRETO": 104,
     # Venda
-    "VENDA_CLIENTE_ENCONTRADO": 500,
-    "VENDA_CLIENTE_NAO_ENCONTRADO": 501,
-    "VENDA_CADASTRADA": 21,  # Venda cadastrada com sucesso
-    "VENDA_EXISTENTE": 22,  # Venda já existente
-    "VENDA_CONCLUIDA": 23,  # Venda concluída com sucesso
-    "VENDA_NAO_ENCONTRADA": 24,  # Venda não encontrada
-    "VENDA_JA_CONCLUIDA": 25,  # A venda já foi concluída
-    "VENDA_CANCELADA": 26,  # A venda foi cancelada
-    "VENDA_REMOVIDA": 27, # A venda foi removida
-    "VENDA_EXIBIDA": 28,  # Venda exibida com sucesso
-    "VENDA_ALTERADA": 29,  # Venda alterada com sucesso
-    "VENDA_PRODUTO_NAO_ENCONTRADO": 30,  # Produto não encontrado 
-    "VENDA_PRODUTO_ENCONTRADO": 31,  # Produto encontrado
-    "VENDA_ESTOQUE_INSUFICIENTE": 35,  # Não há unidades suficientes do produto em estoque
     "VENDA_CPF_FORMATO_INCORRETO": 6,  # CPF não está no formato especificado
     "VENDA_DATA_FORMATO_INCORRETO": 7,  # Data não está no formato especificado
     "VENDA_HORA_FORMATO_INCORRETO": 8,  # Hora não está no formato especificado
-    "VENDA_PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE": 99,
-    "VENDA_PRODUTO_ADICIONADO": 88,
-    "VENDA_PRODUTO_REMOVIDO": 89,
+    "VENDA_EXISTENTE": 22,  # Venda já existente
+    "VENDA_NAO_ENCONTRADA": 24,  # Venda não encontrada  
+    "VENDA_JA_CONCLUIDA": 25,  # A venda já foi concluída
+    "VENDA_JA_CANCELADA": 81,
+    "VENDA_ESTOQUE_INSUFICIENTE": 35,  # Não há unidades suficientes do produto em estoque
+    "VENDA_QUANTIDADE_INSUFICIENTE": 124,
     "VENDA_PRODUTO_NAO_INCLUIDO": 87,
+    "VENDA_NENHUM_CADASTRO": 502,
+    "VENDA_PRODUTO_NAO_ENCONTRADO": 30,  # Produto não encontrado 
+    "VENDA_CLIENTE_NAO_ENCONTRADO": 501,
+    "VENDA_EM_PROCESSAMENTO": 307,
     # Estoque
     "PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE": 36,  # Produto não encontrado no estoque  
     "QUANTIDADE_NEGATIVA": 37,  # Quantidade negativa

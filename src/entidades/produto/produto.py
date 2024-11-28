@@ -143,6 +143,8 @@ Assertivas de saída
 @validaCreate
 def createProduto(nome, marca, categoria, preco, preco_promocional, qtd_minima):
 
+    from ..estoque.estoque import createProdutoNoEstoque
+
     global lista_produtos, cont_id
 
     if preco_promocional == -1:
@@ -161,7 +163,7 @@ def createProduto(nome, marca, categoria, preco, preco_promocional, qtd_minima):
     lista_produtos.append(produto)
     cont_id += 1
 
-    # createProdutoNoEstoque(produto["id"])
+    createProdutoNoEstoque(produto["id"])
 
     return STATUS_CODE["SUCESSO"] # Sucesso
 
