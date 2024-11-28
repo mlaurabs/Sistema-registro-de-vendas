@@ -348,18 +348,19 @@ class TestDeleteProduto(unittest.TestCase):
         self.assertEqual(retorno_esperado, retorno_obtido)
 
     def test_04_delete_produto_nok_produto_nao_zerado_no_estoque(self):
+        createProduto("Fanta Laranja 1L", "Fanta", "Bebidas", 10, 8, 0)
+        atualizaQtdEstoque(2, 5)
         print("Caso de teste (PRODUTO) - Produto não zerado no estoque")
         retorno_esperado = STATUS_CODE["PRODUTO_NAO_ZERADO_NO_ESTOQUE"]
-        atualizaQtdEstoque(1, 5)
-        retorno_obtido = deleteProduto(1)
+        retorno_obtido = deleteProduto(2)
         self.assertEqual(retorno_esperado, retorno_obtido)
 
     def test_05_delete_produto_nok_produto_cadastrado_em_venda(self):
-        createVenda("", "13/10/2004", "20:00")
-        addProduto(1, 1, 1)
+        createVenda("155.998.027-36", "13/10/2004", "20:00")
+        addProduto(1, 2, 5)
         print("Caso de teste (PRODUTO) - Produto cadastrado em venda")
         retorno_esperado = STATUS_CODE["PRODUTO_CADASTRADO_EM_VENDA"]
-        retorno_obtido = deleteProduto(1)
+        retorno_obtido = deleteProduto(2)
         self.assertEqual(retorno_esperado, retorno_obtido)
 
 # geraRelatorioProduto e leRelatorioProduto

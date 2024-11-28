@@ -6,7 +6,7 @@ from pathlib import Path
 # Encapsulamento
 __all__ = [
     "getVenda", "createVenda", "concludeVenda", "cancelaVenda", "addProduto", "removeProduto", "showVenda", "showVendas",
-    "showVendasCliente", "showVendasData", "updateVenda", "checkProdutoVenda", "checkClienteVenda", "deleteVenda"
+    "showVendasCliente", "showVendasData", "updateVenda", "checkProdutoVendas", "checkClienteVenda", "deleteVenda"
 ]
 
 # Funções auxiliares
@@ -87,21 +87,22 @@ def validaUpdate(funcao):
     return valida
 
 # Estrutura para armazenar as vendas em memória
-vendas = {}
+vendas = []
 # Armazena o ID disponível
 cont_id = 1
 
 # Funções principais
 
-def getVenda(id_venda, retorno):
+def getVenda(id, retorno):
 
     global vendas
 
-    if retorno == None:
-        return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
-
-    retorno.update(vendas.get(id_venda, None))
-    return STATUS_CODE["SUCESSO"]
+    for venda in vendas:
+        if venda["id"] == id:
+            retorno.update(venda)
+            return STATUS_CODE["SUCESSO"]
+        
+    return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
 
 @validaCreate
 def createVenda(cpf, data, hora):
@@ -111,13 +112,14 @@ def createVenda(cpf, data, hora):
 
     # Se houver a tentativa de usar um cadastro, verificar se existe
     if cpf != "":
-        flag = getCliente(cpf)
+        temp = dict()
+        flag = getCliente(cpf, temp)
         if flag != STATUS_CODE["SUCESSO"]:
             return flag
 
     # Confere se já não existe a para um cliente
     if cpf != "":
-        for venda in vendas.values():
+        for venda in vendas:
             if venda["cpf"] == cpf and venda["data"] == data and venda["hora"] == hora:
                 return STATUS_CODE["VENDA_EXISTENTE"]
 
@@ -128,13 +130,11 @@ def createVenda(cpf, data, hora):
         "data": data,
         "hora": hora,
         "status": "em processamento",
-        "produtos": {}
+        "produtos": []
     }
 
+    vendas.append(nova_venda)
     cont_id += 1
-
-    # Registra a nova venda
-    vendas[id_venda] = nova_venda
 
     return STATUS_CODE["SUCESSO"]
 
@@ -199,11 +199,18 @@ def cancelaVenda(id_venda):
 
     return STATUS_CODE["SUCESSO"]
 
+def checkProdutoVenda(id_produto, venda):
+    for produto in venda["produtos"]:
+        if produto["id"] == id_produto:
+            return True
+        
+    return False
+
 # Revisar
 def addProduto(id_venda, id_produto, quantidade):
 
     from ..produto.produto import getProdutoById
-    from ..estoque.estoque import getProdutoEstoque
+    from ..estoque.estoque import getProdutoEstoque, atualizaQtdEstoque
 
     # Pega a venda
     venda = dict()
@@ -236,15 +243,27 @@ def addProduto(id_venda, id_produto, quantidade):
     # Se não houverem unidades suficientes
     if produto_estoque["quantidade"] < quantidade:
         return STATUS_CODE["VENDA_ESTOQUE_INSUFICIENTE"]
+    
+    # Se o produto já estiver na venda
+    if checkProdutoVenda(id_produto, venda):
+        for produto in venda["produtos"]:
+            if produto["id"] == id_produto:
+                produto["quantidade"] += quantidade
 
-    # Altera a quantidade daquele produto na venda
-    # Cadastra também?
-    venda["produtos"][id_produto] = venda["produtos"].get(id_produto, 0) + quantidade
+    # Se o produto não estiver na venda
+    else:
+        venda["produtos"].append({"id": id_produto, "quantidade": quantidade})
+
+    # Remove as unidades comercializadas do estoque
+    atualizaQtdEstoque(id_produto, -quantidade)
 
     return STATUS_CODE["SUCESSO"]
     
 # Revisar
 def removeProduto(id_venda, id_produto, quantidade):
+
+    from ..produto.produto import getProdutoById
+    from ..estoque.estoque import atualizaQtdEstoque
 
     # Pega a venda
     venda = dict()
@@ -254,20 +273,32 @@ def removeProduto(id_venda, id_produto, quantidade):
     if flag != STATUS_CODE["SUCESSO"]:
         return flag
 
-    # Se o produto não estiver incluído na venda
-    if id_produto not in venda["produtos"] or venda["produtos"][id_produto] < quantidade:
-        return STATUS_CODE["VENDA_PRODUTO_NAO_INCLUIDO"]
+    # Se a venda tiver sido concluída
+    if venda["status"] == "concluída":
+        return STATUS_CODE["VENDA_JA_CONCLUIDA"]
+    
+    # Se a venda tiver sido cancelada
+    elif venda["status"] == "cancelada":
+        return STATUS_CODE["VENDA_JA_CANCELADA"]
 
-    # Verifica se existem produto suficientes pra serem tirados
-    if venda["produtos"][id_produto] < quantidade:
-        return STATUS_CODE["VENDA_QUANTIDADE_INSUFICIENTE"]
+    # Pega o produto
+    produto = dict()
+    flag = getProdutoById(id_produto, produto)
 
-    # Altera a quantidade do produto na venda
-    venda["produtos"][id_produto] -= quantidade
+    # Se o produto não existir
+    if flag != STATUS_CODE["SUCESSO"]:
+        return flag
+    
+    # Remove a quantidade desejada
+    for produto_venda in vendas:
+        if produto_venda["id"] == produto["id"]:
+            produto_venda["quantidade"] -= quantidade
+            # Se a quantidade for 0, remover da lista
+            if produto_venda["quantidade"] == 0:
+                vendas["produtos"].remove(produto_venda)
 
-    # ?
-    if venda["produtos"][id_produto] == 0:
-        del venda["produtos"][id_produto]
+    # Devolve as unidades não comercializadas do estoque
+    atualizaQtdEstoque(id_produto, quantidade)
 
     return STATUS_CODE["SUCESSO"]
 
@@ -369,7 +400,7 @@ def updateVenda(id_venda, cpf, data, hora):
 
     return STATUS_CODE["SUCESSO"]
 
-def checkProdutoVenda(id_produto):
+def checkProdutoVendas(id_produto):
 
     global vendas
 

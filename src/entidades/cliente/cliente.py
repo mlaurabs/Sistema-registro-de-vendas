@@ -228,7 +228,7 @@ def deleteCliente(cpf):
             
             flag = checkClienteVenda(cliente["cpf"])
 
-            if flag == STATUS_CODE["VENDA_CLIENTE_ENCONTRADO"]:
+            if flag == STATUS_CODE["SUCESSO"]:
                 return STATUS_CODE["CLIENTE_CADASTRADO_EM_VENDA"]
 
             lista_clientes.remove(cliente)

@@ -588,7 +588,7 @@ Assertivas de saída
 def deleteProduto(id):
 
     from ..estoque.estoque import getProdutoEstoque, deleteProdutoEstoque
-    from ..venda.venda import checkProdutoVenda
+    from ..venda.venda import checkProdutoVendas
 
     global lista_produtos
 
@@ -599,9 +599,12 @@ def deleteProduto(id):
             getProdutoEstoque(produto["id"], estoque)
             
             if estoque["quantidade"] != 0:
+                print("\n\n\n")
+                print(estoque["quantidade"])
+                print("\n\n\n")
                 return STATUS_CODE["PRODUTO_NAO_ZERADO_NO_ESTOQUE"]
             
-            flag = checkProdutoVenda(produto["id"])
+            flag = checkProdutoVendas(produto["id"])
 
             if flag == STATUS_CODE["SUCESSO"]:
                 return STATUS_CODE["PRODUTO_CADASTRADO_EM_VENDA"]

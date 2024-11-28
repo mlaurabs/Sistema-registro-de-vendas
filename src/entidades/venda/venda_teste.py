@@ -46,7 +46,7 @@ class TestCreateVenda(unittest.TestCase):
         self.assertEqual(response, STATUS_CODE["VENDA_EXISTENTE"])
 
 # createVenda (SEM CLIENTE) - JÁ REVISADO
-class TestCreateVendaSemCliente(unittest.TesteCase):
+class TestCreateVendaSemCliente(unittest.TestCase):
 
     def test_01_createVenda_ok_retorno_cliente_nulo(self):
         print("Caso de teste (VENDA - createVenda) - Sucesso sem Cliente")
@@ -215,7 +215,7 @@ class TestRemoveProduto(unittest.TestCase):
         response = removeProduto(4, 1, 5)
         self.assertEqual(response, STATUS_CODE["VENDA_QUANTIDADE_INSUFICIENTE"])
 
-# updateVeNDA - REVISAR
+# updateVENDA - REVISAR
 class TestUpdateVenda(unittest.TestCase):
 
     def test_01_updateVenda_ok_retorno(self):
