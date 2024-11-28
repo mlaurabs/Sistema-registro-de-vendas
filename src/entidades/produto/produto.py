@@ -587,26 +587,26 @@ Assertivas de saída
 '''
 def deleteProduto(id):
 
+    from ..estoque.estoque import getProdutoEstoque, deleteProdutoEstoque
+    from ..venda.venda import checkProdutoVenda
+
     global lista_produtos
 
     for produto in lista_produtos:
         if id == produto["id"]:
             
-            '''
             estoque = dict()
-            flag = getProdutoEstoque(produto["id"], estoque)
-
-            if flag != STATUS_CODE["SUCESSO"]:
-                return flag
+            getProdutoEstoque(produto["id"], estoque)
             
             if estoque["quantidade"] != 0:
                 return STATUS_CODE["PRODUTO_NAO_ZERADO_NO_ESTOQUE"]
             
             flag = checkProdutoVenda(produto["id"])
 
-            if flag == STATUS_CODE["PRODUTO_ENCONTRADO"]:
+            if flag == STATUS_CODE["SUCESSO"]:
                 return STATUS_CODE["PRODUTO_CADASTRADO_EM_VENDA"]
-            '''
+
+            deleteProdutoEstoque(produto["id"])
 
             lista_produtos.remove(produto)
             return STATUS_CODE["SUCESSO"] # Sucesso
@@ -722,7 +722,3 @@ def leRelatorioProduto():
 
     arquivo.close()
     return STATUS_CODE["SUCESSO"]
-
-if __name__ == "__main__":
-    from ..estoque.estoque import createProdutoNoEstoque, getProdutoEstoque
-    from ..venda.venda import checkProdutoVenda

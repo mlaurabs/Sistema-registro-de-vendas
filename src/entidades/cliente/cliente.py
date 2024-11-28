@@ -2,8 +2,6 @@ from src.status_code import STATUS_CODE
 from pathlib import Path
 from datetime import datetime
 
-from ..venda.venda import checkClienteVenda
-
 __all__ = ["createCliente", "showCliente", "updateClienteByCpf", "updateClienteByNome", "getCliente", "showClientes", "showClientesByNome", "deleteCliente", "geraRelatorioCliente", "leRelatorioCliente"]
 
 lista_clientes = [] # Lista com todos os clientes
@@ -221,6 +219,8 @@ def showClientesByNome(nome):
 
 def deleteCliente(cpf):
 
+    from ..venda.venda import checkClienteVenda
+
     global lista_cliente
 
     for cliente in lista_clientes:
@@ -301,6 +301,3 @@ def leRelatorioCliente():
 
     arquivo.close()
     return STATUS_CODE["SUCESSO"]
-
-if __name__ == "__main__":
-    from ..venda.venda import checkClienteVenda

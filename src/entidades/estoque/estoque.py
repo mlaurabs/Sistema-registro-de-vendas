@@ -1,6 +1,6 @@
 from src.status_code import STATUS_CODE
 
-__all__ = ["createProdutoNoEstoque", "atualizaQtdEstoque", "showEstoque", "getProdutoEstoque", "getQuantidadeEstoque"]
+__all__ = ["createProdutoNoEstoque", "atualizaQtdEstoque", "showEstoque", "getProdutoEstoque", "getQuantidadeEstoque", "deleteProdutoEstoque"]
 
 # Lista global para armazenar os produtos no estoque
 estoque = []
@@ -52,6 +52,9 @@ def atualizaQtdEstoque(id_produto, quantidade):
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]  # Produto não encontrado
 
 def showEstoque():
+
+    global estoque
+
     """
     Exibe todos os produtos no estoque.
     """
@@ -95,3 +98,13 @@ def getQuantidadeEstoque(id_produto):
             return item["quantidade"]  # Retorna a quantidade encontrada
 
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]  # Produto não encontrado
+
+def deleteProdutoEstoque(id_produto):
+    
+    global estoque
+
+    for item in estoque:
+        if item["id_produto"] == id_produto:
+            estoque.remove(item)
+
+    return STATUS_CODE["SUCESSO"]

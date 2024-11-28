@@ -95,6 +95,8 @@ cont_id = 1
 
 def getVenda(id_venda, retorno):
 
+    global vendas
+
     if retorno == None:
         return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
 
@@ -289,6 +291,8 @@ def showVenda(id_venda):
 
 def showVendas():
 
+    global vendas
+
     # Se não houver vendas cadastradas
     if not vendas:
         return STATUS_CODE["VENDA_NENHUM_CADASTRO"]
@@ -303,6 +307,8 @@ def showVendas():
     return STATUS_CODE["SUCESSO"]
 
 def showVendasCliente(cpf):
+
+    global vendas
 
     # Pega as vendas do cliente
     vendas_cliente = [venda for venda in vendas.values() if venda["cpf"] == cpf]
@@ -321,6 +327,8 @@ def showVendasCliente(cpf):
     return STATUS_CODE["SUCESSO"]
 
 def showVendasData(data):
+
+    global vendas
 
     # Pega as vendas na data
     vendas_data = [venda for venda in vendas.values() if venda["data"] == data]
@@ -363,6 +371,8 @@ def updateVenda(id_venda, cpf, data, hora):
 
 def checkProdutoVenda(id_produto):
 
+    global vendas
+
     # Procura produto nas vendas
     for venda in vendas.values():
         if id_produto in venda["produtos"]:
@@ -372,6 +382,8 @@ def checkProdutoVenda(id_produto):
 
 def checkClienteVenda(cpf_cliente):
 
+    global vendas
+
     # Procura o cliente nas vendas
     for venda in vendas.values():
         if venda["cpf"] == cpf_cliente:
@@ -380,6 +392,8 @@ def checkClienteVenda(cpf_cliente):
     return STATUS_CODE["VENDA_CLIENTE_NAO_ENCONTRADO"]
 
 def deleteVenda(id_venda):
+
+    global vendas
 
     # Pega a venda
     venda = dict()
@@ -405,6 +419,7 @@ def deleteVenda(id_venda):
 # Funções de Relatório
 
 def geraRelatorioVenda():
+    
     global vendas
 
     caminho_relativo = Path("dados/vendas/relatorio_venda_utf32.dat")
