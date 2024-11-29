@@ -6,7 +6,8 @@ from pathlib import Path
 # Encapsulamento
 __all__ = [
     "getVenda", "createVenda", "concludeVenda", "cancelaVenda", "addProduto", "removeProduto", "showVenda", "showVendas",
-    "showVendasCliente", "showVendasData", "updateVenda", "checkProdutoVendas", "checkClienteVenda", "deleteVenda"
+    "showVendasCliente", "showVendasData", "updateVenda", "checkProdutoVenda", "checkClienteVenda", "deleteVenda", "limpaVendas",
+    "geraRelatorioVenda", "leRelatorioVenda"
 ]
 
 # Funções auxiliares
@@ -25,31 +26,31 @@ def formatarHora(hora):
     except ValueError:
         return None
 
-# Revisar
-def validarCPF(cpf):
-    """
-    Valida se o CPF segue o formato 123.456.789-09 ou é uma string vazia.
-    
-    :param cpf: CPF a ser validado
-    :type cpf: str
-    :return: True se o CPF for válido ou vazio, False caso contrário
-    :rtype: bool
-    """
-    if not cpf:  # Verifica se é uma string vazia
-        return True
+def validaCPF(cpf):
 
-    # Expressão regular para validar o formato do CPF
-    cpf_pattern = r"^\d{3}\.\d{3}\.\d{3}-\d{2}$"
-    return bool(re.match(cpf_pattern, cpf))
+    # Verifica se o CPF tem exatamente 14 caracteres
+    if len(cpf) != 14:
+        return STATUS_CODE["VENDA_CPF_FORMATO_INCORRETO"]
+    
+    # Verifica se os pontos e o hífen estão nos lugares corretos
+    if cpf[3] != '.' or cpf[7] != '.' or cpf[11] != '-':
+        return STATUS_CODE["VENDA_CPF_FORMATO_INCORRETO"]
+    
+    # Verifica se os outros caracteres são numéricos
+    numeros = cpf.replace('.', '').replace('-', '')
+    if not numeros.isdigit():
+        return STATUS_CODE["VENDA_CPF_FORMATO_INCORRETO"]
+    
+    return STATUS_CODE["SUCESSO"]
 
 def validaCreate(funcao):
 
     def valida(cpf, data, hora):
 
         if cpf != "":
-            cpf = validarCPF(cpf)
-            if not cpf:
-                return STATUS_CODE["VENDA_CPF_FORMATO_INCORRETO"]
+            flag = validaCPF(cpf)
+            if flag != STATUS_CODE["SUCESSO"]:
+                return flag
 
         data = formatarData(data)
         if not data:
@@ -68,9 +69,9 @@ def validaUpdate(funcao):
     def valida(id_venda, cpf, data, hora):
 
         if cpf != "":
-            cpf = validarCPF(cpf)
-            if not cpf:
-                return STATUS_CODE["VENDA_CPF_FORMATO_INCORRETO"]
+            flag = validaCPF(cpf)
+            if flag != STATUS_CODE["SUCESSO"]:
+                return flag
 
         if data != "":
             data = formatarData(data)
@@ -107,17 +108,17 @@ def getVenda(id, retorno):
 @validaCreate
 def createVenda(cpf, data, hora):
 
-    global vendas, cont_id
     from ..cliente.cliente import getCliente
+    global vendas, cont_id
 
     # Se houver a tentativa de usar um cadastro, verificar se existe
     if cpf != "":
         temp = dict()
         flag = getCliente(cpf, temp)
         if flag != STATUS_CODE["SUCESSO"]:
-            return flag
+            return flag # CLIENTE_NAO_ENCONTRADO
 
-    # Confere se já não existe a para um cliente
+    # Confere se já não existe a venda para um cliente
     if cpf != "":
         for venda in vendas:
             if venda["cpf"] == cpf and venda["data"] == data and venda["hora"] == hora:
@@ -140,15 +141,19 @@ def createVenda(cpf, data, hora):
 
 def concludeVenda(id_venda):
 
-    from ..estoque.estoque import atualizaQtdEstoque
+    global vendas
+
+    flag = 1
 
     # Pega a venda
-    venda = dict()
-    flag = getVenda(id_venda, venda)
+    for venda in vendas:
+        if venda["id"] == id_venda:
+            flag = 0
+            break
 
     # Se a venda não existir
-    if flag != STATUS_CODE["SUCESSO"]:
-        return flag
+    if flag:
+        return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
     
     # Se a venda já estiver sido concluída
     if venda["status"] == "concluída":
@@ -158,14 +163,6 @@ def concludeVenda(id_venda):
     if venda["status"] == "cancelada":
         return STATUS_CODE["VENDA_JA_CANCELADA"]
 
-    # Atualiza a quantidade no estoque
-    for produto_id, quantidade in venda["produtos"].items():
-        flag = atualizaQtdEstoque(produto_id, -quantidade)
-        # Se não houverem unidades suficientes
-        if flag != STATUS_CODE["SUCESSO"]:
-            return flag
-
-    # Marca a venda como concluída
     venda["status"] = "concluída"
 
     return STATUS_CODE["SUCESSO"]
@@ -174,13 +171,17 @@ def cancelaVenda(id_venda):
 
     from ..estoque.estoque import atualizaQtdEstoque
 
+    flag = 1
+
     # Pega a venda
-    venda = dict()
-    flag = getVenda(id_venda, venda)
+    for venda in vendas:
+        if venda["id"] == id_venda:
+            flag = 0
+            break
 
     # Se a venda não existir
-    if flag != STATUS_CODE["SUCESSO"]:
-        return flag
+    if flag:
+        return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
     
     # Se a venda já estiver sido concluída
     if venda["status"] == "concluída":
@@ -190,35 +191,32 @@ def cancelaVenda(id_venda):
     if venda["status"] == "cancelada":
         return STATUS_CODE["VENDA_JA_CANCELADA"]
 
-    # Atualiza a quantidade no estoque
-    for produto_id, quantidade in venda["produtos"].items():
-        atualizaQtdEstoque(produto_id, +quantidade)
+    # Devolve os produtos ao estoque
+    for produto_id, quantidade in venda["produtos"]:
+        atualizaQtdEstoque(produto_id, quantidade)
 
-    # Marca a venda como cancelada
     venda["status"] = "cancelada"
 
     return STATUS_CODE["SUCESSO"]
 
-def checkProdutoVenda(id_produto, venda):
-    for produto in venda["produtos"]:
-        if produto["id"] == id_produto:
-            return True
-        
-    return False
-
-# Revisar
 def addProduto(id_venda, id_produto, quantidade):
+
+    global vendas
 
     from ..produto.produto import getProdutoById
     from ..estoque.estoque import getProdutoEstoque, atualizaQtdEstoque
 
+    flag = 1
+
     # Pega a venda
-    venda = dict()
-    flag = getVenda(id_venda, venda)
+    for venda in vendas:
+        if venda["id"] == id_venda:
+            flag = 0
+            break
 
     # Se a venda não existir
-    if flag != STATUS_CODE["SUCESSO"]:
-        return flag
+    if flag:
+        return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
 
     # Se a venda tiver sido concluída
     if venda["status"] == "concluída":
@@ -234,7 +232,7 @@ def addProduto(id_venda, id_produto, quantidade):
 
     # Se o produto não existir
     if flag != STATUS_CODE["SUCESSO"]:
-        return flag
+        return flag # PRODUTO_NAO_ENCONTRADO
     
     # Pega o produto no estoque
     produto_estoque = dict()
@@ -244,14 +242,17 @@ def addProduto(id_venda, id_produto, quantidade):
     if produto_estoque["quantidade"] < quantidade:
         return STATUS_CODE["VENDA_ESTOQUE_INSUFICIENTE"]
     
+    flag = 1
+
     # Se o produto já estiver na venda
-    if checkProdutoVenda(id_produto, venda):
-        for produto in venda["produtos"]:
-            if produto["id"] == id_produto:
-                produto["quantidade"] += quantidade
+    for produto in venda["produtos"]:
+        if produto["id"] == id_produto:
+            produto["quantidade"] += quantidade
+            flag = 0
+            break
 
     # Se o produto não estiver na venda
-    else:
+    if flag:
         venda["produtos"].append({"id": id_produto, "quantidade": quantidade})
 
     # Remove as unidades comercializadas do estoque
@@ -259,20 +260,25 @@ def addProduto(id_venda, id_produto, quantidade):
 
     return STATUS_CODE["SUCESSO"]
     
-# Revisar
 def removeProduto(id_venda, id_produto, quantidade):
+
+    global vendas
 
     from ..produto.produto import getProdutoById
     from ..estoque.estoque import atualizaQtdEstoque
 
+    flag = 1
+
     # Pega a venda
-    venda = dict()
-    flag = getVenda(id_venda, venda)
+    for venda in vendas:
+        if venda["id"] == id_venda:
+            flag = 0
+            break
 
     # Se a venda não existir
-    if flag != STATUS_CODE["SUCESSO"]:
-        return flag
-
+    if flag:
+        return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
+    
     # Se a venda tiver sido concluída
     if venda["status"] == "concluída":
         return STATUS_CODE["VENDA_JA_CONCLUIDA"]
@@ -287,18 +293,28 @@ def removeProduto(id_venda, id_produto, quantidade):
 
     # Se o produto não existir
     if flag != STATUS_CODE["SUCESSO"]:
-        return flag
+        return flag # PRODUTO_NAO_ENCONTRADO
     
-    # Remove a quantidade desejada
-    for produto_venda in vendas:
-        if produto_venda["id"] == produto["id"]:
-            produto_venda["quantidade"] -= quantidade
-            # Se a quantidade for 0, remover da lista
-            if produto_venda["quantidade"] == 0:
-                vendas["produtos"].remove(produto_venda)
+    flag = 1
+    
+    # Acha o produto e tira a quantidade pedida
+    for produto in venda["produtos"]:
+        if produto["id"] == id_produto:
+            if quantidade > produto["quantidade"]:
+                return STATUS_CODE["VENDA_QUANTIDADE_INSUFICIENTE"]
+            produto["quantidade"] -= quantidade
+            # Remove o produto na venda
+            if produto["quantidade"] == 0:
+                venda["produtos"].remove(produto)
+            flag = 0
+            break
 
-    # Devolve as unidades não comercializadas do estoque
-    atualizaQtdEstoque(id_produto, quantidade)
+    # Se o produto não estiver na venda
+    if flag:
+        return STATUS_CODE["VENDA_PRODUTO_NAO_INCLUIDO"]
+
+    # Devolve as unidades não comercializadas ao estoque
+    atualizaQtdEstoque(id_produto, -quantidade)
 
     return STATUS_CODE["SUCESSO"]
 
@@ -310,7 +326,7 @@ def showVenda(id_venda):
 
     # Se a venda não existir
     if flag != STATUS_CODE["SUCESSO"]:
-        return flag
+        return flag # VENDA_NAO_ENCONTRADA
 
     # Imprime a venda
     print("\n", end="")
@@ -329,7 +345,7 @@ def showVendas():
         return STATUS_CODE["VENDA_NENHUM_CADASTRO"]
 
     # Imprime as vendas
-    for venda in vendas.values():
+    for venda in vendas:
         print("\n", end="")
         for atributo,valor in venda.items():
             print(f"{atributo}: {valor}")
@@ -339,21 +355,30 @@ def showVendas():
 
 def showVendasCliente(cpf):
 
+    from ..cliente.cliente import getCliente
+
+    # Se houver a tentativa de usar um cadastro, verificar se existe
+    if cpf != "":
+        temp = dict()
+        flag = getCliente(cpf, temp)
+        if flag != STATUS_CODE["SUCESSO"]:
+            return flag # CLIENTE_NAO_ENCONTRADO
+
     global vendas
 
+    flag = 1
+
     # Pega as vendas do cliente
-    vendas_cliente = [venda for venda in vendas.values() if venda["cpf"] == cpf]
+    for venda in vendas:
+        if venda["cpf"] == cpf:
+            flag = 0
+            print("\n", end="")
+            for atributo,valor in venda.items():
+                print(f"{atributo}: {valor}")
+            print("\n")
 
-    # Se não houverem vendas do cliente
-    if not vendas_cliente:
+    if flag:
         return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
-
-    # Imprime as vendas
-    for venda in vendas_cliente:
-        print("\n", end="")
-        for atributo,valor in venda.items():
-            print(f"{atributo}: {valor}")
-        print("\n")
 
     return STATUS_CODE["SUCESSO"]
 
@@ -361,34 +386,38 @@ def showVendasData(data):
 
     global vendas
 
-    # Pega as vendas na data
-    vendas_data = [venda for venda in vendas.values() if venda["data"] == data]
+    flag = 1
 
-    # Se não houverem vendas na data
-    if not vendas_data:
+    # Pega as vendas do cliente
+    for venda in vendas:
+        if venda["data"] == data:
+            flag = 0
+            print("\n", end="")
+            for atributo,valor in venda.items():
+                print(f"{atributo}: {valor}")
+            print("\n")
+
+    if flag:
         return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
-
-    # Imprime as vendas
-    for venda in vendas_data.values():
-        print("\n", end="")
-        for atributo,valor in venda.items():
-            print(f"{atributo}: {valor}")
-        print("\n")
 
     return STATUS_CODE["SUCESSO"]
 
 @validaUpdate
 def updateVenda(id_venda, cpf, data, hora):
 
+    flag = 1
+
     # Pega a venda
-    venda = dict()
-    flag = getVenda(id_venda, venda)
+    for venda in vendas:
+        if venda["id"] == id_venda:
+            flag = 0
+            break
 
     # Se a venda não existir
-    if flag != STATUS_CODE["SUCESSO"]:
-        return flag
+    if flag:
+        return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
 
-    # Altera data e hora
+    # Altera cpf, data e hora
     if cpf != "":
         venda["cpf"] = cpf
     
@@ -400,14 +429,15 @@ def updateVenda(id_venda, cpf, data, hora):
 
     return STATUS_CODE["SUCESSO"]
 
-def checkProdutoVendas(id_produto):
+def checkProdutoVenda(id_produto):
 
     global vendas
 
     # Procura produto nas vendas
-    for venda in vendas.values():
-        if id_produto in venda["produtos"]:
-            return STATUS_CODE["SUCESSO"]
+    for venda in vendas:
+        for produto in venda["produtos"]:
+            if produto["id"] == id_produto:
+                return STATUS_CODE["SUCESSO"]
         
     return STATUS_CODE["VENDA_PRODUTO_NAO_ENCONTRADO"]
 
@@ -416,7 +446,7 @@ def checkClienteVenda(cpf_cliente):
     global vendas
 
     # Procura o cliente nas vendas
-    for venda in vendas.values():
+    for venda in vendas:
         if venda["cpf"] == cpf_cliente:
             return STATUS_CODE["SUCESSO"]
         
@@ -432,7 +462,7 @@ def deleteVenda(id_venda):
 
     # Se a venda não existir
     if flag != STATUS_CODE["SUCESSO"]:
-        return flag
+        return flag # VENDA_NAO_ENCONTRADA
     
     # Se a venda tiver sido concluída
     if venda["status"] == "concluída":
@@ -443,38 +473,38 @@ def deleteVenda(id_venda):
         return STATUS_CODE["VENDA_EM_PROCESSAMENTO"]
 
     # Deleta a venda
-    del vendas[id_venda]
+    vendas.remove(venda)
 
     return STATUS_CODE["SUCESSO"]
+
+def limpaVendas():
+    global vendas, cont_id
+    cont_id = 1
+    vendas.clear()
 
 # Funções de Relatório
 
 def geraRelatorioVenda():
-    
+
     global vendas
 
-    caminho_relativo = Path("dados/vendas/relatorio_venda_utf32.dat")
+    caminho_relativo = Path("dados/clientes/relatorio_venda_utf32.dat")
     caminho_absoluto = caminho_relativo.resolve()
 
     arquivo = open(caminho_absoluto, "wb")
 
-    bom = 0xFFFE0000  # Byte Order Mark para UTF-32 LE
+    bom = 0xFFFE0000
     bom_bytes = bom.to_bytes(4, byteorder="little")
 
     arquivo.write(bom_bytes)
 
-    for indice, venda in enumerate(vendas.values()):
+    for indice, cliente in enumerate(vendas):
         string = ""
 
-        for chave, valor in venda.items():
-            if chave == "produtos":
-                # Serializa o dicionário de produtos no formato id:quantidade;id:quantidade
-                produtos_str = ";".join([f"{id}:{quantidade}" for id, quantidade in valor.items()])
-                string += produtos_str + ','
-            else:
-                string += str(valor) + ','
+        for valor in cliente.values():
+            string += str(valor) + ','
 
-        if indice != len(vendas) - 1:
+        if indice != len(vendas)-1:
             string = string[:-1] + '-'
         else:
             string = string[:-1]
@@ -485,20 +515,18 @@ def geraRelatorioVenda():
 
     return STATUS_CODE["SUCESSO"]
 
-def lerRelatorioVenda():
+def leRelatorioVenda():
+
     global vendas
 
-    venda_template = {
-        "id": None, "cpf": None, "data": None, "hora": None,
-        "status": None, "produtos": {}
-    }
+    venda_template = {"id": None, "cpf": None, "data": None, "hora": None, "status": None, "produtos": None}
 
-    caminho_relativo = Path("dados/vendas/relatorio_venda_utf32.dat")
+    caminho_relativo = Path("dados/clientes/relatorio_venda_utf32.dat")
     caminho_absoluto = caminho_relativo.resolve()
 
     arquivo = open(caminho_absoluto, "rb")
 
-    arquivo.read(4)  # Ignorar cabeçalho UTF-32
+    arquivo.read(4)
     conteudo = arquivo.read()
     conteudo = conteudo.decode('utf-32-le')
 
@@ -506,6 +534,7 @@ def lerRelatorioVenda():
 
     for linha in conteudo:
         if linha:
+            
             linha = linha.strip()
             linha = linha.split(',')
             i = 0
@@ -513,17 +542,10 @@ def lerRelatorioVenda():
             venda = venda_template.copy()
 
             for atributo in venda.keys():
-                if atributo == "id":
-                    venda[atributo] = int(linha[i])
-                elif atributo == "produtos":
-                    # Produtos são armazenados como um dicionário de pares id: quantidade
-                    produtos = linha[i].split(';') if linha[i] else []
-                    venda[atributo] = {int(prod.split(':')[0]): int(prod.split(':')[1]) for prod in produtos}
-                else:
-                    venda[atributo] = linha[i]
-                i += 1
 
-            vendas[venda["id"]] = venda
+                venda[atributo] = linha[i]
+
+            vendas.append(venda)
 
     arquivo.close()
     return STATUS_CODE["SUCESSO"]

@@ -2,7 +2,7 @@ from src.status_code import STATUS_CODE
 from pathlib import Path
 from datetime import datetime
 
-__all__ = ["createCliente", "showCliente", "updateClienteByCpf", "updateClienteByNome", "getCliente", "showClientes", "showClientesByNome", "deleteCliente", "geraRelatorioCliente", "leRelatorioCliente"]
+__all__ = ["createCliente", "showCliente", "updateClienteByCpf", "updateClienteByNome", "getCliente", "showClientes", "showClientesByNome", "deleteCliente", "geraRelatorioCliente", "leRelatorioCliente", "limpaClientes"]
 
 lista_clientes = [] # Lista com todos os clientes
 
@@ -235,6 +235,11 @@ def deleteCliente(cpf):
             return STATUS_CODE["SUCESSO"] # Sucesso
         
     return STATUS_CODE["CLIENTE_NAO_ENCONTRADO"] # Cliente não encontrado
+
+def limpaClientes():
+    global lista_clientes, cont_id
+    cont_id = 1
+    lista_clientes.clear()
 
 def geraRelatorioCliente():
 

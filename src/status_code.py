@@ -35,6 +35,7 @@ STATUS_CODE = {
     "VENDA_PRODUTO_NAO_ENCONTRADO": 30,  # Produto não encontrado 
     "VENDA_CLIENTE_NAO_ENCONTRADO": 501,
     "VENDA_EM_PROCESSAMENTO": 307,
+    "VENDA_PRODUTO_NAO_INCLUSO": 308,
     # Estoque
     "PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE": 36,  # Produto não encontrado no estoque  
     "QUANTIDADE_NEGATIVA": 37,  # Quantidade negativa

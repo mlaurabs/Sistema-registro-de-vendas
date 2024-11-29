@@ -1,6 +1,6 @@
 from src.status_code import STATUS_CODE
 
-__all__ = ["createProdutoNoEstoque", "atualizaQtdEstoque", "showEstoque", "getProdutoEstoque", "getQuantidadeEstoque", "deleteProdutoEstoque"]
+__all__ = ["createProdutoNoEstoque", "atualizaQtdEstoque", "showEstoque", "getProdutoEstoque", "getQuantidadeEstoque", "deleteProdutoEstoque", "limpaEstoque"]
 
 # Lista global para armazenar os produtos no estoque
 estoque = []
@@ -108,3 +108,7 @@ def deleteProdutoEstoque(id_produto):
             estoque.remove(item)
 
     return STATUS_CODE["SUCESSO"]
+
+def limpaEstoque():
+    global estoque
+    estoque.clear()

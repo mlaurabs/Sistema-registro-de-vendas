@@ -1,7 +1,7 @@
 from src.status_code import STATUS_CODE
 from pathlib import Path
 
-__all__ = ["createProduto", "showProdutoById", "showProdutoByNome", "updateProduto", "getProdutoById", "getProdutoByNome", "showProdutos", "showProdutosByMarca", "showProdutosByCategoria", "showProdutosByFaixaPreco", "showProdutosByNome", "deleteProduto", "geraRelatorioProduto", "leRelatorioProduto"]
+__all__ = ["createProduto", "showProdutoById", "showProdutoByNome", "updateProduto", "getProdutoById", "getProdutoByNome", "showProdutos", "showProdutosByMarca", "showProdutosByCategoria", "showProdutosByFaixaPreco", "showProdutosByNome", "deleteProduto", "geraRelatorioProduto", "leRelatorioProduto", "limpaProdutos"]
 
 cont_id = 1 # Guarda o próximo ID a ser cadastrado
 lista_produtos = [] # Lista com todos os produtos
@@ -633,6 +633,12 @@ Assertivas de entrada
 Assertivas de saída 
 - Os dados dos produtos serão impressos no arquivo .dat em UTF-32
 '''
+
+def limpaProdutos():
+    global lista_produtos, cont_id
+    cont_id = 1
+    lista_produtos.clear()
+
 def geraRelatorioProduto():
 
     global lista_produtos
