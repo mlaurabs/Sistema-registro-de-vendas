@@ -4,8 +4,12 @@ import os
 from .produto import *
 from src.status_code import *
 
-# createProduto - JÁ REVISADO
+# createProduto
 class TestCreateProduto(unittest.TestCase):
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaProdutos()
 
     def test_01_create_produto_ok_retorno(self):
         print("Caso de teste (PRODUTO - createProduto) - Criação")
@@ -93,12 +97,20 @@ class TestCreateProduto(unittest.TestCase):
         retorno_esperado = STATUS_CODE["PRODUTO_EXISTENTE"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-# showProdutoById - JÁ REVISADO
+# showProdutoById
 class TestShowProdutoById(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaProdutos()
 
     @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
     def test_01_show_produto_id_ok_encontrado(self, mock_stdout):
-        print("Caso de teste (PRODUTO - showProdutoById) - Exibicação")
+        print("Caso de teste (PRODUTO - showProdutoById) - Exibição")
         retorno_obtido = showProdutoById(1)
         retorno_esperado = STATUS_CODE["SUCESSO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
@@ -109,8 +121,16 @@ class TestShowProdutoById(unittest.TestCase):
         retorno_esperado = STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-# showProdutoByNome - JÁ REVISADO
+# showProdutoByNome
 class TestShowProdutoByNome(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaProdutos()
 
     @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
     def test_01_show_produto_nome_ok_encontrado(self, mock_stdout):
@@ -125,8 +145,16 @@ class TestShowProdutoByNome(unittest.TestCase):
         retorno_esperado = STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-# updateProduto - JÁ REVISADO
+# updateProduto
 class TestUpdateProduto(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaProdutos()
     
     def test_01_update_produto_ok_retorno(self):
         print("Caso de teste (PRODUTO - updateProduto) - Atualização")
@@ -196,8 +224,16 @@ class TestUpdateProduto(unittest.TestCase):
         retorno_esperado = STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-# getProdutoById - JÁ REVISADO
+# getProdutoById
 class TestGetProdutoById(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaProdutos()
 
     def test_01_get_produto_id_ok_retorno(self):
         print("Caso de teste (PRODUTO - getProdutoById) - Obtenção")
@@ -221,8 +257,16 @@ class TestGetProdutoById(unittest.TestCase):
         retorno_obtido = getProdutoById(2, temp)
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-# getProdutoByNome - JÁ REVISADO
+# getProdutoByNome
 class TestGetProdutoByNome(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaProdutos()
 
     def test_01_get_produto_nome_ok_retorno(self):
         print("Caso de teste (PRODUTO - getProdutoByNome) - Obtenção")
@@ -246,8 +290,16 @@ class TestGetProdutoByNome(unittest.TestCase):
         retorno_obtido = getProdutoByNome("Coca-Cola Zero 500ml", temp)
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-# showProdutos - JÁ REVISADO
+# showProdutos
 class TestShowProdutos(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaProdutos()
 
     @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
     def test_01_show_produtos_ok_retorno(self, mock_stdout):
@@ -257,13 +309,22 @@ class TestShowProdutos(unittest.TestCase):
         self.assertEqual(retorno_esperado, retorno_obtido)
 
     def test_02_show_produtos_nok_nenhum_produto_cadastrado(self):
+        limpaProdutos()
         print("Caso de teste (PRODUTO - showProdutos) - Nenhum produto cadastrado")
         retorno_esperado = STATUS_CODE["PRODUTO_NENHUM_CADASTRO"]
         retorno_obtido = showProdutos()
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-# showProdutosByMarca - JÁ REVISADO
+# showProdutosByMarca
 class TestShowProdutosByMarca(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaProdutos()
 
     @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
     def test_01_show_produtos_marca_ok_retorno(self, mock_stdout):
@@ -278,8 +339,16 @@ class TestShowProdutosByMarca(unittest.TestCase):
         retorno_obtido = showProdutosByMarca("Nescau")
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-# showProdutosByCategoria - JÁ REVISADO
+# showProdutosByCategoria
 class TestShowProdutosByCategoria(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaProdutos()
 
     @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
     def test_01_show_produtos_categoria_ok_retorno(self, mock_stdout):
@@ -294,8 +363,16 @@ class TestShowProdutosByCategoria(unittest.TestCase):
         retorno_obtido = showProdutosByCategoria("Laticínios")
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-# showProdutosByFaixaPreco - JÁ REVISADO
+# showProdutosByFaixaPreco
 class TestShowProdutosByFaixaPreco(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaProdutos()
 
     @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
     def test_01_show_produtos_faixa_preco_ok_retorno(self, mock_stdout):
@@ -310,8 +387,16 @@ class TestShowProdutosByFaixaPreco(unittest.TestCase):
         retorno_obtido = showProdutosByFaixaPreco(100,200)
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-# showProdutosByNome - JÁ REVISADO
+# showProdutosByNome
 class TestShowProdutosByNome(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaProdutos()
 
     @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
     def test_01_show_produtos_nome_ok_retorno(self, mock_stdout):
@@ -326,8 +411,27 @@ class TestShowProdutosByNome(unittest.TestCase):
         retorno_obtido = showProdutosByNome("Sprite")
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-# deleteProduto - JÁ REVISADO
+# deleteProduto
 class TestDeleteProduto(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        # Removido
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        # Não zerado no estoque
+        createProduto("Fanta Laranja 1L", "Fanta", "Bebidas", 10, 8, 0)
+        atualizaQtdEstoque(2, 5)
+        # Cadastrado em venda
+        createProduto("Guaraná 1L", "Guaraná", "Bebidas", 9, 7.5, 0)
+        atualizaQtdEstoque(3, 5)
+        createVenda("", "13/10/2004", "20:00")
+        addProduto(1, 3, 5)
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaProdutos()
+        limpaVendas()
+        limpaEstoque()
 
     def test_01_delete_produto_ok_retorno(self):
         print("Caso de teste (PRODUTO - deleteProduto) - Exclusão")
@@ -344,36 +448,32 @@ class TestDeleteProduto(unittest.TestCase):
     def test_03_delete_produto_nok_nenhum_produto_encontrado(self):
         print("Caso de teste (PRODUTO - deleteProduto) - Produto não encontrado")
         retorno_esperado = STATUS_CODE["PRODUTO_NAO_ENCONTRADO"]
-        retorno_obtido = deleteProduto(2)
+        retorno_obtido = deleteProduto(99)
         self.assertEqual(retorno_esperado, retorno_obtido)
 
     def test_04_delete_produto_nok_produto_nao_zerado_no_estoque(self):
-        createProduto("Fanta Laranja 1L", "Fanta", "Bebidas", 10, 8, 0)
-        atualizaQtdEstoque(2, 5)
         print("Caso de teste (PRODUTO) - Produto não zerado no estoque")
         retorno_esperado = STATUS_CODE["PRODUTO_NAO_ZERADO_NO_ESTOQUE"]
         retorno_obtido = deleteProduto(2)
         self.assertEqual(retorno_esperado, retorno_obtido)
 
     def test_05_delete_produto_nok_produto_cadastrado_em_venda(self):
-        createVenda("155.998.027-36", "13/10/2004", "20:00")
-        addProduto(1, 2, 5)
         print("Caso de teste (PRODUTO) - Produto cadastrado em venda")
         retorno_esperado = STATUS_CODE["PRODUTO_CADASTRADO_EM_VENDA"]
-        retorno_obtido = deleteProduto(2)
+        retorno_obtido = deleteProduto(3)
         self.assertEqual(retorno_esperado, retorno_obtido)
 
 # geraRelatorioProduto e leRelatorioProduto
 class TestRelatorioProduto(unittest.TestCase):
     
     def test_01_gera_relatorio_produto(self):
-        print("Caso de teste (PRODUTO) - Geração do relatório de produtos")
+        print("Caso de teste (PRODUTO - geraRelatorioProduto) - Geração do relatório de produtos")
         retorno_esperado = STATUS_CODE["SUCESSO"]
         retorno_obtido = geraRelatorioProduto()
         self.assertEqual(retorno_esperado, retorno_obtido)
 
     def test_02_le_relatorio_produto(self):
-        print("Caso de teste (PRODUTO) - Leitura do relatório de produtos e cadastro no sistema")
+        print("Caso de teste (PRODUTO - leRelatorioProduto) - Leitura do relatório de produtos e cadastro no sistema")
         retorno_esperado = STATUS_CODE["SUCESSO"]
         retorno_obtido = leRelatorioProduto()
         self.assertEqual(retorno_esperado, retorno_obtido)
@@ -383,13 +483,12 @@ def suite():
     suite = unittest.TestSuite()
 
     # Adicionando as classes e os testes na ordem desejada
-    suite.addTest(TestShowProdutos('test_02_show_produtos_nok_nenhum_produto_cadastrado'))
     suite.addTest(unittest.makeSuite(TestCreateProduto))
     suite.addTest(unittest.makeSuite(TestShowProdutoById))
     suite.addTest(unittest.makeSuite(TestShowProdutoByNome))
     suite.addTest(unittest.makeSuite(TestGetProdutoById))
     suite.addTest(unittest.makeSuite(TestGetProdutoByNome))
-    suite.addTest(TestShowProdutos('test_01_show_produtos_ok_retorno'))
+    suite.addTest(unittest.makeSuite(TestShowProdutos))
     suite.addTest(unittest.makeSuite(TestShowProdutosByMarca))
     suite.addTest(unittest.makeSuite(TestShowProdutosByCategoria))
     suite.addTest(unittest.makeSuite(TestShowProdutosByFaixaPreco))
@@ -402,7 +501,7 @@ def suite():
 
 # Executa os testes
 if __name__ == "__main__":
-    from ..estoque.estoque import atualizaQtdEstoque
-    from ..venda.venda import createVenda, addProduto
+    from ..estoque.estoque import atualizaQtdEstoque, limpaEstoque
+    from ..venda.venda import createVenda, addProduto, limpaVendas
     runner = unittest.TextTestRunner()
     runner.run(suite())
