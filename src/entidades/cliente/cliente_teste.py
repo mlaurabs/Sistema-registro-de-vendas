@@ -7,6 +7,10 @@ from src.status_code import *
 # createCliente
 class TestCreateCliente(unittest.TestCase):
 
+    @classmethod
+    def tearDownClass(cls):
+        limpaClientes()
+
     def test_01_create_cliente_ok_retorno(self):
         print("Caso de teste (CLIENTE - createCliente) - Criação")
         retorno_esperado = STATUS_CODE["SUCESSO"]
@@ -70,6 +74,14 @@ class TestCreateCliente(unittest.TestCase):
 
 # showCliente
 class TestShowCliente(unittest.TestCase):
+    
+    @classmethod
+    def setUpClass(cls):
+        createCliente("155.998.027-36", "Matheus Figueiredo", "13/10/2003")
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaClientes()
 
     @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
     def test_01_show_cliente_id_ok_encontrado(self, mock_stdout):
@@ -86,6 +98,14 @@ class TestShowCliente(unittest.TestCase):
 
 # updateClienteByCpf
 class TestUpdateClienteByCpf(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        createCliente("155.998.027-36", "Matheus Figueiredo", "13/10/2003")
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaClientes()
 
     def test_01_update_cliente_by_cpf_ok_retorno(self):
         print("Caso de teste (CLIENTE - updateClienteByCpf) - Atualização")
@@ -127,6 +147,14 @@ class TestUpdateClienteByCpf(unittest.TestCase):
 # updateClienteByNome
 class TestUpdateClienteByNome(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        createCliente("155.998.027-36", "Matheus Figueiredo", "13/10/2003")
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaClientes()
+
     def test_01_update_cliente_by_nome_ok_retorno(self):
         print("Caso de teste (CLIENTE - updateClienteByNome) - Atualização")
         retorno_esperado = STATUS_CODE["SUCESSO"]
@@ -167,8 +195,16 @@ class TestUpdateClienteByNome(unittest.TestCase):
 # getCliente
 class TestGetCliente(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        createCliente("155.998.027-36", "Matheus Figueiredo", "13/10/2003")
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaClientes()
+
     def test_01_get_cliente_ok_retorno(self):
-        print("Caso de teste (CLIENTE - getCliente) - Obtenção do cliente")
+        print("Caso de teste (CLIENTE - getCliente) - Obtenção")
         temp = dict()
         retorno_esperado = STATUS_CODE["SUCESSO"]
         retorno_obtido = getCliente("155.998.027-36", temp)
@@ -191,6 +227,14 @@ class TestGetCliente(unittest.TestCase):
 # showClientes
 class TestShowClientes(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        createCliente("155.998.027-36", "Matheus Figueiredo", "13/10/2003")
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaClientes()
+
     @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
     def test_01_show_clientes_ok_retorno(self, mock_stdout):
         print("Caso de teste (CLIENTE - showClientes) - Exibição")
@@ -199,6 +243,7 @@ class TestShowClientes(unittest.TestCase):
         self.assertEqual(retorno_esperado, retorno_obtido)
 
     def test_02_show_clientes_nok_nenhum_cliente_cadastrado(self):
+        limpaClientes()
         print("Caso de teste (CLIENTE - showClientes) - Nenhum cliente cadastrado")
         retorno_esperado = STATUS_CODE["CLIENTE_NENHUM_CADASTRADO"]
         retorno_obtido = showClientes()
@@ -206,6 +251,14 @@ class TestShowClientes(unittest.TestCase):
 
 # showClientesByNome
 class TestShowClientesByNome(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        createCliente("155.998.027-36", "Matheus Figueiredo", "13/10/2003")
+
+    @classmethod
+    def tearDownClass(cls):
+        limpaClientes()
 
     @patch('sys.stdout', new_callable=lambda: open(os.devnull, 'w'))
     def test_01_show_clientes_nome_ok_retorno(self, mock_stdout):
@@ -223,18 +276,29 @@ class TestShowClientesByNome(unittest.TestCase):
 # deleteCliente
 class TestDeleteCliente(unittest.TestCase):
 
-    def test_01_delete_cliente_nok_cliente_cadastrado_em_venda(self):
-        print("Caso de teste (CLIENTE) - Cliente cadastrado em venda")
-        createVenda("155.998.027-36", "20/05/2023", "12:53")
-        retorno_esperado = STATUS_CODE["CLIENTE_CADASTRADO_EM_VENDA"]
-        retorno_obtido = deleteCliente("155.998.027-36")
-        deleteVenda(1)
-        self.assertEqual(retorno_esperado, retorno_obtido)
+    @classmethod
+    def setUpClass(cls):
+        # Removido
+        createCliente("155.998.027-36", "Matheus Figueiredo", "13/10/2003")
+        # Castrado em venda
+        createCliente("155.998.027-55", "Jonas Emanuel", "13/09/1987")
+        createVenda("155.998.027-55", "20/05/2023", "12:53")
 
-    def test_02_delete_cliente_ok_retorno(self):
+    @classmethod
+    def tearDownClass(cls):
+        limpaClientes()
+        limpaVendas()
+
+    def test_01_delete_cliente_ok_retorno(self):
         print("Caso de teste (CLIENTE - deleteCliente) - Exclusão")
         retorno_esperado = STATUS_CODE["SUCESSO"]
         retorno_obtido = deleteCliente("155.998.027-36")
+        self.assertEqual(retorno_esperado, retorno_obtido)
+
+    def test_02_delete_cliente_nok_cliente_cadastrado_em_venda(self):
+        print("Caso de teste (CLIENTE) - Cliente cadastrado em venda")
+        retorno_esperado = STATUS_CODE["CLIENTE_CADASTRADO_EM_VENDA"]
+        retorno_obtido = deleteCliente("155.998.027-55")
         self.assertEqual(retorno_esperado, retorno_obtido)
 
     def test_03_delete_cliente_ok_removido(self):
@@ -269,11 +333,10 @@ def suite():
     suite = unittest.TestSuite()
 
     # Adicionando as classes e os testes na ordem desejada
-    suite.addTest(TestShowClientes('test_02_show_clientes_nok_nenhum_cliente_cadastrado'))
     suite.addTest(unittest.makeSuite(TestCreateCliente))
     suite.addTest(unittest.makeSuite(TestShowCliente))
     suite.addTest(unittest.makeSuite(TestGetCliente))
-    suite.addTest(TestShowClientes('test_01_show_clientes_ok_retorno'))
+    suite.addTest(unittest.makeSuite(TestShowClientes))
     suite.addTest(unittest.makeSuite(TestShowClientesByNome))
     suite.addTest(unittest.makeSuite(TestUpdateClienteByCpf))
     suite.addTest(unittest.makeSuite(TestUpdateClienteByNome))
@@ -284,6 +347,6 @@ def suite():
 
 # Executa os testes
 if __name__ == "__main__":
-    from ..venda.venda import createVenda, deleteVenda
+    from ..venda.venda import createVenda, limpaVendas
     runner = unittest.TextTestRunner()
     runner.run(suite())
