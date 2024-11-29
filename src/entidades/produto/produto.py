@@ -183,12 +183,16 @@ Assertivas de saída
 def showProdutoById(id):
 
     global lista_produtos
+    from ..estoque.estoque import getProdutoEstoque
 
     for produto in lista_produtos:
         if id == produto["id"]:
             print("\n", end="")
             for atributo,valor in produto.items():
-                print(f"{atributo}: {valor}")
+                print(f"{atributo}: {valor}", end="")
+                produto_estoque = dict()
+                getProdutoEstoque(id, produto_estoque)
+                print(f"no estoque: {produto_estoque["quantidade"]}")
             print("\n")
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
@@ -214,12 +218,16 @@ Assertivas de saída
 def showProdutoByNome(nome):
 
     global lista_produtos
+    from ..estoque.estoque import getProdutoEstoque
 
     for produto in lista_produtos:
         if nome == produto["nome"]:
             print("\n", end="")
             for atributo,valor in produto.items():
-                print(f"{atributo}: {valor}")
+                print(f"{atributo}: {valor}", end="")
+                produto_estoque = dict()
+                getProdutoEstoque(id, produto_estoque)
+                print(f"no estoque: {produto_estoque["quantidade"]}")
             print("\n")
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
@@ -408,6 +416,7 @@ Assertivas de saída
 def showProdutos():
 
     global lista_produtos
+    from ..estoque.estoque import getProdutoEstoque
 
     if not lista_produtos:
         return STATUS_CODE["PRODUTO_NENHUM_CADASTRO"] # Não há produtos cadastrados
@@ -415,7 +424,10 @@ def showProdutos():
     for produto in lista_produtos:
         print("\n", end="")
         for atributo, valor in produto.items():
-            print(f"{atributo}: {valor}")
+                print(f"{atributo}: {valor}", end="")
+                produto_estoque = dict()
+                getProdutoEstoque(id, produto_estoque)
+                print(f"no estoque: {produto_estoque["quantidade"]}")
         print("\n", end="")
 
     return STATUS_CODE["SUCESSO"] # Sucesso
@@ -440,6 +452,7 @@ Assertivas de saída
 def showProdutosByMarca(marca):
 
     global lista_produtos
+    from ..estoque.estoque import getProdutoEstoque
     flag = False
 
     for produto in lista_produtos:
@@ -447,7 +460,10 @@ def showProdutosByMarca(marca):
             flag = True
             print("\n", end="")
             for atributo, valor in produto.items():
-                print(f"{atributo}: {valor}")
+                print(f"{atributo}: {valor}", end="")
+                produto_estoque = dict()
+                getProdutoEstoque(id, produto_estoque)
+                print(f"no estoque: {produto_estoque["quantidade"]}")
             print("\n", end="")
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
@@ -474,6 +490,7 @@ Assertivas de saída
 def showProdutosByCategoria(categoria):
 
     global lista_produtos
+    from ..estoque.estoque import getProdutoEstoque
     flag = False
 
     for produto in lista_produtos:
@@ -481,7 +498,10 @@ def showProdutosByCategoria(categoria):
             flag = True
             print("\n", end="")
             for atributo, valor in produto.items():
-                print(f"{atributo}: {valor}")
+                print(f"{atributo}: {valor}", end="")
+                produto_estoque = dict()
+                getProdutoEstoque(id, produto_estoque)
+                print(f"no estoque: {produto_estoque["quantidade"]}")
             print("\n", end="")
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
@@ -509,6 +529,7 @@ Assertivas de saída
 def showProdutosByFaixaPreco(preco_min, preco_max):
 
     global lista_produtos
+    from ..estoque.estoque import getProdutoEstoque
     flag = False
 
     for produto in lista_produtos:
@@ -516,7 +537,10 @@ def showProdutosByFaixaPreco(preco_min, preco_max):
             flag = True
             print("\n", end="")
             for atributo, valor in produto.items():
-                print(f"{atributo}: {valor}")
+                print(f"{atributo}: {valor}", end="")
+                produto_estoque = dict()
+                getProdutoEstoque(id, produto_estoque)
+                print(f"no estoque: {produto_estoque["quantidade"]}")
             print("\n", end="")
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
@@ -543,6 +567,7 @@ Assertivas de saída
 def showProdutosByNome(nome):
 
     global lista_produtos
+    from ..estoque.estoque import getProdutoEstoque
     flag = False
     
     for produto in lista_produtos:
@@ -550,7 +575,10 @@ def showProdutosByNome(nome):
             flag = True
             print("\n", end="")
             for atributo, valor in produto.items():
-                print(f"{atributo}: {valor}")
+                print(f"{atributo}: {valor}", end="")
+                produto_estoque = dict()
+                getProdutoEstoque(id, produto_estoque)
+                print(f"no estoque: {produto_estoque["quantidade"]}")
             print("\n", end="")
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
