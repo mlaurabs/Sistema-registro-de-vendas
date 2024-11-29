@@ -192,7 +192,8 @@ def showProdutoById(id):
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print(f"no estoque: {produto_estoque["quantidade"]}")
+                print("no estoque: ", end="")
+                print(produto_estoque["quantidade"])         
             print("\n")
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
@@ -227,7 +228,8 @@ def showProdutoByNome(nome):
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print(f"no estoque: {produto_estoque["quantidade"]}")
+                print("no estoque: ", end="")
+                print(produto_estoque["quantidade"])    
             print("\n")
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
@@ -427,7 +429,8 @@ def showProdutos():
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print(f"no estoque: {produto_estoque["quantidade"]}")
+                print("no estoque: ", end="")
+                print(produto_estoque["quantidade"])    
         print("\n", end="")
 
     return STATUS_CODE["SUCESSO"] # Sucesso
@@ -463,7 +466,8 @@ def showProdutosByMarca(marca):
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print(f"no estoque: {produto_estoque["quantidade"]}")
+                print("no estoque: ", end="")
+                print(produto_estoque["quantidade"])    
             print("\n", end="")
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
@@ -501,7 +505,8 @@ def showProdutosByCategoria(categoria):
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print(f"no estoque: {produto_estoque["quantidade"]}")
+                print("no estoque: ", end="")
+                print(produto_estoque["quantidade"])    
             print("\n", end="")
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
@@ -540,7 +545,8 @@ def showProdutosByFaixaPreco(preco_min, preco_max):
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print(f"no estoque: {produto_estoque["quantidade"]}")
+                print("no estoque: ", end="")
+                print(produto_estoque["quantidade"])    
             print("\n", end="")
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
@@ -578,7 +584,8 @@ def showProdutosByNome(nome):
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print(f"no estoque: {produto_estoque["quantidade"]}")
+                print("no estoque: ", end="")
+                print(produto_estoque["quantidade"])    
             print("\n", end="")
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
