@@ -114,7 +114,7 @@ Descrição
 - Antes de executar a função, os dados passam por um wrapper que os valida
 - Será feita uma checagem se o preço promocional está vazio. Se estiver, ele passa a ser igual ao preço
 - Um produto será criado coms os parâmetros passados
-- O produto será criado no estoque
+- O produto será criado \nno estoque
 - O produto será adicionado na lista de produtos cadastrados
 
 Acoplamento
@@ -134,7 +134,7 @@ Assertivas de entrada
 Assertivas de saída 
 - O produto será criado na lista que armazena todos os produtos cadastrados
 - O código identificar do produto será atualizado
-- O produto será criado no estoque
+- O produto será criado \nno estoque
 '''
 @validaCreate
 def createProduto(nome, marca, categoria, preco, preco_promocional):
@@ -192,7 +192,7 @@ def showProdutoById(id):
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print("no estoque: ", end="")
+                print("\nno estoque: ", end="")
                 print(produto_estoque["quantidade"])         
             print("\n")
             return STATUS_CODE["SUCESSO"] # Sucesso
@@ -228,7 +228,7 @@ def showProdutoByNome(nome):
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print("no estoque: ", end="")
+                print("\nno estoque: ", end="")
                 print(produto_estoque["quantidade"])    
             print("\n")
             return STATUS_CODE["SUCESSO"] # Sucesso
@@ -429,7 +429,7 @@ def showProdutos():
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print("no estoque: ", end="")
+                print("\nno estoque: ", end="")
                 print(produto_estoque["quantidade"])    
         print("\n", end="")
 
@@ -466,7 +466,7 @@ def showProdutosByMarca(marca):
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print("no estoque: ", end="")
+                print("\nno estoque: ", end="")
                 print(produto_estoque["quantidade"])    
             print("\n", end="")
     if flag:
@@ -505,7 +505,7 @@ def showProdutosByCategoria(categoria):
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print("no estoque: ", end="")
+                print("\nno estoque: ", end="")
                 print(produto_estoque["quantidade"])    
             print("\n", end="")
     if flag:
@@ -545,7 +545,7 @@ def showProdutosByFaixaPreco(preco_min, preco_max):
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print("no estoque: ", end="")
+                print("\nno estoque: ", end="")
                 print(produto_estoque["quantidade"])    
             print("\n", end="")
     if flag:
@@ -584,7 +584,7 @@ def showProdutosByNome(nome):
                 print(f"{atributo}: {valor}", end="")
                 produto_estoque = dict()
                 getProdutoEstoque(id, produto_estoque)
-                print("no estoque: ", end="")
+                print("\nno estoque: ", end="")
                 print(produto_estoque["quantidade"])    
             print("\n", end="")
     if flag:
@@ -596,7 +596,7 @@ def showProdutosByNome(nome):
 Descrição
 - Um produto, identificado pelo seu id, será removido do sistema
 - O produto não poderá ser removido se estiver cadastrado em alguma venda
-- O produto não poderá ser removido se ainda houverem unidades disponíveis no estoque
+- O produto não poderá ser removido se ainda houverem unidades disponíveis \nno estoque
 
 Acoplamento
 - Código identificador do produto

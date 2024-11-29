@@ -40,7 +40,7 @@ def menu_cliente():
 
         # Cria cliente
         if (acao == "1"):
-            cpf = input("\n---> CPF:")
+            cpf = input("\n---> CPF: ")
             nome = input("\n---> Nome: ")
             data_nascimento = input("\n---> Data de nascimento: ")
 
@@ -286,7 +286,8 @@ def menu_estoque():
         if (acao == "1"):
             id_produto = input("\n---> ID do produto: ")
             quantidade = input("---> Quantidade: ")
-            id_produto = confere_int(id)
+            id_produto = confere_int(id_produto)
+            quantidade = confere_int(quantidade)
             resultado = estoque.atualizaQtdEstoque(id_produto, quantidade)
             if (resultado == STATUS_CODE["SUCESSO"]):
                 print("\nQuantidade alterada com sucesso\n")
@@ -409,7 +410,7 @@ def menu_venda():
 
             acao = input("\n---> Indique a ação desejada: ")
 
-            id_venda = input("---> ID da venda:")
+            id_venda = input("---> ID da venda: ")
             id_venda = confere_int(id_venda)
 
             if acao == "1":
