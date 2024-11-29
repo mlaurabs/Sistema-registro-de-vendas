@@ -200,7 +200,7 @@ class TestAddProduto(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Venda principal
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 0)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
         atualizaQtdEstoque(1, 500)
         createVenda("", "15/11/2024", "10:30")
         # Venda concluída
@@ -254,7 +254,7 @@ class TestRemoveProduto(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Venda principal
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 0)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
         atualizaQtdEstoque(1, 500)
         createVenda("", "15/11/2024", "10:30")
         addProduto(1, 1, 5)
@@ -265,7 +265,7 @@ class TestRemoveProduto(unittest.TestCase):
         createVenda("", "15/11/2024", "10:30")
         cancelaVenda(3)
         # Auxiliar
-        createProduto("Coca-Cola Zero 500ml", "Coca-Cola", "Bebidas", 10, 8, 0)
+        createProduto("Coca-Cola Zero 500ml", "Coca-Cola", "Bebidas", 10, 8)
 
     @classmethod
     def tearDownClass(cls):
@@ -473,7 +473,7 @@ class TestCheckProdutoVenda(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         createVenda("", "15/11/2024", "10:30")
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 0)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
         atualizaQtdEstoque(1, 500)
         addProduto(1, 1, 5)
 

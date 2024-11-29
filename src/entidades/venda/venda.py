@@ -488,7 +488,7 @@ def geraRelatorioVenda():
 
     global vendas
 
-    caminho_relativo = Path("dados/clientes/relatorio_venda_utf32.dat")
+    caminho_relativo = Path("dados/vendas/relatorio_venda_utf32.dat")
     caminho_absoluto = caminho_relativo.resolve()
 
     arquivo = open(caminho_absoluto, "wb")
@@ -498,10 +498,10 @@ def geraRelatorioVenda():
 
     arquivo.write(bom_bytes)
 
-    for indice, cliente in enumerate(vendas):
+    for indice, venda in enumerate(vendas):
         string = ""
 
-        for valor in cliente.values():
+        for valor in venda.values():
             string += str(valor) + ','
 
         if indice != len(vendas)-1:
@@ -521,7 +521,7 @@ def leRelatorioVenda():
 
     venda_template = {"id": None, "cpf": None, "data": None, "hora": None, "status": None, "produtos": None}
 
-    caminho_relativo = Path("dados/clientes/relatorio_venda_utf32.dat")
+    caminho_relativo = Path("dados/vendas/relatorio_venda_utf32.dat")
     caminho_absoluto = caminho_relativo.resolve()
 
     arquivo = open(caminho_absoluto, "rb")

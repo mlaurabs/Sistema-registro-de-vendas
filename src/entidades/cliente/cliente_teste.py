@@ -296,7 +296,7 @@ class TestDeleteCliente(unittest.TestCase):
         self.assertEqual(retorno_esperado, retorno_obtido)
 
     def test_02_delete_cliente_nok_cliente_cadastrado_em_venda(self):
-        print("Caso de teste (CLIENTE) - Cliente cadastrado em venda")
+        print("Caso de teste (CLIENTE - deleteCliente) - Cliente cadastrado em venda")
         retorno_esperado = STATUS_CODE["CLIENTE_CADASTRADO_EM_VENDA"]
         retorno_obtido = deleteCliente("155.998.027-55")
         self.assertEqual(retorno_esperado, retorno_obtido)

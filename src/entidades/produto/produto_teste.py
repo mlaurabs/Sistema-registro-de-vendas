@@ -14,7 +14,7 @@ class TestCreateProduto(unittest.TestCase):
     def test_01_create_produto_ok_retorno(self):
         print("Caso de teste (PRODUTO - createProduto) - Criação")
         retorno_esperado = STATUS_CODE["SUCESSO"]
-        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
         self.assertEqual(retorno_obtido, retorno_esperado)
 
     def test_02_create_produto_ok_inserido(self):
@@ -22,78 +22,72 @@ class TestCreateProduto(unittest.TestCase):
         produto_obtido = dict()
         getProdutoByNome("Coca-Cola Zero 350ml", produto_obtido)
         produto_obtido.pop("id")
-        produto_esperado = {"nome": "Coca-Cola Zero 350ml", "marca": "Coca-Cola", "categoria": "Bebidas", "preco": 3.5, "preco_promocional": 3, "qtd_minima": 20}
+        produto_esperado = {"nome": "Coca-Cola Zero 350ml", "marca": "Coca-Cola", "categoria": "Bebidas", "preco": 3.5, "preco_promocional": 3}
         self.assertEqual(produto_esperado, produto_obtido)
 
     def test_03_create_produto_nok_nome_vazio(self):
         print("Caso de teste (PRODUTO - createProduto) - Nome não pode estar vazio")
-        retorno_obtido = createProduto("", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        retorno_obtido = createProduto("", "Coca-Cola", "Bebidas", 3.5, 3)
         retorno_esperado = STATUS_CODE["PRODUTO_NOME_VAZIO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
     def test_04_create_produto_nok_marca_vazia(self):
         print("Caso de teste (PRODUTO - createProduto) - Marca não pode estar vazia")
-        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "", "Bebidas", 3.5, 3, 20)
+        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "", "Bebidas", 3.5, 3)
         retorno_esperado = STATUS_CODE["PRODUTO_MARCA_VAZIO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
     def test_05_create_produto_nok_categoria_vazia(self):
         print("Caso de teste (PRODUTO - createProduto) - Categoria não pode estar vazia")
-        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "", 3.5, 3, 20)
+        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "", 3.5, 3)
         retorno_esperado = STATUS_CODE["PRODUTO_CATEGORIA_VAZIO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
     def test_06_create_produto_nok_preco_vazio(self):
         print("Caso de teste (PRODUTO - createProduto) - Preço não pode estar vazio")
-        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", -1, 3, 20)
+        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", -1, 3)
         retorno_esperado = STATUS_CODE["PRODUTO_PRECO_VAZIO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-    def test_07_create_produto_nok_qtd_minima_vazia(self):
-        print("Caso de teste (PRODUTO - createProduto) - Quantidade mínima não estar vazia")
-        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, -1)
-        retorno_esperado = STATUS_CODE["PRODUTO_QTD_MINIMA_VAZIO"]
-        self.assertEqual(retorno_obtido, retorno_esperado)
-
-    def test_08_create_produto_nok_nome_formato_incorreto(self):
+    def test_07_create_produto_nok_nome_formato_incorreto(self):
         print("Caso de teste (PRODUTO - createProduto) - Nome com formato incorreto (excede 50 caracteres)")
-        retorno_obtido = createProduto("Coca-Cola Zero 350ml Coca-Cola Zero 350ml Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        retorno_obtido = createProduto("Coca-Cola Zero 350ml Coca-Cola Zero 350ml Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
         retorno_esperado = STATUS_CODE["PRODUTO_NOME_FORMATO_INCORRETO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-    def test_09_create_produto_nok_marca_formato_incorreto(self):
+    def test_08_create_produto_nok_marca_formato_incorreto(self):
         print("Caso de teste (PRODUTO - createProduto) - Marca com formato incorreto (excede 50 caracteres)")
-        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola Coca-Cola Coca-Cola Coca-Cola Coca-Cola Coca-Cola Coca-Cola", "Bebidas", 3.5, 3, 20)
+        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola Coca-Cola Coca-Cola Coca-Cola Coca-Cola Coca-Cola Coca-Cola", "Bebidas", 3.5, 3)
         retorno_esperado = STATUS_CODE["PRODUTO_MARCA_FORMATO_INCORRETO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-    def test_10_create_produto_nok_categoria_formato_incorreto(self):
+    def test_09_create_produto_nok_categoria_formato_incorreto(self):
         print("Caso de teste (PRODUTO - createProduto) - Categoria com formato incorreto (excede 50 caracteres)")
-        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas Bebidas Bebidas Bebidas Bebidas Bebidas Bebidas Bebidas Bebidas", 3.5, 3, 20)
+        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas Bebidas Bebidas Bebidas Bebidas Bebidas Bebidas Bebidas Bebidas", 3.5, 3)
         retorno_esperado = STATUS_CODE["PRODUTO_CATEGORIA_FORMATO_INCORRETO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-    def test_11_create_produto_nok_preco_formato_incorreto(self):
+    def test_10_create_produto_nok_preco_formato_incorreto(self):
         print("Caso de teste (PRODUTO - createProduto) - Preço com formato incorreto (mais de 2 casas decimais)")
-        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.555, 3, 20)
+        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.555, 3)
         retorno_esperado = STATUS_CODE["PRODUTO_PRECO_FORMATO_INCORRETO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-    def test_12_create_produto_nok_preco_promocional_formato_incorreto(self):
+    def test_11_create_produto_nok_preco_promocional_formato_incorreto(self):
         print("Caso de teste (PRODUTO - createProduto) - Preço promocional com formato incorreto (mais de 2 casas decimais)")
-        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3.111, 20)
+        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3.111)
         retorno_esperado = STATUS_CODE["PRODUTO_PRECO_PROMOCIONAL_FORMATO_INCORRETO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-    def test_13_create_produto_nok_preco_promocional_maior_que_preco(self):
+    def test_12_create_produto_nok_preco_promocional_maior_que_preco(self):
         print("Caso de teste (PRODUTO - createProduto) - Preço promocional não pode ser maior que o preço")
-        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 4, 20)
+        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 4)
         retorno_esperado = STATUS_CODE["PRODUTO_PRECO_PROMOCIONAL_MAIOR_QUE_PRECO"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
-    def test_14_create_produto_nok_produto_existente(self):
+    def test_13_create_produto_nok_produto_existente(self):
         print("Caso de teste (PRODUTO - createProduto) - Produto já existente")
-        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        retorno_obtido = createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
         retorno_esperado = STATUS_CODE["PRODUTO_EXISTENTE"]
         self.assertEqual(retorno_obtido, retorno_esperado)
 
@@ -102,7 +96,7 @@ class TestShowProdutoById(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
 
     @classmethod
     def tearDownClass(cls):
@@ -126,7 +120,7 @@ class TestShowProdutoByNome(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
 
     @classmethod
     def tearDownClass(cls):
@@ -150,7 +144,7 @@ class TestUpdateProduto(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
 
     @classmethod
     def tearDownClass(cls):
@@ -167,7 +161,7 @@ class TestUpdateProduto(unittest.TestCase):
         produto_obtido = dict()
         getProdutoByNome("Coca-Cola Zero 500ml", produto_obtido)
         produto_obtido.pop("id")
-        produto_esperado = {"nome": "Coca-Cola Zero 500ml", "marca": "Coca-Cola", "categoria": "Bebidas", "preco": 3.5, "preco_promocional": 3, "qtd_minima": 20}
+        produto_esperado = {"nome": "Coca-Cola Zero 500ml", "marca": "Coca-Cola", "categoria": "Bebidas", "preco": 3.5, "preco_promocional": 3}
         self.assertEqual(produto_obtido, produto_esperado)
 
     def test_03_update_produto_nok_nome_formato_incorreto(self):
@@ -229,7 +223,7 @@ class TestGetProdutoById(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
 
     @classmethod
     def tearDownClass(cls):
@@ -244,7 +238,7 @@ class TestGetProdutoById(unittest.TestCase):
 
     def test_02_get_produto_id_ok_obtido(self):
         print("Caso de teste (PRODUTO - getProdutoById) - Verificação de obtenção")
-        produto_esperado = {"nome": "Coca-Cola Zero 350ml", "marca": "Coca-Cola", "categoria": "Bebidas", "preco": 3.5, "preco_promocional": 3, "qtd_minima": 20}
+        produto_esperado = {"nome": "Coca-Cola Zero 350ml", "marca": "Coca-Cola", "categoria": "Bebidas", "preco": 3.5, "preco_promocional": 3}
         produto_obtido = dict()
         getProdutoById(1, produto_obtido)
         produto_obtido.pop("id")
@@ -262,7 +256,7 @@ class TestGetProdutoByNome(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
 
     @classmethod
     def tearDownClass(cls):
@@ -277,7 +271,7 @@ class TestGetProdutoByNome(unittest.TestCase):
 
     def test_02_get_produto_nome_ok_obtido(self):
         print("Caso de teste (PRODUTO - getProdutoByNome) - Verificação de retorno")
-        produto_esperado = {"nome": "Coca-Cola Zero 350ml", "marca": "Coca-Cola", "categoria": "Bebidas", "preco": 3.5, "preco_promocional": 3, "qtd_minima": 20}
+        produto_esperado = {"nome": "Coca-Cola Zero 350ml", "marca": "Coca-Cola", "categoria": "Bebidas", "preco": 3.5, "preco_promocional": 3}
         produto_obtido = dict()
         getProdutoByNome("Coca-Cola Zero 350ml", produto_obtido)
         produto_obtido.pop("id")
@@ -295,7 +289,7 @@ class TestShowProdutos(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
 
     @classmethod
     def tearDownClass(cls):
@@ -320,7 +314,7 @@ class TestShowProdutosByMarca(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
 
     @classmethod
     def tearDownClass(cls):
@@ -344,7 +338,7 @@ class TestShowProdutosByCategoria(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
 
     @classmethod
     def tearDownClass(cls):
@@ -368,7 +362,7 @@ class TestShowProdutosByFaixaPreco(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
 
     @classmethod
     def tearDownClass(cls):
@@ -392,7 +386,7 @@ class TestShowProdutosByNome(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
 
     @classmethod
     def tearDownClass(cls):
@@ -417,12 +411,12 @@ class TestDeleteProduto(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Removido
-        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3, 20)
+        createProduto("Coca-Cola Zero 350ml", "Coca-Cola", "Bebidas", 3.5, 3)
         # Não zerado no estoque
-        createProduto("Fanta Laranja 1L", "Fanta", "Bebidas", 10, 8, 0)
+        createProduto("Fanta Laranja 1L", "Fanta", "Bebidas", 10, 8)
         atualizaQtdEstoque(2, 5)
         # Cadastrado em venda
-        createProduto("Guaraná 1L", "Guaraná", "Bebidas", 9, 7.5, 0)
+        createProduto("Guaraná 1L", "Guaraná", "Bebidas", 9, 7.5)
         atualizaQtdEstoque(3, 5)
         createVenda("", "13/10/2004", "20:00")
         addProduto(1, 3, 5)

@@ -1,6 +1,8 @@
 from src.status_code import STATUS_CODE
+from pathlib import Path
 
-__all__ = ["createProdutoNoEstoque", "atualizaQtdEstoque", "showEstoque", "getProdutoEstoque", "getQuantidadeEstoque", "deleteProdutoEstoque", "limpaEstoque"]
+__all__ = ["createProdutoNoEstoque", "atualizaQtdEstoque", "showEstoque", "getProdutoEstoque", 
+           "deleteProdutoEstoque", "limpaEstoque", "geraRelatorioEstoque", "leRelatorioEstoque"]
 
 # Lista global para armazenar os produtos no estoque
 estoque = []
@@ -24,7 +26,6 @@ def createProdutoNoEstoque(id_produto):
     # Adiciona o produto ao estoque
     estoque.append({
         "id_produto": produto["id"],
-        "quantidade_minima": produto["qtd_minima"],
         "quantidade": 0  # Inicializa a quantidade no estoque
     })
     return STATUS_CODE["SUCESSO"]  # Retorna sucesso
@@ -49,7 +50,7 @@ def atualizaQtdEstoque(id_produto, quantidade):
             item["quantidade"] += quantidade  # Atualiza a quantidade
             return STATUS_CODE["SUCESSO"]  # Operação bem-sucedida
 
-    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]  # Produto não encontrado
+    return STATUS_CODE["ESTOQUE_PRODUTO_NAO_ENCONTRADO"]  # Produto não encontrado
 
 def showEstoque():
 
@@ -59,15 +60,15 @@ def showEstoque():
     Exibe todos os produtos no estoque.
     """
     if not estoque:
-        print("Estoque vazio!")
-        return
+        return STATUS_CODE["ESTOQUE_NENHUM_CADASTRO"]
 
     for item in estoque:
         print(
             f"ID: {item['id_produto']}, "
             f"Quantidade: {item['quantidade']}, "
-            f"Quantidade Mínima: {item['quantidade_minima']}"
         )
+
+    return STATUS_CODE["SUCESSO"]
 
 def getProdutoEstoque(id_produto, retorno):
     """
@@ -82,22 +83,7 @@ def getProdutoEstoque(id_produto, retorno):
             retorno.update(item)  # Atualiza o dicionário de retorno com os detalhes do produto
             return STATUS_CODE["SUCESSO"]  # Produto encontrado
 
-    return STATUS_CODE["VENDA_PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]  # Produto não encontrado
-
-def getQuantidadeEstoque(id_produto):
-    """
-    Retorna a quantidade atual de um produto no estoque.
-    - Se o produto for encontrado, retorna a quantidade.
-    - Caso contrário, retorna um código de erro indicando que o produto não foi encontrado.
-    """
-    global estoque
-
-    # Busca o produto no estoque
-    for item in estoque:
-        if item["id_produto"] == id_produto:
-            return item["quantidade"]  # Retorna a quantidade encontrada
-
-    return STATUS_CODE["PRODUTO_NAO_ENCONTRADO_NO_ESTOQUE"]  # Produto não encontrado
+    return STATUS_CODE["ESTOQUE_PRODUTO_NAO_ENCONTRADO"]  # Produto não encontrado
 
 def deleteProdutoEstoque(id_produto):
     
@@ -112,3 +98,71 @@ def deleteProdutoEstoque(id_produto):
 def limpaEstoque():
     global estoque
     estoque.clear()
+
+# Funções de Relatório
+
+def geraRelatorioEstoque():
+
+    global estoque
+
+    caminho_relativo = Path("dados/estoque/relatorio_estoque_utf32.dat")
+    caminho_absoluto = caminho_relativo.resolve()
+
+    arquivo = open(caminho_absoluto, "wb")
+
+    bom = 0xFFFE0000
+    bom_bytes = bom.to_bytes(4, byteorder="little")
+
+    arquivo.write(bom_bytes)
+
+    for indice, produto_estoque in enumerate(estoque):
+        string = ""
+
+        for valor in produto_estoque.values():
+            string += str(valor) + ','
+
+        if indice != len(estoque)-1:
+            string = string[:-1] + '-'
+        else:
+            string = string[:-1]
+
+        arquivo.write(string.encode('utf-32-le'))
+
+    arquivo.close()
+
+    return STATUS_CODE["SUCESSO"]
+
+def leRelatorioEstoque():
+
+    global estoque
+
+    estoque_template = {"id_produto": None, "quantidade": None}
+
+    caminho_relativo = Path("dados/estoque/relatorio_estoque_utf32.dat")
+    caminho_absoluto = caminho_relativo.resolve()
+
+    arquivo = open(caminho_absoluto, "rb")
+
+    arquivo.read(4)
+    conteudo = arquivo.read()
+    conteudo = conteudo.decode('utf-32-le')
+
+    conteudo = conteudo.split('-')
+
+    for linha in conteudo:
+        if linha:
+            
+            linha = linha.strip()
+            linha = linha.split(',')
+            i = 0
+
+            produto_estoque = estoque_template.copy()
+
+            for atributo in estoque.keys():
+
+                produto_estoque[atributo] = linha[i]
+
+            estoque.append(produto_estoque)
+
+    arquivo.close()
+    return STATUS_CODE["SUCESSO"]

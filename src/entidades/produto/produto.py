@@ -52,7 +52,6 @@ Descrição
 Acoplamento
 - Nome, marca e categoria do produto
 - Preço e preço promocional do produto
-- Quantidade mínima do produto no estoque
 
 Retornos esperados
 - Uma mensagem indicando qual elemento obrigatório está vazio
@@ -63,7 +62,6 @@ Retornos esperados
 Assertivas de entrada
 - Nome, marca e categoria devem ser strings
 - Preço e preço promomocional devem ser floats
-- Quantidade mínima deve ser int
 
 Assertivas de saída
 - Se algum dos elementos obrigatórios estiver vazio, a função retornará um erro que identifica qual
@@ -73,11 +71,11 @@ Assertivas de saída
 '''
 def validaCreate(funcao):
 
-    def valida(nome, marca, categoria, preco, preco_promocional, qtd_minima):
+    def valida(nome, marca, categoria, preco, preco_promocional):
 
         global lista_produtos
 
-        parametros = {"nome": nome, "marca": marca, "categoria": categoria, "preco": preco, "qtd_minima": qtd_minima}
+        parametros = {"nome": nome, "marca": marca, "categoria": categoria, "preco": preco}
 
         for atributo, valor in parametros.items():
             if valor == "" or valor == -1:
@@ -107,7 +105,7 @@ def validaCreate(funcao):
             if nome == produto["nome"] and marca == produto["marca"] and categoria == produto["categoria"]:
                 return STATUS_CODE["PRODUTO_EXISTENTE"] # Não podem existir produtos iguais no sistema
 
-        return funcao(nome, marca, categoria, preco, preco_promocional, qtd_minima)
+        return funcao(nome, marca, categoria, preco, preco_promocional)
 
     return valida
 
@@ -125,7 +123,6 @@ Acoplamento
 - Categoria do produto
 - Preço do produto
 - Preço promocional do produto
-- Quantidade mínima do produto no estoque
 
 Retornos esperados
 - Mensagem de sucesso caso o produto seja cadastrado no sistema
@@ -133,7 +130,6 @@ Retornos esperados
 Assertivas de entrada
 - Nome, marca e categoria devem ser strings
 - Preço e preço promocional devem ser floats (preço promocional pode ser nulo)
-- Quantidade mínima deve ser um int
 
 Assertivas de saída 
 - O produto será criado na lista que armazena todos os produtos cadastrados
@@ -141,7 +137,7 @@ Assertivas de saída
 - O produto será criado no estoque
 '''
 @validaCreate
-def createProduto(nome, marca, categoria, preco, preco_promocional, qtd_minima):
+def createProduto(nome, marca, categoria, preco, preco_promocional):
 
     from ..estoque.estoque import createProdutoNoEstoque
 
@@ -157,7 +153,6 @@ def createProduto(nome, marca, categoria, preco, preco_promocional, qtd_minima):
         "categoria": categoria,
         "preco": preco,
         "preco_promocional": preco_promocional,
-        "qtd_minima": qtd_minima,
     }
 
     lista_produtos.append(produto)
@@ -242,7 +237,6 @@ Descrição
 Acoplamento
 - Nome, marca e categoria do produto
 - Preço e preço promocional do produto 
-- Quantidade mínima do produto no estoque
 
 Retornos esperados
 - Uma mensagem indicando qual elemento está no formato errado
@@ -251,7 +245,6 @@ Retornos esperados
 Assertivas de entrada
 - Nome, marca e categoria devem ser strings
 - Preço e preço promomocional devem ser floats
-- Quantidade mínima deve ser int
 
 Assertivas de saída
 - Se algum dos elementos estiver no formato errado, a função retornará um erro que identifica qual
@@ -688,7 +681,7 @@ def leRelatorioProduto():
 
     global lista_produtos, cont_id
 
-    produto_template = {"id": None, "nome": None, "marca": None, "categoria": None, "preco": None, "preco_promocional": None, "qtd_minima": None}
+    produto_template = {"id": None, "nome": None, "marca": None, "categoria": None, "preco": None, "preco_promocional": None}
 
     caminho_relativo = Path("dados/produtos/relatorio_produto_utf32.dat")
     caminho_absoluto = caminho_relativo.resolve()
@@ -715,7 +708,7 @@ def leRelatorioProduto():
                 if atributo == "id":
                     produto[atributo] = int(linha[i])
 
-                elif atributo in ["preco", "preco_promocional", "qtd_minima"]:
+                elif atributo in ["preco", "preco_promocional"]:
                     produto[atributo] = float(linha[i])
 
                 else:
