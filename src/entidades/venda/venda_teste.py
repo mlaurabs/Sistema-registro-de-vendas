@@ -84,7 +84,7 @@ class TestCreateVendaSemCliente(unittest.TestCase):
         expected = {"id": 2, "cpf": "", "data": "15/11/2024", "hora": "10:30", "status": "em processamento", "produtos": []}
         self.assertEqual(response, expected)
 
-# createVenda
+# getVenda
 class TestGetVenda(unittest.TestCase):
 
     @classmethod
@@ -225,7 +225,7 @@ class TestAddProduto(unittest.TestCase):
         print("Caso de teste (VENDA - addProduto) - Verificação de adição")
         response = dict()
         getVenda(1, response)
-        expected = {"id": 1, "cpf": "", "data": "15/11/2024", "hora": "10:30", "status": "em processamento", "produtos": [{"id": 1, "quantidade": 5}]}
+        expected = {"id": 1, "cpf": "", "data": "15/11/2024", "hora": "10:30", "status": "em processamento", "produtos": [{"id": 1, "quantidade": 5, "preco": 3}]}
         self.assertEqual(response, expected)
 
     def test_03_addProduto_nok_venda_nao_encontrada(self):
@@ -282,7 +282,7 @@ class TestRemoveProduto(unittest.TestCase):
         print("Caso de teste (VENDA - removeProduto) - Verificação de redução")
         response = dict()
         getVenda(1, response)
-        expected = {"id": 1, "cpf": "", "data": "15/11/2024", "hora": "10:30", "status": "em processamento", "produtos": [{"id": 1, "quantidade": 2}]}
+        expected = {"id": 1, "cpf": "", "data": "15/11/2024", "hora": "10:30", "status": "em processamento", "produtos": [{"id": 1, "quantidade": 2, "preco": 3}]}
         self.assertEqual(response, expected)
 
     def test_03_removeProduto_nok_venda_nao_encontrada(self):

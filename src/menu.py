@@ -109,7 +109,7 @@ def menu_cliente():
             resultado = cliente.deleteCliente(cpf)
 
             if (resultado == STATUS_CODE["SUCESSO"]):
-                print("\nCliente criado com sucesso\n")
+                print("\nCliente removido com sucesso\n")
             else:
                 print("\nErro: " + getStatusName(resultado) + "\n")
 
@@ -144,7 +144,7 @@ def menu_produto():
             preco_promocional = input("---> Preço promocional: ")
 
             preco = confere_float(preco)
-            preco_promocional = confere_float(preco)
+            preco_promocional = confere_float(preco_promocional)
 
             resultado = produto.createProduto(nome, marca, categoria, preco, preco_promocional)
 

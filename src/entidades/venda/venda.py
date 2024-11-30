@@ -253,7 +253,7 @@ def addProduto(id_venda, id_produto, quantidade):
 
     # Se o produto não estiver na venda
     if flag:
-        venda["produtos"].append({"id": id_produto, "quantidade": quantidade})
+        venda["produtos"].append({"id": id_produto, "quantidade": quantidade, "preco": produto["preco_promocional"]})
 
     # Remove as unidades comercializadas do estoque
     atualizaQtdEstoque(id_produto, -quantidade)
@@ -501,13 +501,25 @@ def geraRelatorioVenda():
     for indice, venda in enumerate(vendas):
         string = ""
 
-        for valor in venda.values():
-            string += str(valor) + ','
+        for atributo, valor in venda.items():
+            if atributo != "produtos":
+                if valor != "":
+                    string += str(valor) + ','
+                else:
+                    string += " " + ','
+            else:
+                for produto in venda["produtos"]:
+                    for valor in produto.values():
+                        string += str(valor) + ','
 
         if indice != len(vendas)-1:
-            string = string[:-1] + '-'
+            string = string[:-1] + '|'
         else:
             string = string[:-1]
+
+        print("\n\n")
+        print(string)
+        print("\n\n")
 
         arquivo.write(string.encode('utf-32-le'))
 
@@ -519,7 +531,7 @@ def leRelatorioVenda():
 
     global vendas
 
-    venda_template = {"id": None, "cpf": None, "data": None, "hora": None, "status": None, "produtos": None}
+    venda_template = {"id": None, "cpf": None, "data": None, "hora": None, "status": None, "produtos": []}
 
     caminho_relativo = Path("dados/vendas/relatorio_venda_utf32.dat")
     caminho_absoluto = caminho_relativo.resolve()
@@ -530,7 +542,7 @@ def leRelatorioVenda():
     conteudo = arquivo.read()
     conteudo = conteudo.decode('utf-32-le')
 
-    conteudo = conteudo.split('-')
+    conteudo = conteudo.split('|')
 
     for linha in conteudo:
         if linha:
@@ -539,11 +551,34 @@ def leRelatorioVenda():
             linha = linha.split(',')
             i = 0
 
+            tam = len(linha)
+
             venda = venda_template.copy()
 
             for atributo in venda.keys():
 
-                venda[atributo] = linha[i]
+                if i == tam:
+                   break
+
+                if atributo != "produtos":
+                    if atributo == "id":
+                        venda[atributo] = int(linha[i])
+                    else:
+                        if linha[i] != " ":
+                            venda[atributo] = linha[i]
+                        else:
+                            venda[atributo] = ""
+                    i += 1
+                    
+                else:
+                    produto = {"id": None, "quantidade": None, "preco": None} 
+                    for atributo2 in produto.keys():
+                        if atributo2 == "preco":
+                            produto[atributo2] = float(linha[i])
+                        else:
+                            produto[atributo2] = int(linha[i])
+                        i += 1
+                    venda["produtos"].append(produto)
 
             vendas.append(venda)
 

@@ -122,7 +122,7 @@ def geraRelatorioEstoque():
             string += str(valor) + ','
 
         if indice != len(estoque)-1:
-            string = string[:-1] + '-'
+            string = string[:-1] + '|'
         else:
             string = string[:-1]
 
@@ -147,7 +147,7 @@ def leRelatorioEstoque():
     conteudo = arquivo.read()
     conteudo = conteudo.decode('utf-32-le')
 
-    conteudo = conteudo.split('-')
+    conteudo = conteudo.split('|')
 
     for linha in conteudo:
         if linha:
@@ -158,9 +158,10 @@ def leRelatorioEstoque():
 
             produto_estoque = estoque_template.copy()
 
-            for atributo in estoque.keys():
+            for atributo in produto_estoque.keys():
 
-                produto_estoque[atributo] = linha[i]
+                produto_estoque[atributo] = int(linha[i])
+                i += 1
 
             estoque.append(produto_estoque)
 

@@ -262,7 +262,7 @@ def geraRelatorioCliente():
             string += str(valor) + ','
 
         if indice != len(lista_clientes)-1:
-            string = string[:-1] + '-'
+            string = string[:-1] + '|'
         else:
             string = string[:-1]
 
@@ -287,7 +287,7 @@ def leRelatorioCliente():
     conteudo = arquivo.read()
     conteudo = conteudo.decode('utf-32-le')
 
-    conteudo = conteudo.split('-')
+    conteudo = conteudo.split('|')
 
     for linha in conteudo:
         if linha:
@@ -301,6 +301,7 @@ def leRelatorioCliente():
             for atributo in cliente.keys():
 
                 cliente[atributo] = linha[i]
+                i += 1
 
             lista_clientes.append(cliente)
 

@@ -98,7 +98,7 @@ def validaCreate(funcao):
         if contaCasasDecimais(preco_promocional, 2):
             return STATUS_CODE["PRODUTO_PRECO_PROMOCIONAL_FORMATO_INCORRETO"] # Preço promocional não pode ter mais que duas casas decimais
 
-        if preco_promocional > preco:
+        if preco_promocional != -1 and preco_promocional > preco:
             return STATUS_CODE["PRODUTO_PRECO_PROMOCIONAL_MAIOR_QUE_PRECO"] # Preço promocional não pode ser maior que o preço do produto
 
         for produto in lista_produtos:
@@ -189,11 +189,14 @@ def showProdutoById(id):
         if id == produto["id"]:
             print("\n", end="")
             for atributo,valor in produto.items():
-                print(f"{atributo}: {valor}", end="")
-                produto_estoque = dict()
-                getProdutoEstoque(id, produto_estoque)
-                print("\nno estoque: ", end="")
-                print(produto_estoque["quantidade"])         
+                if atributo != "preco_promocional":
+                    print(f"{atributo}: {valor}")
+                else:
+                    print(f"{atributo}: {valor}", end="")
+            produto_estoque = dict()
+            getProdutoEstoque(id, produto_estoque)
+            print("\nno estoque: ", end="")
+            print(produto_estoque["quantidade"])         
             print("\n")
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
@@ -225,11 +228,14 @@ def showProdutoByNome(nome):
         if nome == produto["nome"]:
             print("\n", end="")
             for atributo,valor in produto.items():
-                print(f"{atributo}: {valor}", end="")
-                produto_estoque = dict()
-                getProdutoEstoque(id, produto_estoque)
-                print("\nno estoque: ", end="")
-                print(produto_estoque["quantidade"])    
+                if atributo != "preco_promocional":
+                    print(f"{atributo}: {valor}")
+                else:
+                    print(f"{atributo}: {valor}", end="")
+            produto_estoque = dict()
+            getProdutoEstoque(produto["id"], produto_estoque)
+            print("\nno estoque: ", end="")
+            print(produto_estoque["quantidade"])    
             print("\n")
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
@@ -426,11 +432,14 @@ def showProdutos():
     for produto in lista_produtos:
         print("\n", end="")
         for atributo, valor in produto.items():
+            if atributo != "preco_promocional":
+                print(f"{atributo}: {valor}")
+            else:
                 print(f"{atributo}: {valor}", end="")
-                produto_estoque = dict()
-                getProdutoEstoque(id, produto_estoque)
-                print("\nno estoque: ", end="")
-                print(produto_estoque["quantidade"])    
+        produto_estoque = dict()
+        getProdutoEstoque(produto["id"], produto_estoque)
+        print("\nno estoque: ", end="")
+        print(produto_estoque["quantidade"])    
         print("\n", end="")
 
     return STATUS_CODE["SUCESSO"] # Sucesso
@@ -463,11 +472,14 @@ def showProdutosByMarca(marca):
             flag = True
             print("\n", end="")
             for atributo, valor in produto.items():
-                print(f"{atributo}: {valor}", end="")
-                produto_estoque = dict()
-                getProdutoEstoque(id, produto_estoque)
-                print("\nno estoque: ", end="")
-                print(produto_estoque["quantidade"])    
+                if atributo != "preco_promocional":
+                    print(f"{atributo}: {valor}")
+                else:
+                    print(f"{atributo}: {valor}", end="")
+            produto_estoque = dict()
+            getProdutoEstoque(produto["id"], produto_estoque)
+            print("\nno estoque: ", end="")
+            print(produto_estoque["quantidade"])    
             print("\n", end="")
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
@@ -502,11 +514,14 @@ def showProdutosByCategoria(categoria):
             flag = True
             print("\n", end="")
             for atributo, valor in produto.items():
-                print(f"{atributo}: {valor}", end="")
-                produto_estoque = dict()
-                getProdutoEstoque(id, produto_estoque)
-                print("\nno estoque: ", end="")
-                print(produto_estoque["quantidade"])    
+                if atributo != "preco_promocional":
+                    print(f"{atributo}: {valor}")
+                else:
+                    print(f"{atributo}: {valor}", end="")
+            produto_estoque = dict()
+            getProdutoEstoque(produto["id"], produto_estoque)
+            print("\nno estoque: ", end="")
+            print(produto_estoque["quantidade"])    
             print("\n", end="")
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
@@ -542,11 +557,14 @@ def showProdutosByFaixaPreco(preco_min, preco_max):
             flag = True
             print("\n", end="")
             for atributo, valor in produto.items():
-                print(f"{atributo}: {valor}", end="")
-                produto_estoque = dict()
-                getProdutoEstoque(id, produto_estoque)
-                print("\nno estoque: ", end="")
-                print(produto_estoque["quantidade"])    
+                if atributo != "preco_promocional":
+                    print(f"{atributo}: {valor}")
+                else:
+                    print(f"{atributo}: {valor}", end="")
+            produto_estoque = dict()
+            getProdutoEstoque(produto["id"], produto_estoque)
+            print("\nno estoque: ", end="")
+            print(produto_estoque["quantidade"])    
             print("\n", end="")
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
@@ -581,11 +599,14 @@ def showProdutosByNome(nome):
             flag = True
             print("\n", end="")
             for atributo, valor in produto.items():
-                print(f"{atributo}: {valor}", end="")
-                produto_estoque = dict()
-                getProdutoEstoque(id, produto_estoque)
-                print("\nno estoque: ", end="")
-                print(produto_estoque["quantidade"])    
+                if atributo != "preco_promocional":
+                    print(f"{atributo}: {valor}")
+                else:
+                    print(f"{atributo}: {valor}", end="")
+            produto_estoque = dict()
+            getProdutoEstoque(produto["id"], produto_estoque)
+            print("\nno estoque: ", end="")
+            print(produto_estoque["quantidade"])    
             print("\n", end="")
     if flag:
         return STATUS_CODE["SUCESSO"] # Sucesso
@@ -685,7 +706,7 @@ def geraRelatorioProduto():
             string += str(valor) + ','
 
         if indice != len(lista_produtos)-1:
-            string = string[:-1] + '-'
+            string = string[:-1] + '|'
         else:
             string = string[:-1]
 
@@ -727,7 +748,7 @@ def leRelatorioProduto():
     conteudo = arquivo.read()
     conteudo = conteudo.decode('utf-32-le')
 
-    conteudo = conteudo.split('-')
+    conteudo = conteudo.split('|')
 
     for linha in conteudo:
         if linha:
