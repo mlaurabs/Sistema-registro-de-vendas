@@ -245,9 +245,9 @@ def addProduto(id_venda, id_produto, quantidade):
     flag = 1
 
     # Se o produto já estiver na venda
-    for produto in venda["produtos"]:
-        if produto["id"] == id_produto:
-            produto["quantidade"] += quantidade
+    for produto2 in venda["produtos"]:
+        if produto2["id"] == id_produto:
+            produto2["quantidade"] += quantidade
             flag = 0
             break
 
@@ -517,10 +517,6 @@ def geraRelatorioVenda():
         else:
             string = string[:-1]
 
-        print("\n\n")
-        print(string)
-        print("\n\n")
-
         arquivo.write(string.encode('utf-32-le'))
 
     arquivo.close()
@@ -529,7 +525,7 @@ def geraRelatorioVenda():
 
 def leRelatorioVenda():
 
-    global vendas
+    global vendas, cont_id
 
     venda_template = {"id": None, "cpf": None, "data": None, "hora": None, "status": None, "produtos": []}
 
@@ -571,16 +567,18 @@ def leRelatorioVenda():
                     i += 1
                     
                 else:
-                    produto = {"id": None, "quantidade": None, "preco": None} 
-                    for atributo2 in produto.keys():
-                        if atributo2 == "preco":
-                            produto[atributo2] = float(linha[i])
-                        else:
-                            produto[atributo2] = int(linha[i])
-                        i += 1
-                    venda["produtos"].append(produto)
+                    while (i != tam):
+                        produto = {"id": None, "quantidade": None, "preco": None} 
+                        for atributo2 in produto.keys():
+                            if atributo2 == "preco":
+                                produto[atributo2] = float(linha[i])
+                            else:
+                                produto[atributo2] = int(linha[i])
+                            i += 1
+                        venda["produtos"].append(produto)
 
             vendas.append(venda)
+            cont_id = int(venda["id"]) + 1
 
     arquivo.close()
     return STATUS_CODE["SUCESSO"]
