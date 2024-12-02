@@ -98,7 +98,6 @@ def salvarclientes():
             arquivo.write(bom_bytes)
 
             for cliente in clientes:
-                print(f"Clintes atuais: {cliente}")  # Log por produto
 
                 # Construir a string do produto
                 atributos = [
@@ -135,7 +134,6 @@ def carregarclientes():
         with open(arquivo_utf8, "r", encoding="utf-8") as arquivo:
             conteudo = arquivo.read().strip()
             if not conteudo:  # Verifica se o conteúdo está vazio
-                print("Arquivo UTF-32 está vazio.")
                 clientes = []
                 cont_id = 1
                 return STATUS_CODE["SUCESSO"]
@@ -157,7 +155,6 @@ def carregarclientes():
         
         # Atualiza o próximo ID
         cont_id = cont
-        print("cliente carregado com sucesso:", clientes)
         return STATUS_CODE["SUCESSO"]
     except Exception as e:
         print(f"Erro ao carregar cliente: {e}")
@@ -166,12 +163,10 @@ def carregarclientes():
 def iniciarclientes():
     print("Iniciando módulo de cliente...")
     carregarclientes()
-    print()
 
 def encerrarclientes():
     print("Encerrando módulo de cliente...")
     salvarclientes()
-    print()
 
 
 @validaCreate
@@ -185,7 +180,6 @@ def createCliente(cpf, nome, data_nascimento):
     }
 
     clientes.append(cliente)
-    print("clientes: ", clientes)
 
     return STATUS_CODE["SUCESSO"] # Sucesso
 

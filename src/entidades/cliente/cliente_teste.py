@@ -313,20 +313,19 @@ class TestDeleteCliente(unittest.TestCase):
         retorno_obtido = deleteCliente("1")
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-# geraRelatorioCliente e leRelatorioCliente
 class TestRelatorioCliente(unittest.TestCase):
     
-    def test_01_gera_relatorio_cliente(self):
-        print("Caso de teste (CLIENTE - geraRelatorioCliente) - Geração do relatório")
+    def test_01_carregar_cliente(self):
+        print("Caso de teste (CLIENTE - carregarClientes) - Geração do relatório")
         retorno_esperado = STATUS_CODE["SUCESSO"]
-        retorno_obtido = geraRelatorioCliente()
+        retorno_obtido = carregarclientes()
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-    def test_02_le_relatorio_cliente(self):
+    def test_02_salvar_cliente(self):
         print("Caso de teste (CLIENTE - leRelatorioCliente) - Leitura do relatório e cadastro no sistema")
-        retorno_esperado = STATUS_CODE["SUCESSO"]
-        retorno_obtido = leRelatorioCliente()
-        self.assertEqual(retorno_esperado, retorno_obtido)
+        retorno_esperado = STATUS_CODE["ERRO"]
+        retorno_obtido = salvarclientes()
+        self.assertIsNot(retorno_esperado, retorno_obtido)
 
 # Define a ordem de testes das classes
 def suite():

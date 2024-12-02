@@ -12,6 +12,24 @@ cont_id = 1
 arquivo_utf32 = Path("dados/estoque/relatorio_estoque_utf32.txt")
 arquivo_utf8 = Path("dados/estoque/relatorio_estoque_utf8.txt")
 
+"""Descrição
+-Gera um relatório com os produtos cadastrados no estoque, armazenando os dados em um arquivo .txt codificado em UTF-32
+
+Objetivo
+-Criar um arquivo para armazenamento ou auditoria dos produtos do estoque
+
+Acoplamento
+-Lista global estoque
+-Arquivo no caminho especificado
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Relatório gerado com sucesso
+
+Assertivas de Entrada
+-O diretório do arquivo deve existir
+
+Assertivas de Saída
+-Um arquivo .txt será gerado com as informações do estoque"""
 def salvarEstoques():
     global arquivo_utf32
     global estoques  # A lista de produtos
@@ -26,7 +44,6 @@ def salvarEstoques():
             arquivo.write(bom_bytes)
 
             for estoque in estoques:
-                print(f"Estoque atual: {estoque}")  # Log por produto
 
                 # Construir a string do produto
                 atributos = [
@@ -47,7 +64,25 @@ def salvarEstoques():
         return STATUS_CODE["ERRO"]
 
 import converteutf832  # Certifique-se de que o módulo está importado
+"""
+Descrição
+-A partir de um relatório .txt em UTF-32, é feito a conversão em UFT-8, e o arquivo de sáida com os produtos do estoque é lido e os adiciona à lista estoque
 
+Objetivo
+-Permitir a importação de dados previamente armazenados
+
+Acoplamento
+-Arquivo .txt com os dados do estoque
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Relatório lido e produtos importados com sucesso
+
+Assertivas de Entrada
+-O arquivo .txt deve existir e estar no formato correto (UTF-32)
+
+Assertivas de Saída
+-Os produtos serão adicionados à lista estoque
+"""
 def carregarEstoques():
     global arquivo_utf32
     global arquivo_utf8
@@ -61,7 +96,6 @@ def carregarEstoques():
         with open(arquivo_utf8, "r", encoding="utf-8") as arquivo:
             conteudo = arquivo.read().strip()
             if not conteudo:  # Verifica se o conteúdo está vazio
-                print("Arquivo UTF-32 está vazio.")
                 estoques = []
                 cont_id = 1
                 return STATUS_CODE["SUCESSO"]
@@ -74,13 +108,12 @@ def carregarEstoques():
                     partes = linha.split(" - ")
                     estoque = {
                         "id_produto": int(partes[0].split(":")[1]),
-                        "quantidade": partes[1].split(":")[1],
+                        "quantidade": int(partes[1].split(":")[1]),
                     }
                     estoques.append(estoque)
         
         # Atualiza o próximo ID
         cont_id = max((estoque["id_produto"] for estoque in estoques), default=0) + 1
-        print("Estoque carregado com sucesso:", estoques)
         return STATUS_CODE["SUCESSO"]
     except Exception as e:
         print(f"Erro ao carregar estoque: {e}")
@@ -89,13 +122,32 @@ def carregarEstoques():
 def iniciarEstoques():
     print("Iniciando módulo de Estoque...")
     carregarEstoques()
-    print()
 
 def encerrarEstoques():
     print("Encerrando módulo de Estoque...")
     salvarEstoques()
-    print()
 
+"""
+Descrição
+-Adiciona um novo produto ao estoque com quantidade inicial de 0. Os dados do produto são obtidos por meio do módulo de produtos
+
+Objetivo
+-Garantir que produtos registrados no sistema de produtos sejam incluídos no estoque
+
+Acoplamento
+-ID do produto
+-Módulo de produtos para obter os dados do produto
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Produto adicionado ao estoque com sucesso
+-Código de erro se o produto não for encontrado no módulo de produtos
+
+Assertivas de Entrada
+-id_produto deve ser um número inteiro
+
+Assertivas de Saída
+-Produto será adicionado à lista global estoque com quantidade inicial de 0
+"""
 def createProdutoNoEstoque(id_produto):
     """
     Adiciona um novo produto ao estoques com quantidade inicial de 0.
@@ -117,9 +169,32 @@ def createProdutoNoEstoque(id_produto):
         "id_produto": produto["id"],
         "quantidade": 0  # Inicializa a quantidade no estoques
     })
-    print(estoques)
     return STATUS_CODE["SUCESSO"]  # Retorna sucesso
 
+'''
+Descrição
+-Atualiza a quantidade de um produto no estoque. Permite adicionar ou remover produtos
+
+Objetivo
+-Manter as quantidades no estoque atualizadas, tanto para reposição quanto para venda
+
+Acoplamento
+-ID do produto
+-Quantidade a ser adicionada ou removida
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Quantidade atualizada com sucesso.
+-STATUS_CODE["ESTOQUE_INSUFICIENTE"]: Tentativa de remover mais do que a quantidade disponível
+-STATUS_CODE["ESTOQUE_PRODUTO_NAO_ENCONTRADO"]: Produto não encontrado no estoque
+
+Assertivas de Entrada
+-id_produto deve ser um número inteiro
+-quantidade deve ser um número inteiro (positivo ou negativo)
+
+Assertivas de Saída
+-A quantidade do produto no estoque será atualizada
+-O estoque não deve ter valores negativos
+'''
 def atualizaQtdEstoque(id_produto, quantidade):
     """
     Atualiza o estoques de um produto.
@@ -133,14 +208,28 @@ def atualizaQtdEstoque(id_produto, quantidade):
         if item["id_produto"] == id_produto:
             if quantidade < 0:  # Remoção de estoques
                 if int( item["quantidade"]) == 0:
-                    return STATUS_CODE["estoques_INSUFICIENTE"]  # Não há itens no estoques para reduzir
-                if int( item["quantidade"]) + quantidade < 0:  # Checa se a redução deixa o estoques negativo
-                    return STATUS_CODE["estoques_INSUFICIENTE"]
-            item["quantidade"] = str(int(item["quantidade"]) + quantidade)  # Atualiza a quantidade
-            print(item["quantidade"])
+                    return STATUS_CODE["ESTOQUE_INSUFICIENTE"]  # Não há itens no estoques para reduzir
+                if item["quantidade"] + quantidade < 0:  # Checa se a redução deixa o estoques negativo
+                    return STATUS_CODE["ESTOQUE_INSUFICIENTE"]
+            item["quantidade"] = item["quantidade"] + quantidade  # Atualiza a quantidade
             return STATUS_CODE["SUCESSO"]  # Operação bem-sucedida
-    return STATUS_CODE["estoques_PRODUTO_NAO_ENCONTRADO"]  # Produto não encontrado
+    return STATUS_CODE["ESTOQUE_PRODUTO_NAO_ENCONTRADO"]  # Produto não encontrado
 
+"""Descrição
+-Exibe todos os produtos cadastrados no estoque e suas respectivas quantidades
+
+Objetivo
+-Permitir a visualização dos produtos no estoque para o usuário ou para auditoria
+
+Acoplamento
+-Lista global estoque
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Estoque exibido com sucesso
+-STATUS_CODE["ESTOQUE_NENHUM_CADASTRO"]: Nenhum produto cadastrado no estoque
+
+Assertivas de Saída
+-Os detalhes de cada produto no estoque serão exibidos no terminal"""
 def showEstoque():
 
     global estoques
@@ -149,7 +238,7 @@ def showEstoque():
     Exibe todos os produtos no estoques.
     """
     if not estoques:
-        return STATUS_CODE["estoques_NENHUM_CADASTRO"]
+        return STATUS_CODE["ESTOQUE_NENHUM_CADASTRO"]
 
     for item in estoques:
         print(
@@ -159,6 +248,29 @@ def showEstoque():
 
     return STATUS_CODE["SUCESSO"]
 
+'''
+Descrição
+-Busca um produto no estoque pelo seu ID e preenche o dicionário retorno com os dados do produto
+
+Objetivo
+-Fornecer acesso rápido às informações de um produto específico no estoque
+
+Acoplamento
+-ID do produto
+-Dicionário retorno para preenchimento das informações
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Produto encontrado e dicionário preenchido
+-STATUS_CODE["ESTOQUE_PRODUTO_NAO_ENCONTRADO"]: Produto não encontrado no estoque
+
+Assertivas de Entrada
+-id_produto deve ser um número inteiro
+-retorno deve ser um dicionário vazio
+
+Assertivas de Saída
+-O dicionário será preenchido com as informações do produto
+-Retornará um código de erro se o produto não for encontrado
+'''
 def getProdutoEstoque(id_produto, retorno):
     """
     Busca um produto no estoques pelo ID.
@@ -172,8 +284,27 @@ def getProdutoEstoque(id_produto, retorno):
             retorno.update(item)  # Atualiza o dicionário de retorno com os detalhes do produto
             return STATUS_CODE["SUCESSO"]  # Produto encontrado
 
-    return STATUS_CODE["estoques_PRODUTO_NAO_ENCONTRADO"]  # Produto não encontrado
+    return STATUS_CODE["ESTOQUE_PRODUTO_NAO_ENCONTRADO"]  # Produto não encontrado
 
+'''
+Descrição
+-Remove um produto do estoque com base no seu ID
+
+Objetivo
+-Excluir produtos do estoque que não são mais necessários
+
+Acoplamento
+-ID do produto
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Produto removido do estoque
+
+Assertivas de Entrada
+-id_produto deve ser um número inteiro
+
+Assertivas de Saída
+-O produto será removido da lista estoque
+'''
 def deleteProdutoEstoque(id_produto):
     
     global estoques
@@ -184,6 +315,19 @@ def deleteProdutoEstoque(id_produto):
 
     return STATUS_CODE["SUCESSO"]
 
+'''
+Descrição
+-Remove todos os produtos do estoque
+
+Objetivo
+-Realizar uma limpeza completa no estoque, útil para reinicialização ou auditoria
+
+Acoplamento:
+-Lista global estoque
+
+Assertivas de Saída
+-A lista estoque estará vazia
+'''
 def limpaEstoque():
     global estoques
     estoques.clear()

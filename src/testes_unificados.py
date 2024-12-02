@@ -312,20 +312,19 @@ class TestDeleteCliente(unittest.TestCase):
         retorno_obtido = deleteCliente("1")
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-# geraRelatorioCliente e leRelatorioCliente
 class TestRelatorioCliente(unittest.TestCase):
     
-    def test_01_gera_relatorio_cliente(self):
-        print("Caso de teste (CLIENTE - geraRelatorioCliente) - Geração do relatório")
+    def test_01_carregar_cliente(self):
+        print("Caso de teste (CLIENTE - carregarClientes) - Geração do relatório")
         retorno_esperado = STATUS_CODE["SUCESSO"]
-        retorno_obtido = geraRelatorioCliente()
+        retorno_obtido = carregarclientes()
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-    def test_02_le_relatorio_cliente(self):
+    def test_02_salvar_cliente(self):
         print("Caso de teste (CLIENTE - leRelatorioCliente) - Leitura do relatório e cadastro no sistema")
-        retorno_esperado = STATUS_CODE["SUCESSO"]
-        retorno_obtido = leRelatorioCliente()
-        self.assertEqual(retorno_esperado, retorno_obtido)
+        retorno_esperado = STATUS_CODE["ERRO"]
+        retorno_obtido = salvarclientes()
+        self.assertIsNot(retorno_esperado, retorno_obtido)
 
 # Testes para createProdutoNoEstoque
 class TestCreateProdutoNoEstoque(unittest.TestCase):
@@ -471,17 +470,17 @@ class TestDeleteProdutoEstoque(unittest.TestCase):
 # Testes para geraRelatorioEstoque e lerRelatorioEstoque
 class TestRelatorioEstoque(unittest.TestCase):
     
-    def test_01_gera_relatorio_estoque(self):
-        print("Caso de teste (VENDA - geraRelatorioEstoque) - Geração do relatório de estoque")
+    def test_01_carregar_estoque(self):
+        print("Caso de teste (ESTOQUE - carregarEstoque) - Geração do relatório de estoque")
         retorno_esperado = STATUS_CODE["SUCESSO"]
-        retorno_obtido = geraRelatorioEstoque()
+        retorno_obtido = carregarEstoques()
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-    def test_02_le_relatorio_estoque(self):
-        print("Caso de teste (PRODUTO - leRelatorioEstoque) - Leitura do relatório de estoque e cadastro no sistema")
-        retorno_esperado = STATUS_CODE["SUCESSO"]
-        retorno_obtido = leRelatorioEstoque()
-        self.assertEqual(retorno_esperado, retorno_obtido)
+    def test_02_salvar_estoque(self):
+        print("Caso de teste (ESTOQUE - salvarEstoque) - Leitura do relatório de estoque e cadastro no sistema")
+        retorno_esperado = STATUS_CODE["ERRO"]
+        retorno_obtido = salvarEstoques()
+        self.assertIsNot(retorno_esperado, retorno_obtido)
 
 # createProduto
 class TestCreateProduto(unittest.TestCase):
@@ -936,20 +935,19 @@ class TestDeleteProduto(unittest.TestCase):
         retorno_obtido = deleteProduto(3)
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-# geraRelatorioProduto e leRelatorioProduto
 class TestRelatorioProduto(unittest.TestCase):
     
-    def test_01_gera_relatorio_produto(self):
-        print("Caso de teste (PRODUTO - geraRelatorioProduto) - Geração do relatório de produtos")
+    def test_01_carregar_produtos(self):
+        print("Caso de teste (PRODUTO - carregarProdutos) - Carrega os produtos salvos")
         retorno_esperado = STATUS_CODE["SUCESSO"]
-        retorno_obtido = geraRelatorioProduto()
+        retorno_obtido = carregarProdutos()
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-    def test_02_le_relatorio_produto(self):
-        print("Caso de teste (PRODUTO - leRelatorioProduto) - Leitura do relatório de produtos e cadastro no sistema")
-        retorno_esperado = STATUS_CODE["SUCESSO"]
-        retorno_obtido = leRelatorioProduto()
-        self.assertEqual(retorno_esperado, retorno_obtido)
+    def test_02_salvar_produtos(self):
+        print("Caso de teste (PRODUTO - salvarProdutos) - Salva os produtos")
+        retorno_esperado = STATUS_CODE["ERRO"]
+        retorno_obtido = salvarProdutos()
+        self.assertIsNot(retorno_esperado, retorno_obtido)
 
 # createVenda
 class TestCreateVenda(unittest.TestCase):
@@ -1498,56 +1496,24 @@ class TestDeleteVenda(unittest.TestCase):
         response = deleteVenda(99)
         self.assertEqual(response, STATUS_CODE["VENDA_NAO_ENCONTRADA"])
 
-# geraRelatorioVenda e lerRelatorioVenda
-# class TestRelatorioVenda(unittest.TestCase):
+class TestRelatorioVenda(unittest.TestCase):
     
-#     def test_01_gera_relatorio_venda(self):
-#         print("Caso de teste (VENDA - geraRelatorioVenda) - Geração do relatório de vendas")
-#         retorno_esperado = STATUS_CODE["SUCESSO"]
-#         retorno_obtido = geraRelatorioVenda()
-#         self.assertEqual(retorno_esperado, retorno_obtido)
+    def test_01_carregar_vendas(self):
+        print("Caso de teste (VENDA - carregarVendas) - Carrega as vendas salvas")
+        retorno_esperado = STATUS_CODE["SUCESSO"]
+        retorno_obtido = carregarVendas()
+        self.assertEqual(retorno_esperado, retorno_obtido)
 
-#     def test_02_le_relatorio_produto(self):
-#         print("Caso de teste (PRODUTO - leRelatorioVenda) - Leitura do relatório de vendas e cadastro no sistema")
-#         retorno_esperado = STATUS_CODE["SUCESSO"]
-#         retorno_obtido = leRelatorioVenda()
-#         self.assertEqual(retorno_esperado, retorno_obtido)
+    def test_02_carregar_vendas(self):
+        print("Caso de teste (VENDA - salvarVendas) - Salvar vendas")
+        retorno_esperado = STATUS_CODE["ERRO"]
+        retorno_obtido = salvarVendas()
+        self.assertIsNot(retorno_esperado, retorno_obtido)
 
 # Define a ordem de testes das classes
 def suite():
     suite = unittest.TestSuite()
 
-    # Cliente
-    suite.addTest(unittest.makeSuite(TestCreateCliente))
-    suite.addTest(unittest.makeSuite(TestShowCliente))
-    suite.addTest(unittest.makeSuite(TestGetCliente))
-    suite.addTest(unittest.makeSuite(TestShowClientes))
-    suite.addTest(unittest.makeSuite(TestShowClientesByNome))
-    suite.addTest(unittest.makeSuite(TestUpdateClienteByCpf))
-    suite.addTest(unittest.makeSuite(TestUpdateClienteByNome))
-    suite.addTest(unittest.makeSuite(TestDeleteCliente))
-    # suite.addTest(unittest.makeSuite(TestRelatorioCliente))
-    # Estoque
-    suite.addTest(unittest.makeSuite(TestCreateProdutoNoEstoque))
-    suite.addTest(unittest.makeSuite(TestAtualizaQtdEstoque))
-    suite.addTest(unittest.makeSuite(TestGetProdutoEstoque))
-    suite.addTest(unittest.makeSuite(TestShowEstoque))
-    suite.addTest(unittest.makeSuite(TestDeleteProdutoEstoque))
-    suite.addTest(unittest.makeSuite(TestRelatorioEstoque))
-    # Produto
-    suite.addTest(unittest.makeSuite(TestCreateProduto))
-    suite.addTest(unittest.makeSuite(TestShowProdutoById))
-    suite.addTest(unittest.makeSuite(TestShowProdutoByNome))
-    suite.addTest(unittest.makeSuite(TestGetProdutoById))
-    suite.addTest(unittest.makeSuite(TestGetProdutoByNome))
-    suite.addTest(unittest.makeSuite(TestShowProdutos))
-    suite.addTest(unittest.makeSuite(TestShowProdutosByMarca))
-    suite.addTest(unittest.makeSuite(TestShowProdutosByCategoria))
-    suite.addTest(unittest.makeSuite(TestShowProdutosByFaixaPreco))
-    suite.addTest(unittest.makeSuite(TestShowProdutosByNome))
-    suite.addTest(unittest.makeSuite(TestUpdateProduto))
-    suite.addTest(unittest.makeSuite(TestDeleteProduto))
-    suite.addTest(unittest.makeSuite(TestRelatorioProduto))
     # Venda
     suite.addTest(unittest.makeSuite(TestCreateVenda))
     suite.addTest(unittest.makeSuite(TestCreateVendaSemCliente))
@@ -1564,7 +1530,47 @@ def suite():
     suite.addTest(unittest.makeSuite(TestCheckProdutoVenda))
     suite.addTest(unittest.makeSuite(TestCheckClienteVenda))
     suite.addTest(unittest.makeSuite(TestDeleteVenda))
-    # suite.addTest(unittest.makeSuite(TestRelatorioVenda))
+    
+
+    # Produto
+    suite.addTest(unittest.makeSuite(TestCreateProduto))
+    suite.addTest(unittest.makeSuite(TestShowProdutoById))
+    suite.addTest(unittest.makeSuite(TestShowProdutoByNome))
+    suite.addTest(unittest.makeSuite(TestGetProdutoById))
+    suite.addTest(unittest.makeSuite(TestGetProdutoByNome))
+    suite.addTest(unittest.makeSuite(TestShowProdutos))
+    suite.addTest(unittest.makeSuite(TestShowProdutosByMarca))
+    suite.addTest(unittest.makeSuite(TestShowProdutosByCategoria))
+    suite.addTest(unittest.makeSuite(TestShowProdutosByFaixaPreco))
+    suite.addTest(unittest.makeSuite(TestShowProdutosByNome))
+    suite.addTest(unittest.makeSuite(TestUpdateProduto))
+    suite.addTest(unittest.makeSuite(TestDeleteProduto))
+    
+
+    # Estoque
+    suite.addTest(unittest.makeSuite(TestCreateProdutoNoEstoque))
+    suite.addTest(unittest.makeSuite(TestAtualizaQtdEstoque))
+    suite.addTest(unittest.makeSuite(TestGetProdutoEstoque))
+    suite.addTest(unittest.makeSuite(TestShowEstoque))
+    suite.addTest(unittest.makeSuite(TestDeleteProdutoEstoque))
+    
+
+    # Cliente
+    suite.addTest(unittest.makeSuite(TestCreateCliente))
+    suite.addTest(unittest.makeSuite(TestShowCliente))
+    suite.addTest(unittest.makeSuite(TestGetCliente))
+    suite.addTest(unittest.makeSuite(TestShowClientes))
+    suite.addTest(unittest.makeSuite(TestShowClientesByNome))
+    suite.addTest(unittest.makeSuite(TestUpdateClienteByCpf))
+    suite.addTest(unittest.makeSuite(TestUpdateClienteByNome))
+    suite.addTest(unittest.makeSuite(TestDeleteCliente))
+    
+
+    suite.addTest(unittest.makeSuite(TestRelatorioEstoque))
+    suite.addTest(unittest.makeSuite(TestRelatorioCliente))
+    suite.addTest(unittest.makeSuite(TestRelatorioVenda))
+    suite.addTest(unittest.makeSuite(TestRelatorioProduto))
+
 
     return suite
 
@@ -1576,3 +1582,4 @@ if __name__ == "__main__":
     from .entidades.venda.venda import *
     runner = unittest.TextTestRunner()
     runner.run(suite())
+ 

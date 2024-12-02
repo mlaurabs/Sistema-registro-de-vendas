@@ -1,6 +1,7 @@
 from src.status_code import STATUS_CODE
 from pathlib import Path
 
+
 __all__ = ["createProduto", "showProdutoById", "showProdutoByNome", 
            "updateProduto", "getProdutoById", "getProdutoByNome", "showProdutos",
          "showProdutosByMarca", "showProdutosByCategoria", 
@@ -15,20 +16,19 @@ Descrição
 - A função irá separar o número em duas partes: uma inteira e uma decimal
 - Então, será feita uma checagem se o número de elementos da parte decimal é maior que a quantidade de casas decimais desejadas
 
-Acoplamento
-- Valor do tipo float que terá a quantidade de casas decimais contadas, quantidades de casas decimais desejadas
+Parâmetros
+- Valor que deseja-se contar as casas decimais e a quantidade de casas esperadas
 
 Retornos esperados
 - True
 - False
 
 Assertivas de entrada
-- Valor deve ser float
-- Casas_desejadas deve ser int
+- valor deve ser float
+- casas_desejadas deve ser int
 
 Assertivas de saída 
-- Se a quantidade de casas decimais do número for maior que a quantidade desejada, a função irá retornar True
-- Caso contrário, a função irá retornar False
+- Se a quantidade de casas decimais do número for maior que a quantidade desejada, a função irá retornar True. Caso contrário, retorna False
 '''
 def contaCasasDecimais(valor, casas_desejadas):
     str_valor = str(valor)
@@ -50,14 +50,25 @@ Descrição
 - O preço promocional não pode ser maior que o preço
 - Não pode existir algum produto similar no sistema, isto é, com mesmo nome, marca e categoria
 
-Acoplamento
-- Nome, marca e categoria do produto
-- Preço e preço promocional do produto
+Parâmetros
+- Nome do produto
+- Marca do produto
+- Categoria do produto
+- Preço do produto
+- Preço promocional do produto
 
 Retornos esperados
-- Uma mensagem indicando qual elemento obrigatório está vazio
-- Uma mensagem indicando qual elemento está no formato errado
-- Uma mensagem indicando que o produto já existe no sistema
+- Nome vazio
+- Marca vazia
+- Categoria vazia
+- Preço vazio
+- Nome com formato incorreto
+- Marca com formato incorreto
+- Categoria com formato incorreto
+- Preço com formato incorreto
+- Preço promocional com formato incorreto
+- Preço promocional maior que preço
+- Produto existente
 - Função createProduto
 
 Assertivas de entrada
@@ -65,16 +76,13 @@ Assertivas de entrada
 - Preço e preço promomocional devem ser floats
 
 Assertivas de saída
-- Se algum dos elementos obrigatórios estiver vazio, a função retornará um erro que identifica qual
-- Se algum dos elementos estiver no formato errado, a função retornará um erro que identifica qual
-- Se o preço promocional for maior que o preço normal, a função retornará um erro que identifica qual
-- Em caso de sucesso, a função irá executar createProduto
+- A função deve, se não ocorrer nenhum erro, chamar a função createProduto repassando os parâmetros recebidos
 '''
 def validaCreate(funcao):
 
     def valida(nome, marca, categoria, preco, preco_promocional):
 
-        global produtos
+        global lista_produtos
 
         parametros = {"nome": nome, "marca": marca, "categoria": categoria, "preco": preco}
 
@@ -102,7 +110,7 @@ def validaCreate(funcao):
         if preco_promocional != -1 and preco_promocional > preco:
             return STATUS_CODE["PRODUTO_PRECO_PROMOCIONAL_MAIOR_QUE_PRECO"] # Preço promocional não pode ser maior que o preço do produto
 
-        for produto in produtos:
+        for produto in lista_produtos:
             if nome == produto["nome"] and marca == produto["marca"] and categoria == produto["categoria"]:
                 return STATUS_CODE["PRODUTO_EXISTENTE"] # Não podem existir produtos iguais no sistema
 
@@ -110,8 +118,9 @@ def validaCreate(funcao):
 
     return valida
 
+
 cont_id = 1 # Guarda o próximo ID a ser cadastrado
-produtos = [] # Lista com todos os produtos
+lista_produtos = [] # Lista com todos os produtos
 # Caminhos dos arquivos
 arquivo_utf32 = Path("dados/produtos/relatorio_produto_utf32.txt")
 arquivo_utf8 = Path("dados/produtos/relatorio_produto_utf8.txt")
@@ -129,8 +138,7 @@ def salvarProdutos():
             bom_bytes = bom.to_bytes(4, byteorder="little")
             arquivo.write(bom_bytes)
 
-            for produto in produtos:
-                print(f"Produtos atuais: {produto}")  # Log por produto
+            for produto in lista_produtos:
 
                 # Construir a string do produto
                 atributos = [
@@ -163,14 +171,6 @@ def carregarProdutos():
 
     print("Iniciando carregamento de produtos...")
 
-    # with open(arquivo_utf8, "r", encoding="utf-32-le") as arquivo:
-    #     conteudo = arquivo.read().strip()
-    #     if not conteudo:  # Verifica se o conteúdo está vazio
-    #         print("Arquivo UTF-32 está vazio.")
-    #         produtos = []
-    #         cont_id = 1
-    #         return STATUS_CODE["SUCESSO"]
-
      # Converte o arquivo UTF-32 para UTF-8 usando o módulo converteutf832
     converteutf832.convUtf32p8(str(arquivo_utf32), str(arquivo_utf8))
     try:
@@ -178,14 +178,13 @@ def carregarProdutos():
         with open(arquivo_utf8, "r", encoding="utf-8") as arquivo:
             conteudo = arquivo.read().strip()
             if not conteudo:  # Verifica se o conteúdo está vazio
-                print("Arquivo UTF-32 está vazio.")
                 produtos = []
                 cont_id = 1
                 return STATUS_CODE["SUCESSO"]
 
             # Processa cada linha de produtos
             linhas = conteudo.split("\n")
-            produtos.clear()
+            lista_produtos.clear()
             for linha in linhas:
                 if linha.strip():  # Ignora linhas vazias
                     # Divide os atributos pelo separador " - "
@@ -198,11 +197,10 @@ def carregarProdutos():
                         "preco": float(partes[4].split(":")[1]),
                         "preco_promocional": float(partes[5].split(":")[1])
                     }
-                    produtos.append(produto)
+                    lista_produtos.append(produto)
         
         # Atualiza o próximo ID
-        cont_id = max((produto["id"] for produto in produtos), default=0) + 1
-        print("Produtos carregados com sucesso:", produtos)
+        cont_id = max((produto["id"] for produto in lista_produtos), default=0) + 1
         return STATUS_CODE["SUCESSO"]
     except Exception as e:
         print(f"Erro ao carregar produtos: {e}")
@@ -218,16 +216,15 @@ def encerrarProdutos():
     salvarProdutos()
     print()
 
-
 '''
 Descrição
 - Antes de executar a função, os dados passam por um wrapper que os valida
 - Será feita uma checagem se o preço promocional está vazio. Se estiver, ele passa a ser igual ao preço
 - Um produto será criado coms os parâmetros passados
-- O produto será criado \nno estoque
+- O produto será criado no estoque
 - O produto será adicionado na lista de produtos cadastrados
 
-Acoplamento
+Parâmetros
 - Nome do produto
 - Marca do produto
 - Categoria do produto
@@ -235,23 +232,25 @@ Acoplamento
 - Preço promocional do produto
 
 Retornos esperados
-- Mensagem de sucesso caso o produto seja cadastrado no sistema
+- Sucesso
 
 Assertivas de entrada
 - Nome, marca e categoria devem ser strings
 - Preço e preço promocional devem ser floats (preço promocional pode ser nulo)
+- Todos os parâmetros devem checar já validados
 
 Assertivas de saída 
-- O produto será criado na lista que armazena todos os produtos cadastrados
-- O código identificar do produto será atualizado
-- O produto será criado \nno estoque
+- O produto será cadastrados na lista de produtos e cadastrado no estoque
+
+Restrição
+- Como os produtos não podem ser gravados diretamente numa base de dados, eles devem ser gravados numa lista encapsulada
 '''
 @validaCreate
 def createProduto(nome, marca, categoria, preco, preco_promocional):
 
     from ..estoque.estoque import createProdutoNoEstoque
 
-    global produtos, cont_id
+    global lista_produtos, cont_id
 
     if preco_promocional == -1:
         preco_promocional = preco
@@ -265,7 +264,7 @@ def createProduto(nome, marca, categoria, preco, preco_promocional):
         "preco_promocional": preco_promocional,
     }
 
-    produtos.append(produto)
+    lista_produtos.append(produto)
     cont_id += 1
 
     createProdutoNoEstoque(produto["id"])
@@ -274,28 +273,28 @@ def createProduto(nome, marca, categoria, preco, preco_promocional):
 
 '''
 Descrição
-- A função procura um produto, pelo seu id, numa lista que armazena todos os produtos cadastrados
+- A função procura um produto, pelo seu ID, numa lista que armazena todos os produtos cadastrados
 - São impressos os atributos e os valores do produto, se encontrado
 
-Acoplamento
+Parâmetros
 - O código identificador do produto
 
 Retornos esperados
-- Indicação que o produto foi encontrado e exibido
-- Erro indicando que o produto não foi encontrado
+- Produto não encontrado na lista
+- Sucesso na exibição
 
 Assertivas de entrada
-- O id deve ser int
+- O ID deve ser um int
 
 Assertivas de saída
 - O produto será exibido na interface, caso seja encontrado
 '''
 def showProdutoById(id):
 
-    global produtos
+    global lista_produtos
     from ..estoque.estoque import getProdutoEstoque
 
-    for produto in produtos:
+    for produto in lista_produtos:
         if id == produto["id"]:
             print("\n", end="")
             for atributo,valor in produto.items():
@@ -316,12 +315,12 @@ Descrição
 - A função procura um produto, pelo seu nome, numa lista que armazena todos os produtos cadastrados
 - São impressos os atributos e os valores do produto, se encontrado
 
-Acoplamento
-- O nome completo do produto
+Parâmetros
+- O código identificador do produto
 
 Retornos esperados
-- Indicação que o produto foi encontrado e exibido
-- Erro indicando que o produto não foi encontrado
+- Produto não encontrado na lista
+- Sucesso na exibição
 
 Assertivas de entrada
 - O nome deve ser uma string
@@ -331,10 +330,10 @@ Assertivas de saída
 '''
 def showProdutoByNome(nome):
 
-    global produtos
+    global lista_produtos
     from ..estoque.estoque import getProdutoEstoque
 
-    for produto in produtos:
+    for produto in lista_produtos:
         if nome == produto["nome"]:
             print("\n", end="")
             for atributo,valor in produto.items():
@@ -356,16 +355,25 @@ Objetivo
 
 Descrição
 - A função será um wrapper que irá checar se os valores passados obedecem algumas regras
-- Todos os atributos podem ser nulos
+- Nome, marca, categoria, preço e quantidade mínima são obrigatórios
 - Nome, marca e categoria não podem ter mais que 50 caracteres
 - Preço e preço promocional não podem ter mais que 2 casas decimais
+- O preço promocional não pode ser maior que o preço
+- Não pode existir algum produto similar no sistema, isto é, com mesmo nome, marca e categoria
 
-Acoplamento
-- Nome, marca e categoria do produto
-- Preço e preço promocional do produto 
+Parâmetros
+- Nome do produto
+- Marca do produto
+- Categoria do produto
+- Preço do produto
+- Preço promocional do produto
 
 Retornos esperados
-- Uma mensagem indicando qual elemento está no formato errado
+- Nome com formato incorreto
+- Marca com formato incorreto
+- Categoria com formato incorreto
+- Preço com formato incorreto
+- Preço promocional com formato incorreto
 - Função updateProduto
 
 Assertivas de entrada
@@ -373,14 +381,13 @@ Assertivas de entrada
 - Preço e preço promomocional devem ser floats
 
 Assertivas de saída
-- Se algum dos elementos estiver no formato errado, a função retornará um erro que identifica qual
-- Em caso de sucesso, a função irá executar updateProduto
+- A função deve, se não ocorrer nenhum erro, chamar a função updateProduto repassando os parâmetros recebidos
 '''
 def validaUpdate(funcao):
 
     def valida(id, nome, marca, categoria, preco, preco_promocional):
 
-        global produtos
+        global lista_produtos
             
         if nome != "" and len(nome) > 50:
             return STATUS_CODE["PRODUTO_NOME_FORMATO_INCORRETO"] # Nome não pode ter mais que 50 caracteres
@@ -404,10 +411,11 @@ def validaUpdate(funcao):
 '''
 Descrição
 - Antes de executar a função, os dados passam por um wrapper que os valida
-- Será feita uma checagem que garanta que o preço promocional seja menor que o preço.
-- Um produto será atualizado coms os parâmetros passados
+- Será feita uma busca na lista com base no ID do produto
+- Se o produto for encontrado, seus atributos serão mudados desde que os parâmetros não estejam vazios
+- Se o preço promocional for ficar maior que o preço, a função será abortada
 
-Acoplamento
+Parâmetros
 - Nome do produto
 - Marca do produto
 - Categoria do produto
@@ -415,22 +423,28 @@ Acoplamento
 - Preço promocional do produto
 
 Retornos esperados
-- Mensagem de sucesso caso o produto seja cadastrado no sistema
-- Mensagem de erro caso o preço promocional seja menor que o preço
+- Sucesso
+- Produto não encontrado
+- Preço promocional maior que o preço
 
 Assertivas de entrada
-- Nome, marca e categoria devem ser strings. Caso não se queira fazer alterações, devem ser ""
-- Preço e preço promocional devem ser floats. Caso não se queira fazer alterações, devem ser -1
+- ID
+- Nome, marca e categoria devem ser strings (se forem vazios, "")
+- Preço e preço promocional devem ser floats (se forem vazios, -1)
+- Todos os parâmetros devem checar já validados
 
 Assertivas de saída 
-- Os valores indicados de produto serão atualizados na lista que armazena todos os produtos cadastrados
+- O produto será alterado na lista de produtos
+
+Hipótese
+- Quem chama a função deve preencher os valores inteiros/float com -1 caso sejam deixados em branco para evitar erros do Python
 '''
 @validaUpdate
 def updateProduto(id, nome, marca, categoria, preco, preco_promocional):
 
-    global produtos
+    global lista_produtos
 
-    for produto in produtos:
+    for produto in lista_produtos:
         if id == produto["id"]:
 
             if nome != "":
@@ -461,50 +475,56 @@ def updateProduto(id, nome, marca, categoria, preco, preco_promocional):
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
 
 '''
+Objetivo
+- Obter os dados de um produto usando seu ID para encontrá-lo
+
 Descrição
-- A função procura um produto, pelo seu id, numa lista que armazena todos os produtos cadastrados
+- A função procura um produto, pelo seu ID, numa lista que armazena todos os produtos cadastrados
 - Se encontrado, o produto é retornado por um parâmetro recebido
 
-Acoplamento
+Parâmetros
 - O código identificador do produto
 - A variável onde será retornado o produto
 
 Retornos esperados
-- Indicação que o produto foi encontrado e exibido
-- Erro indicando que o produto não foi encontrado
+- Sucesso
+- Produto não encontrado
 
 Assertivas de entrada
-- O id deve ser int
+- O ID deve ser int
 - O retorno deve ser um dicionário
 
 Assertivas de saída
 - A variável retorno será preenchida com os valores do produto, caso seja encontrado
 '''
 def getProdutoById(id, retorno):
-    print("entrei nessa")
-    global produtos
 
-    for produto in produtos:
+    global lista_produtos
+
+    for produto in lista_produtos:
         if id == produto["id"]:
             retorno.update(produto)
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # produto não encontrado
 
 '''
+Objetivo
+- Obter os dados de um produto usando seu Nome par encontrá-lo
+
 Descrição
-- A função procura um produto, pelo seu nome completo, numa lista que armazena todos os produtos cadastrados
+- A função procura um produto, pelo seu Nome, numa lista que armazena todos os produtos cadastrados
 - Se encontrado, o produto é retornado por um parâmetro recebido
 
-Acoplamento
-- O nome completo do produto
+Parâmetros
+- O nome do produto
 - A variável onde será retornado o produto
 
 Retornos esperados
-- Indicação que o produto foi encontrado e exibido
-- Erro indicando que o produto não foi encontrado
+- Sucesso
+- Produto não encontrado
 
 Assertivas de entrada
-- O nome deve ser string
+- O Nome deve ser string
 - O retorno deve ser um dicionário
 
 Assertivas de saída
@@ -512,34 +532,37 @@ Assertivas de saída
 '''
 def getProdutoByNome(nome, retorno):
 
-    global produtos
+    global lista_produtos
 
-    for produto in produtos:
+    for produto in lista_produtos:
         if nome == produto["nome"]:
             retorno.update(produto)
             return STATUS_CODE["SUCESSO"] # Sucesso
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # produto não encontrado
 
 '''
+Objetivo
+- Imprimir todos os produtos cadastrados
+
 Descrição
-- A função irá procurar e imprimir todos os produtos cadastrados.
+- A função irá percorrer a lista de produtos cadastrados, imprimindo os valores de cada um
 
 Retornos esperados
-- Indicação que os produtos foram encontrados e exibidos
-- Erro indicando que nenhum produto foi encontrado
+- Sucesso
+- Nenhum produto encontrado
 
 Assertivas de saída
 - Os produtos serão exibidos na interface, caso sejam encontrados
 '''
 def showProdutos():
 
-    global produtos
+    global lista_produtos
     from ..estoque.estoque import getProdutoEstoque
 
-    if not produtos:
+    if not lista_produtos:
         return STATUS_CODE["PRODUTO_NENHUM_CADASTRO"] # Não há produtos cadastrados
 
-    for produto in produtos:
+    for produto in lista_produtos:
         print("\n", end="")
         for atributo, valor in produto.items():
             if atributo != "preco_promocional":
@@ -555,29 +578,32 @@ def showProdutos():
     return STATUS_CODE["SUCESSO"] # Sucesso
 
 '''
-Descrição
-- A função irá procurar e imprimir todos os produtos cadastrados de uma marca específica
+Objetivo
+- Imprimir todos os produtos cadastrados com certa marca
 
-Acoplamento
-- A marca que deseja-se buscar
+Descrição
+- A função irá percorrer a lista de produtos cadastrados, imprimindo os valores de cada um
+
+Parâmetros
+- Marca a ser buscada
 
 Retornos esperados
-- Indicação que os produtos foram encontrados e exibidos
-- Erro indicando que nenhum produto foi encontrado
+- Sucesso
+- Nenhum produto encontrado
 
 Assertivas de entrada
-- A marca deve ser string
+- Marca deve ser string
 
 Assertivas de saída
 - Os produtos serão exibidos na interface, caso sejam encontrados
 '''
 def showProdutosByMarca(marca):
 
-    global produtos
+    global lista_produtos
     from ..estoque.estoque import getProdutoEstoque
     flag = False
 
-    for produto in produtos:
+    for produto in lista_produtos:
         if marca == produto["marca"]:
             flag = True
             print("\n", end="")
@@ -597,29 +623,32 @@ def showProdutosByMarca(marca):
         return STATUS_CODE["PRODUTO_NENHUM_ENCONTRADO"] # Nenhum produto encontrado
 
 '''
-Descrição
-- A função irá procurar e imprimir todos os produtos cadastrados de uma categoria específica
+Objetivo
+- Imprimir todos os produtos cadastrados com certa categoria
 
-Acoplamento
-- A categoria que deseja-se buscar
+Descrição
+- A função irá percorrer a lista de produtos cadastrados, imprimindo os valores de cada um
+
+Parâmetros
+- Categoria a ser buscada
 
 Retornos esperados
-- Indicação que os produtos foram encontrados e exibidos
-- Erro indicando que nenhum produto foi encontrado
+- Sucesso
+- Nenhum produto encontrado
 
 Assertivas de entrada
-- A categoria deve ser string
+- Categoria deve ser string
 
 Assertivas de saída
 - Os produtos serão exibidos na interface, caso sejam encontrados
 '''
 def showProdutosByCategoria(categoria):
 
-    global produtos
+    global lista_produtos
     from ..estoque.estoque import getProdutoEstoque
     flag = False
 
-    for produto in produtos:
+    for produto in lista_produtos:
         if categoria == produto["categoria"]:
             flag = True
             print("\n", end="")
@@ -639,30 +668,33 @@ def showProdutosByCategoria(categoria):
         return STATUS_CODE["PRODUTO_NENHUM_ENCONTRADO"] # Nenhum produto encontrado
 
 '''
-Descrição
-- A função irá procurar e imprimir todos os produtos cadastrados que pertencem a uma faixa de preço específica
+Objetivo
+- Imprimir todos os produtos cadastrados pertencentes a certa faixa de preço
 
-Acoplamento
-- O preço mínimo que o produto pode ter
-- O preço máximo que o produto pode ter
+Descrição
+- A função irá percorrer a lista de produtos cadastrados, imprimindo os valores de cada um
+
+Parâmetros
+- Preço mínimo
+- Preço máximo
 
 Retornos esperados
-- Indicação que os produtos foram encontrados e exibidos
-- Erro indicando que nenhum produto foi encontrado
+- Sucesso
+- Nenhum produto encontrado
 
 Assertivas de entrada
-- Os preços mínimo e máximo devem ser floats
+- Preço mínimo e preço máximo devem ser floats
 
 Assertivas de saída
 - Os produtos serão exibidos na interface, caso sejam encontrados
 '''
 def showProdutosByFaixaPreco(preco_min, preco_max):
 
-    global produtos
+    global lista_produtos
     from ..estoque.estoque import getProdutoEstoque
     flag = False
 
-    for produto in produtos:
+    for produto in lista_produtos:
         if produto["preco_promocional"] >= preco_min and produto["preco_promocional"] <= preco_max:
             flag = True
             print("\n", end="")
@@ -682,29 +714,32 @@ def showProdutosByFaixaPreco(preco_min, preco_max):
         return STATUS_CODE["PRODUTO_NENHUM_ENCONTRADO"] # Nenhum produto encontrado
 
 '''
-Descrição
-- A função irá procurar e imprimir todos os produtos cadastrados que possuam dentro de seu nome completo, o nome especificado
+Objetivo
+- Imprimir todos os produtos cadastrados com nome parecido com o indicado
 
-Acoplamento
-- A nome que deseja-se buscar dentro do nome completo
+Descrição
+- A função irá percorrer a lista de produtos cadastrados, imprimindo os valores de cada um
+
+Parâmetros
+- Nome a ser buscado
 
 Retornos esperados
-- Indicação que os produtos foram encontrados e exibidos
-- Erro indicando que nenhum produto foi encontrado
+- Sucesso
+- Nenhum produto encontrado
 
 Assertivas de entrada
-- O nome deve ser string
+- Nome deve ser string
 
 Assertivas de saída
 - Os produtos serão exibidos na interface, caso sejam encontrados
 '''
 def showProdutosByNome(nome):
 
-    global produtos
+    global lista_produtos
     from ..estoque.estoque import getProdutoEstoque
     flag = False
     
-    for produto in produtos:
+    for produto in lista_produtos:
         if nome.upper() in produto["nome"].upper():
             flag = True
             print("\n", end="")
@@ -725,21 +760,21 @@ def showProdutosByNome(nome):
 
 '''
 Descrição
-- Um produto, identificado pelo seu id, será removido do sistema
+- Um produto, identificado pelo seu ID, será removido do sistema
 - O produto não poderá ser removido se estiver cadastrado em alguma venda
-- O produto não poderá ser removido se ainda houverem unidades disponíveis \nno estoque
+- O produto não poderá ser removido se ainda houverem unidades disponíveis no estoque
 
-Acoplamento
+Parâmetros
 - Código identificador do produto
 
 Retornos esperados
-- Mensagem de sucesso caso o produto seja removido no sistema
-- Mensagem de erro caso o produto não seja encontrado
-- Mensagem de erro caso o produto esteja cadastrado em uma venda
-- Mensagem de erro caso o produto ainda possua unidades disponíveis em estoque
+- Sucesso
+- Produto não encontrado
+- Produto cadastrado em venda
+- Unidades disponíveis em estoque
 
 Assertivas de entrada
-- Id deve ser int
+- ID deve ser int
 
 Assertivas de saída 
 - Caso esteja dentro das condições estabelicidas, o produto será removido da lista de produtos
@@ -749,9 +784,9 @@ def deleteProduto(id):
     from ..estoque.estoque import getProdutoEstoque, deleteProdutoEstoque
     from ..venda.venda import checkProdutoVenda
 
-    global produtos
+    global lista_produtos
 
-    for produto in produtos:
+    for produto in lista_produtos:
         if id == produto["id"]:
             
             estoque = dict()
@@ -767,31 +802,24 @@ def deleteProduto(id):
 
             deleteProdutoEstoque(produto["id"])
 
-            produtos.remove(produto)
+            lista_produtos.remove(produto)
             return STATUS_CODE["SUCESSO"] # Sucesso
         
     return STATUS_CODE["PRODUTO_NAO_ENCONTRADO"] # Produto não encontrado
 
 '''
+Objetivo
+- Limpar a lista de produtos e resetar o ID
+
 Descrição
-- Os produtos cadastrados no sistema serão lidos e impressos num arquivo .dat
-- O arquivo .dat deve estar em UTF-32
-- Serão impresso apenas os valores dos produtos
-- Valores referentes à diferentes atributos deverão ser separados por ,
-- Diferentes produtos verão ser separados por -
+- A função irá esvazias a lista onde estão armazenados todos os produtos
+- O contador que armazena o ID do próximo produto a ser cadastrado voltará a ser 1
 
-Retornos esperados
-- Mensagem de sucesso caso o relatório seja gerado com sucesso
-
-Assertivas de entrada
-- O arquivo .dat para armazenar os dados deve existir no local especificado
-
-Assertivas de saída 
-- Os dados dos produtos serão impressos no arquivo .dat em UTF-32
+Assertivas de saída
+- A lista de produtos será esvaziada
+- O contador será reiniciado
 '''
-
 def limpaProdutos():
-    global produtos, cont_id
+    global lista_produtos, cont_id
     cont_id = 1
-    produtos.clear()
-
+    lista_produtos.clear()

@@ -110,7 +110,6 @@ def salvarVendas():
             arquivo.write(bom_bytes)
 
             for venda in vendas:
-                print(f"Vendas atuais: {venda}")  # Log por venda
 
                 # Construir a string da venda
                 atributos = [
@@ -147,15 +146,6 @@ def carregarVendas():
 
     print("Iniciando carregamento de vendas...")
 
-    # # Lê o arquivo convertido para UTF-8
-    # with open(arquivo_utf8, "r", encoding="utf-32-le") as arquivo:
-    #     conteudo = arquivo.read().strip()
-    #     if not conteudo:  # Verifica se o conteúdo está vazio
-    #         print("Arquivo UTF-8 está vazio.")
-    #         vendas = []
-    #         cont_id = 1
-    #         return STATUS_CODE["SUCESSO"]
-
     # Converte o arquivo UTF-32 para UTF-8 usando o módulo converteutf832
     converteutf832.convUtf32p8(str(arquivo_utf32), str(arquivo_utf8))
     
@@ -163,7 +153,6 @@ def carregarVendas():
         with open(arquivo_utf8, "r", encoding="utf-8") as arquivo:
             conteudo = arquivo.read().strip()
             if not conteudo:  # Verifica se o conteúdo está vazio
-                print("Arquivo UTF-8 está vazio.")
                 vendas = []
                 cont_id = 1
                 return STATUS_CODE["SUCESSO"]
@@ -205,7 +194,6 @@ def carregarVendas():
             # Atualiza o próximo ID
             cont_id = max((venda["id"] for venda in vendas), default=0) + 1
 
-        print("Vendas carregadas com sucesso:", vendas)
         return STATUS_CODE["SUCESSO"]
     except Exception as e:
         print(f"Erro ao carregar vendas: {e}")
@@ -218,7 +206,7 @@ def iniciarVendas():
     """
     print("Iniciando módulo de vendas...")
     carregarVendas()
-    print()
+    
 
 def encerrarVendas():
     """
@@ -226,7 +214,7 @@ def encerrarVendas():
     """
     print("Encerrando módulo de vendas...")
     salvarVendas()
-    print()
+    
 
 # Funções principais
 
@@ -243,7 +231,6 @@ def getVenda(id, retorno):
 
 @validaCreate
 def createVenda(cpf, data, hora):
-    print("entrei")
     from ..cliente.cliente import getCliente
     global vendas, cont_id
     # Se houver a tentativa de usar um cadastro, verificar se existe
@@ -296,7 +283,6 @@ def concludeVenda(id_venda):
         return STATUS_CODE["VENDA_JA_CANCELADA"]
 
     venda["status"] = "concluída"
-    print(vendas)
     return STATUS_CODE["SUCESSO"]
 
 def cancelaVenda(id_venda):
@@ -347,17 +333,14 @@ def addProduto(id_venda, id_produto, quantidade):
 
     # Se a venda não existir
     if flag:
-        venda("venda_nao_encontrada")
         return STATUS_CODE["VENDA_NAO_ENCONTRADA"]
 
     # Se a venda tiver sido concluída
     if venda["status"] == "concluída":
-        venda("venda_concluida")
         return STATUS_CODE["VENDA_JA_CONCLUIDA"]
     
     # Se a venda tiver sido cancelada
     elif venda["status"] == "cancelada":
-        venda("venda_nao_cancelada")
         return STATUS_CODE["VENDA_JA_CANCELADA"]
 
     # Pega o produto
@@ -366,7 +349,6 @@ def addProduto(id_venda, id_produto, quantidade):
 
     # Se o produto não existir
     if flag != STATUS_CODE["SUCESSO"]:
-        print("produto nao achou")
         return flag # PRODUTO_NAO_ENCONTRADO
     
     # Pega o produto no estoque

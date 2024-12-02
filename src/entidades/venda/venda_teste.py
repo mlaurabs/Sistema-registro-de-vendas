@@ -551,20 +551,19 @@ class TestDeleteVenda(unittest.TestCase):
         response = deleteVenda(99)
         self.assertEqual(response, STATUS_CODE["VENDA_NAO_ENCONTRADA"])
 
-# geraRelatorioVenda e lerRelatorioVenda
-# class TestRelatorioVenda(unittest.TestCase):
+class TestRelatorioVenda(unittest.TestCase):
     
-#     def test_01_gera_relatorio_venda(self):
-#         print("Caso de teste (VENDA - geraRelatorioVenda) - Geração do relatório de vendas")
-#         retorno_esperado = STATUS_CODE["SUCESSO"]
-#         retorno_obtido = geraRelatorioVenda()
-#         self.assertEqual(retorno_esperado, retorno_obtido)
+    def test_01_carregar_vendas(self):
+        print("Caso de teste (VENDA - carregarVendas) - Carrega as vendas salvas")
+        retorno_esperado = STATUS_CODE["SUCESSO"]
+        retorno_obtido = carregarVendas()
+        self.assertEqual(retorno_esperado, retorno_obtido)
 
-#     def test_02_le_relatorio_produto(self):
-#         print("Caso de teste (PRODUTO - leRelatorioVenda) - Leitura do relatório de vendas e cadastro no sistema")
-#         retorno_esperado = STATUS_CODE["SUCESSO"]
-#         retorno_obtido = leRelatorioVenda()
-#         self.assertEqual(retorno_esperado, retorno_obtido)
+    def test_02_carregar_vendas(self):
+        print("Caso de teste (VENDA - salvarVendas) - Salvar vendas")
+        retorno_esperado = STATUS_CODE["ERRO"]
+        retorno_obtido = salvarVendas()
+        self.assertIsNot(retorno_esperado, retorno_obtido)
 
 # Define a ordem de testes das classes
 def suite():
@@ -586,7 +585,7 @@ def suite():
     suite.addTest(unittest.makeSuite(TestCheckProdutoVenda))
     suite.addTest(unittest.makeSuite(TestCheckClienteVenda))
     suite.addTest(unittest.makeSuite(TestDeleteVenda))
-    # suite.addTest(unittest.makeSuite(TestRelatorioVenda))
+    suite.addTest(unittest.makeSuite(TestRelatorioVenda))
 
     return suite
 

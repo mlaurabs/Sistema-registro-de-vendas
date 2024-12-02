@@ -148,17 +148,17 @@ class TestDeleteProdutoEstoque(unittest.TestCase):
 # Testes para geraRelatorioEstoque e lerRelatorioEstoque
 class TestRelatorioEstoque(unittest.TestCase):
     
-    def test_01_gera_relatorio_estoque(self):
-        print("Caso de teste (VENDA - geraRelatorioEstoque) - Geração do relatório de estoque")
+    def test_01_carregar_estoque(self):
+        print("Caso de teste (ESTOQUE - carregarEstoque) - Geração do relatório de estoque")
         retorno_esperado = STATUS_CODE["SUCESSO"]
-        retorno_obtido = geraRelatorioEstoque()
+        retorno_obtido = carregarEstoques()
         self.assertEqual(retorno_esperado, retorno_obtido)
 
-    def test_02_le_relatorio_estoque(self):
-        print("Caso de teste (PRODUTO - leRelatorioEstoque) - Leitura do relatório de estoque e cadastro no sistema")
-        retorno_esperado = STATUS_CODE["SUCESSO"]
-        retorno_obtido = leRelatorioEstoque()
-        self.assertEqual(retorno_esperado, retorno_obtido)
+    def test_02_salvar_estoque(self):
+        print("Caso de teste (ESTOQUE - salvarEstoque) - Leitura do relatório de estoque e cadastro no sistema")
+        retorno_esperado = STATUS_CODE["ERRO"]
+        retorno_obtido = salvarEstoques()
+        self.assertIsNot(retorno_esperado, retorno_obtido)
 
 # Define a ordem de testes das classes
 def suite():

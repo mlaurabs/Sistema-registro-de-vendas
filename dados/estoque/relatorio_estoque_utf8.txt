@@ -1,1 +1,2 @@
 id_produto:1 - quantidade:83
+id_produto:2 - quantidade:6

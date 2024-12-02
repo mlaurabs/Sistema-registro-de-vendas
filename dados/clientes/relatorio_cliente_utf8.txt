@@ -1,2 +1,3 @@
 cpf:207.133.447-76 - nome:Maria - data_nascimento:05/05/2004
 cpf:133.027.887-09 - nome:Julia - data_nascimento:03/11/2000
+cpf:098.987.000-98 - nome:pedro - data_nascimento:09/09/2002

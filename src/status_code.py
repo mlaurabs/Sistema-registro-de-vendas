@@ -2,6 +2,7 @@ __all__ = ["STATUS_CODE", "getStatusName"]
 
 STATUS_CODE = {
     "SUCESSO": 0, # Sucesso
+    "ERRO": 2,
     # Produto
     "PRODUTO_NOME_VAZIO": 9, # Não é possível criar um Produto sem nome
     "PRODUTO_MARCA_VAZIO": 10, # Não é possível criar um Produto sem marca
