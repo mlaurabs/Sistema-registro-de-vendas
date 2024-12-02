@@ -376,7 +376,7 @@ def updateProduto(id, nome, marca, categoria, preco, preco_promocional):
 
 '''
 Objetivo
-- Obter os dados de um produto usando seu ID par encontrá-lo
+- Obter os dados de um produto usando seu ID para encontrá-lo
 
 Descrição
 - A função procura um produto, pelo seu ID, numa lista que armazena todos os produtos cadastrados
@@ -728,7 +728,7 @@ def limpaProdutos():
 Descrição
 - Os produtos cadastrados no sistema serão lidos e impressos num arquivo .dat
 - O arquivo .dat deve estar em UTF-32
-- Serão impresso apenas os valores dos produtos
+- Serão impressos apenas os valores dos produtos
 - Valores referentes à diferentes atributos deverão ser separados por ,
 - Diferentes produtos verão ser separados por |
 
@@ -779,7 +779,7 @@ def geraRelatorioProduto():
 Descrição
 - Os produtos presentes em um arquivo .dat serão lidos e cadastrados no sistema
 - O arquivo .dat está em UTF-32
-- Estão impresso apenas os valores dos produtos
+- Estão impressos apenas os valores dos produtos
 - Valores referentes à diferentes atributos estão ser separados por ,
 - Diferentes produtos estão ser separados por -
 
