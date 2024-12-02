@@ -1,0 +1,6 @@
+converteutf832.c
+setup.py
+converteutf832.egg-info/PKG-INFO
+converteutf832.egg-info/SOURCES.txt
+converteutf832.egg-info/dependency_links.txt
+converteutf832.egg-info/top_level.txt

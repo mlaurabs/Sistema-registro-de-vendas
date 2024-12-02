@@ -1,0 +1,2 @@
+id:1 - data:21/10/2024 - hora:10:20 - status:em processamento - {id:1, quantidade:7, preco:3.0}
+id:2 - data:28/08/2023 - hora:12:30 - status:em processamento

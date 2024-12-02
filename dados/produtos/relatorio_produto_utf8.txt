@@ -1,0 +1,1 @@
+id:1 - nome:leite - marca:italac - categoria:laticinio - preco:4.0 - preco_promocional:3.0
