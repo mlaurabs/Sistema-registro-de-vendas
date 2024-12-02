@@ -75,7 +75,7 @@ Acoplamento
 -Arquivo .txt com os dados do estoque
 
 Retornos Esperados
--STATUS_CODE["SUCESSO"]: Relatório lido e produtos importados com sucesso
+-STATUS_CODE["SUCESSO"]: Relatório lido e estoque importado com sucesso
 
 Assertivas de Entrada
 -O arquivo .txt deve existir e estar no formato correto (UTF-32)
@@ -119,10 +119,26 @@ def carregarEstoques():
         print(f"Erro ao carregar estoque: {e}")
         return STATUS_CODE["ERRO"]
 
+"""Descrição
+- Executa o procedimento padrão para iniciar o uso de um módulo
+
+Objetivo
+- Carregar os dados previamente armazendados e carregá-los na estutura de dados do módulo
+
+Assertivas de Saída
+-O módulos será inciados com seus dados previamente carregados"""
 def iniciarEstoques():
     print("Iniciando módulo de Estoque...")
     carregarEstoques()
 
+"""Descrição
+- Executa o procedimento padrão para encerrar o uso de um módulo
+
+Objetivo
+- Salva os dados registrados na estrutura do módulo durante a sessão
+
+Assertivas de Saída
+-Sera criado um arquivo .txt UTF-32 que contem os dados registrados"""
 def encerrarEstoques():
     print("Encerrando módulo de Estoque...")
     salvarEstoques()

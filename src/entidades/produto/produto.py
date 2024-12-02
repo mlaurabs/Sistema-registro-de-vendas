@@ -125,6 +125,24 @@ lista_produtos = [] # Lista com todos os produtos
 arquivo_utf32 = Path("dados/produtos/relatorio_produto_utf32.txt")
 arquivo_utf8 = Path("dados/produtos/relatorio_produto_utf8.txt")
 
+"""Descrição
+-Gera um relatório com os produtos cadastrados no sistema, armazenando os dados em um arquivo .txt codificado em UTF-32
+
+Objetivo
+-Criar um arquivo para armazenamento ou auditoria dos produtos
+
+Acoplamento
+-Lista global produtos
+-Arquivo no caminho especificado
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Relatório gerado com sucesso
+
+Assertivas de Entrada
+-O diretório do arquivo deve existir
+
+Assertivas de Saída
+-Um arquivo .txt será gerado com as informações dos produtos registrados"""
 def salvarProdutos():
     global arquivo_utf32
     global produtos  # A lista de produtos
@@ -164,6 +182,25 @@ def salvarProdutos():
 
 import converteutf832  # Certifique-se de que o módulo está importado
 
+"""
+Descrição
+-A partir de um relatório .txt em UTF-32, é feito a conversão em UFT-8, e o arquivo de sáida com os produtos registrados é lido e os adiciona à lista produtos
+
+Objetivo
+-Permitir a importação de dados previamente armazenados
+
+Acoplamento
+-Arquivo .txt com os dados do produto
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Relatório lido e produtos importados com sucesso
+
+Assertivas de Entrada
+-O arquivo .txt deve existir e estar no formato correto (UTF-32)
+
+Assertivas de Saída
+-Os produtos serão adicionados à lista estoque
+"""
 def carregarProdutos():
     global arquivo_utf32
     global arquivo_utf8
@@ -205,12 +242,28 @@ def carregarProdutos():
     except Exception as e:
         print(f"Erro ao carregar produtos: {e}")
         return STATUS_CODE["ERRO"]
-    
+
+"""Descrição
+- Executa o procedimento padrão para iniciar o uso de um módulo
+
+Objetivo
+- Carregar os dados previamente armazendados e carregá-los na estutura de dados do módulo
+
+Assertivas de Saída
+-O módulos será inciados com seus dados previamente carregados"""    
 def iniciarProdutos():
     print("Iniciando módulo de produtos...")
     carregarProdutos()
     print()
 
+"""Descrição
+- Executa o procedimento padrão para encerrar o uso de um módulo
+
+Objetivo
+- Salva os dados registrados na estrutura do módulo durante a sessão
+
+Assertivas de Saída
+-Sera criado um arquivo .txt UTF-32 que contem os dados registrados"""
 def encerrarProdutos():
     print("Encerrando módulo de produtos...")
     salvarProdutos()
