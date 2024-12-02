@@ -7,10 +7,29 @@ __all__ = ["createProdutoNoEstoque", "atualizaQtdEstoque", "showEstoque", "getPr
 # Lista global para armazenar os produtos no estoque
 estoque = []
 
+"""
+Descrição
+-Adiciona um novo produto ao estoque com quantidade inicial de 0. Os dados do produto são obtidos por meio do módulo de produtos
+
+Objetivo
+-Garantir que produtos registrados no sistema de produtos sejam incluídos no estoque
+
+Acoplamento
+-ID do produto
+-Módulo de produtos para obter os dados do produto
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Produto adicionado ao estoque com sucesso
+-Código de erro se o produto não for encontrado no módulo de produtos
+
+Assertivas de Entrada
+-id_produto deve ser um número inteiro
+
+Assertivas de Saída
+-Produto será adicionado à lista global estoque com quantidade inicial de 0
+"""
 def createProdutoNoEstoque(id_produto):
-    """
-    Adiciona um novo produto ao estoque com quantidade inicial de 0.
-    """
+
     global estoque
 
     from ..produto.produto import getProdutoById
@@ -30,13 +49,32 @@ def createProdutoNoEstoque(id_produto):
     })
     return STATUS_CODE["SUCESSO"]  # Retorna sucesso
 
+'''
+Descrição
+-Atualiza a quantidade de um produto no estoque. Permite adicionar ou remover produtos
+
+Objetivo
+-Manter as quantidades no estoque atualizadas, tanto para reposição quanto para venda
+
+Acoplamento
+-ID do produto
+-Quantidade a ser adicionada ou removida
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Quantidade atualizada com sucesso.
+-STATUS_CODE["ESTOQUE_INSUFICIENTE"]: Tentativa de remover mais do que a quantidade disponível
+-STATUS_CODE["ESTOQUE_PRODUTO_NAO_ENCONTRADO"]: Produto não encontrado no estoque
+
+Assertivas de Entrada
+-id_produto deve ser um número inteiro
+-quantidade deve ser um número inteiro (positivo ou negativo)
+
+Assertivas de Saída
+-A quantidade do produto no estoque será atualizada
+-O estoque não deve ter valores negativos
+'''
 def atualizaQtdEstoque(id_produto, quantidade):
-    """
-    Atualiza o estoque de um produto.
-    - Adiciona se a quantidade for positiva.
-    - Remove se a quantidade for negativa, desde que não deixe o estoque negativo.
-    - Retorna erro se o produto não estiver no estoque ou se não houver itens suficientes.
-    """
+
     global estoque
 
     # Verifica se o produto existe no estoque
@@ -52,13 +90,28 @@ def atualizaQtdEstoque(id_produto, quantidade):
 
     return STATUS_CODE["ESTOQUE_PRODUTO_NAO_ENCONTRADO"]  # Produto não encontrado
 
+'''
+Descrição
+-Exibe todos os produtos cadastrados no estoque e suas respectivas quantidades
+
+Objetivo
+-Permitir a visualização dos produtos no estoque para o usuário ou para auditoria
+
+Acoplamento
+-Lista global estoque
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Estoque exibido com sucesso
+-STATUS_CODE["ESTOQUE_NENHUM_CADASTRO"]: Nenhum produto cadastrado no estoque
+
+Assertivas de Saída
+-Os detalhes de cada produto no estoque serão exibidos no terminal
+'''
 def showEstoque():
 
     global estoque
 
-    """
-    Exibe todos os produtos no estoque.
-    """
+    
     if not estoque:
         return STATUS_CODE["ESTOQUE_NENHUM_CADASTRO"]
 
@@ -70,6 +123,29 @@ def showEstoque():
 
     return STATUS_CODE["SUCESSO"]
 
+'''
+Descrição
+-Busca um produto no estoque pelo seu ID e preenche o dicionário retorno com os dados do produto
+
+Objetivo
+-Fornecer acesso rápido às informações de um produto específico no estoque
+
+Acoplamento
+-ID do produto
+-Dicionário retorno para preenchimento das informações
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Produto encontrado e dicionário preenchido
+-STATUS_CODE["ESTOQUE_PRODUTO_NAO_ENCONTRADO"]: Produto não encontrado no estoque
+
+Assertivas de Entrada
+-id_produto deve ser um número inteiro
+-retorno deve ser um dicionário vazio
+
+Assertivas de Saída
+-O dicionário será preenchido com as informações do produto
+-Retornará um código de erro se o produto não for encontrado
+'''
 def getProdutoEstoque(id_produto, retorno):
     """
     Busca um produto no estoque pelo ID.
@@ -85,6 +161,25 @@ def getProdutoEstoque(id_produto, retorno):
 
     return STATUS_CODE["ESTOQUE_PRODUTO_NAO_ENCONTRADO"]  # Produto não encontrado
 
+'''
+Descrição
+-Remove um produto do estoque com base no seu ID
+
+Objetivo
+-Excluir produtos do estoque que não são mais necessários
+
+Acoplamento
+-ID do produto
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Produto removido do estoque
+
+Assertivas de Entrada
+-id_produto deve ser um número inteiro
+
+Assertivas de Saída
+-O produto será removido da lista estoque
+'''
 def deleteProdutoEstoque(id_produto):
     
     global estoque
@@ -95,12 +190,44 @@ def deleteProdutoEstoque(id_produto):
 
     return STATUS_CODE["SUCESSO"]
 
+'''
+Descrição
+-Remove todos os produtos do estoque
+
+Objetivo
+-Realizar uma limpeza completa no estoque, útil para reinicialização ou auditoria
+
+Acoplamento:
+-Lista global estoque
+
+Assertivas de Saída
+-A lista estoque estará vazia
+'''
 def limpaEstoque():
     global estoque
     estoque.clear()
 
 # Funções de Relatório
+'''
+Descrição
+-Gera um relatório com os produtos cadastrados no estoque, armazenando os dados em um arquivo .dat codificado em UTF-32
 
+Objetivo
+-Criar um arquivo para armazenamento ou auditoria dos produtos do estoque
+
+Acoplamento
+-Lista global estoque
+-Arquivo no caminho especificado
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Relatório gerado com sucesso
+
+Assertivas de Entrada
+-O diretório do arquivo deve existir
+
+Assertivas de Saída
+-Um arquivo .dat será gerado com as informações do estoque
+'''
 def geraRelatorioEstoque():
 
     global estoque
@@ -132,6 +259,26 @@ def geraRelatorioEstoque():
 
     return STATUS_CODE["SUCESSO"]
 
+
+'''
+Descrição
+-Lê um relatório em UTF-32 com os produtos do estoque e os adiciona à lista estoque
+
+Objetivo
+-Permitir a importação de dados previamente armazenados
+
+Acoplamento
+-Arquivo .dat com os dados do estoque
+
+Retornos Esperados
+-STATUS_CODE["SUCESSO"]: Relatório lido e produtos importados com sucesso
+
+Assertivas de Entrada
+-O arquivo .dat deve existir e estar no formato correto
+
+Assertivas de Saída
+-Os produtos serão adicionados à lista estoque
+'''
 def leRelatorioEstoque():
 
     global estoque
